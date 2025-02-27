@@ -1,0 +1,42 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model videos {
+  id           String @unique
+  title        String
+  summary      String
+  playCount    Int
+  likeCount    Int
+  angerCount   Int
+  duration     Float?
+  createdAt    String
+  commentCount Int?
+  comments     comments[]
+}
+
+model comments {
+  id         String  @unique
+  videoId    String
+  content    String
+  userId     String
+  username   String
+  userType   String
+  posVotes   Int
+  linkedUser String?
+  createdAt  String
+  replyCount Int
+  video      videos  @relation(fields: [videoId], references: [id])
+}
+
+model updated {
+  id      Int     @id @default(autoincrement())
+  updated String?
+}
+
