@@ -175,7 +175,8 @@ export default function Comments() {
     return (
         <div className="h-screen overflow-auto">
             <div className="grid place-items-center grid-cols-3 w-full my-1 text-center sticky top-0 z-40 bg-background p-5 opacity-80 min-w-[250px]">
-                <h2 className="text-lg col-span-3">Showing{" " + commentCount} comments for<br></br><b>{title}</b></h2>
+                <h2 className="text-lg col-span-3">Showing{" " + commentCount} comments for<br></br><b>{title}</b></h2><br />
+                <a href={"https://banned.video/watch?id=" + thread} target="_blank" rel="noopener noreferrer">source video link</a>
                 <Input onClear={() => clearSearch()} onChange={searchEvent} isClearable size="sm" className="dark col-span-3 content-center my-2 h-10 w-64" label="Search comments"></Input>
                 <span className="col-span-3">
                     <Button className="dark mt-2" size="sm" isDisabled={page === 0} onPress={() => prevPage()}>Back</Button>

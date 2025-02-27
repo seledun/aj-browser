@@ -223,7 +223,7 @@ export default function Home() {
                         <p>Views<br></br><b>{video.playCount}</b></p>
                         <ul className="col-span-3">
                           <span><b>Links</b></span>
-                          <li><a href={"https://banned.video/watch?id=" + video.id}>banned.video</a></li>
+                          <li><a href={"https://banned.video/watch?id=" + video.id} target="_blank" rel="noopener noreferrer">banned.video</a></li>
                         </ul>
                       </div>
                     </CardFooter>
