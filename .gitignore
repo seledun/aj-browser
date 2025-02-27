@@ -42,3 +42,4 @@ next-env.d.ts
 # misc
 prisma/*
 !schema.prisma
+!update-video-list.py
