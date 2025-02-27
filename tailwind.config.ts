@@ -18,7 +18,16 @@ const config: Config = {
       spacing: {
         nav: '56px',
         navSm: '136px',
-      }
+      },
+      animation: {
+        "fade-in": "fadeIn 0.5s ease-out forwards",
+      },
+      keyframes: {
+        fadeIn: {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+      },
     },
   },
   plugins: [nextui()],

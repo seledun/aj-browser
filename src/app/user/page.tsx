@@ -113,9 +113,9 @@ export default function Comments() {
             <ul className="grid grid-cols-1 gap-3 max-w-screen-md min-w-[249px]">
                 {
                     !loading ?
-                    comments.map((comment) => (
+                    comments.map((comment, index) => (
                         <li key={comment.id}>
-                            <Card className="dark">
+                            <Card className="dark opacity-0 animate-fade-in" style={{ animationDelay: `${index * 25}ms` }}>
                                 <CardHeader className="grid grid-cols-1"><h2 className="text-lg pt-4 pl-1"><b>{comment.username}</b></h2>
                                     <div className="text-sm pl-1 pt-1"><b><Link href={"/comments?videoId=" + comment.videoId}>{comment.video?.title}</Link></b>
                                     </div>

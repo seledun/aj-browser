@@ -191,8 +191,13 @@ export default function Home() {
             loading ?
               <Spinner></Spinner>
               :
-              videos.map((video) => (
-                <Card className="dark min-w-[322px]" radius="sm" key={video.id}>
+              videos.map((video, index) => (
+                <Card
+                className="dark min-w-[322px] opacity-0 animate-fade-in"
+                radius="sm"
+                key={video.id}
+                style={{ animationDelay: `${index * 25}ms` }} // Staggered fade-in effect
+              >
                   <CardHeader className="text-md"><h1 className="px-2 pt-2"><b>{video.title}</b></h1></CardHeader>
                   <CardBody>
                     <p className="px-4">
