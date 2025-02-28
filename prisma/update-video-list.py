@@ -112,7 +112,7 @@ while True:
         videos = obj.get('data', {}).get('getChannel', {}).get('videos', [])
     
     except (requests.RequestException, json.JSONDecodeError, TypeError) as e:
-        logger.error("Failed to fetch videos at offset " + str(offset));
+        logger.error("Failed to fetch videos at offset " + str(offset))
 
     if videos:
         logger.info(f"Fetched {len(videos)} videos at offset {offset}")
