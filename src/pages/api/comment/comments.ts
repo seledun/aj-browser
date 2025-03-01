@@ -6,25 +6,53 @@ interface Params {
   videoId?: string,
   userId?: string,
   search?: string,
+  orderBy?: string,
+  desc?: string,
   start?: number,
   limit?: number
 }
 
+const getTableName = function (str: string): string {
+  switch (str) {
+      case 'Date':
+          return 'createdAt';
+      case 'Likes':
+          return 'posVotes';
+      case 'Replies':
+          return 'replyCount';
+      default:
+          return 'createdAt';
+  }
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  
   const params: Params = {
     videoId: (typeof req.query.videoId === 'string') ? req.query.videoId : undefined,
     userId: (typeof req.query.userId === 'string') ? req.query.userId : undefined,
     search: (typeof req.query.search === 'string') ? req.query.search : undefined,
     start: (typeof req.query.start === 'string') ? parseInt(req.query.start) : undefined,
+    orderBy: (typeof req.query.orderBy === 'string') ? req.query.orderBy : undefined,
+    desc: (typeof req.query.desc === 'string') ? req.query.desc : undefined,
     limit: (typeof req.query.limit === 'string') ? parseInt(req.query.limit) : undefined
   }
 
   let where = {};
   let include = {};
+  let orderByName = 'createdAt';
+  
+  if (params.orderBy !== undefined) {
+    orderByName = getTableName(params.orderBy);
+  }
+
   if (params.videoId !== undefined) {
     where = { videoId: params.videoId, content: { contains: params.search }};
+  } else {
+    where = { content: { contains: params.search }};
+    include = { video: true };
   }
-  else if (params.userId !== undefined) { // JOIN video if we request comments from the user page.
+
+  if (params.userId !== undefined) { // JOIN video if we request comments from the user page.
     where = { userId: params.userId, content: { contains: params.search }};
     include = { video: true };
   }
@@ -34,9 +62,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const comments = await prisma.comments.findMany({
       take: params.limit,
       skip: params.start,
-      where: where, // if set
+      where: where,
       orderBy: {
-        createdAt: 'desc',
+        [orderByName]: 'desc',
       },
       include: include
     });

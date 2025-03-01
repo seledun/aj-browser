@@ -176,7 +176,7 @@ export default function Comments() {
         <div className="h-screen overflow-auto">
             <div className="grid place-items-center grid-cols-3 w-full my-1 text-center sticky top-0 z-40 bg-background p-5 opacity-80 min-w-[250px]">
                 <h2 className="text-lg col-span-3 max-w-screen-lg">Showing{" " + commentCount} comments for<br></br><b>{title}</b></h2><br />
-                <a href={"https://banned.video/watch?id=" + thread} target="_blank" rel="noopener noreferrer">source video link</a>
+                <Link className="no-underline" href={"https://banned.video/watch?id=" + thread} target="_blank" rel="noopener noreferrer">Source</Link>
                 <Input onClear={() => clearSearch()} onChange={searchEvent} isClearable size="sm" className="dark col-span-3 content-center my-2 h-10 w-64" label="Search comments"></Input>
                 <span className="col-span-3">
                     <Button className="dark mt-2" size="sm" isDisabled={page === 0} onPress={() => prevPage()}>Back</Button>
@@ -191,7 +191,7 @@ export default function Comments() {
                             comments.map((comment, index) => (
                                 <li key={comment.id}>
                                     <Card className="dark opacity-0 animate-fade-in" style={{ animationDelay: `${index * 25}ms` }}>
-                                        <CardHeader><h2 className="text-lg pt-4 pl-1"><b><Link href={"/user?userId=" + comment.userId}>{comment.username}</Link></b></h2></CardHeader>
+                                        <CardHeader><h2 className="text-lg pt-4 pl-1"><b><Link className="no-underline" href={"/user?userId=" + comment.userId}>{comment.username}</Link></b></h2></CardHeader>
                                         <CardBody className="px-6">{comment.content}</CardBody>
                                         <CardFooter>
                                             <ul className="w-full flex justify-evenly text-center text-sm">

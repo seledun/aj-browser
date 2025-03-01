@@ -117,7 +117,7 @@ export default function Comments() {
                         <li key={comment.id}>
                             <Card className="dark opacity-0 animate-fade-in" style={{ animationDelay: `${index * 25}ms` }}>
                                 <CardHeader className="grid grid-cols-1"><h2 className="text-lg pt-4 pl-1"><b>{comment.username}</b></h2>
-                                    <div className="text-sm pl-1 pt-1"><b><Link href={"/video?videoId=" + comment.videoId}>{comment.video?.title}</Link></b>
+                                    <div className="text-sm pl-1 pt-1"><b><Link className="no-underline" href={"/video?videoId=" + comment.videoId}>{comment.video?.title}</Link></b>
                                     </div>
                                     </CardHeader>
                                 <CardBody className="px-6">{comment.content}</CardBody>
