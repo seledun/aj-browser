@@ -20,7 +20,6 @@ const sortBy = [
   'Date',
   'Likes',
   'Runtime',
-  'Sort by',
   'Views'
 ]
 
@@ -219,7 +218,7 @@ export default function Home() {
                         <p>Likes<br></br><b>{video.likeCount}</b></p>
                         <p>Anger<br></br><b>{video.angerCount}</b></p>
                         <p>Runtime<br></br><b>{video.duration ? Math.round(video.duration / 60) + 'min' : 'n/a'}</b></p>
-                        <p>Comments<br></br><b>{video.commentCount ? <Link href={"/comments?videoId=" + video.id}>{video.commentCount}</Link> : "0"}</b></p>
+                        <p>Comments<br></br><b>{video.commentCount ? <Link href={"/video?videoId=" + video.id}>{video.commentCount}</Link> : "0"}</b></p>
                         <p>Views<br></br><b>{video.playCount}</b></p>
                         <ul className="col-span-3">
                           <span><b>Links</b></span>
