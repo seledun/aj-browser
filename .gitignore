@@ -43,3 +43,7 @@ next-env.d.ts
 prisma/*
 !schema.prisma
 !update-video-list.py
+
+__pycache__
+comment-errors
+logs
