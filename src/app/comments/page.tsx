@@ -194,7 +194,7 @@ export default function Home() {
                 <Spinner />
               </div>
               :
-              <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+              <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {comments.map((comment, index) => (
                   <Card
                     className="dark min-w-[322px] opacity-0 animate-fade-in"
@@ -203,14 +203,14 @@ export default function Home() {
                     style={{ animationDelay: `${index * 25}ms` }} // Staggered fade-in effect
                   >
                     <CardHeader>
-                      <Link className="no-underline" href={"/video?videoId=" + comment.videoId}><span className="text-small">{comment.video?.title}</span></Link>
+                      <Link className="no-underline font-bold" href={"/video?videoId=" + comment.videoId}><span className="text-medium">{comment.video?.title}</span></Link>
                     </CardHeader>
                     <Divider className="my-2" />
                     <CardBody>
                       <span className="px-2 pb-1 text-medium">
                         <Link className="no-underline font-bold" href={"/user?userId=" + comment.userId}>{comment.username}</Link>
                       </span>
-                      <p className="px-4 text-small">
+                      <p className="px-4">
                         {comment.content}
                       </p>
                     </CardBody>
