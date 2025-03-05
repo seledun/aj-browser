@@ -89,7 +89,8 @@ export default function Home() {
   const nextPage = async () => {
     setLoading(true);
     if (searchMode) {
-      const comments = await searchAllCommentsTerms(searchTerm, (page + 1) * limit, limit, searchProps);
+      const search = strictMode ? ' ' + searchTerm + ' ' : searchTerm;
+      const comments = await searchAllCommentsTerms(search, (page + 1) * limit, limit, searchProps);
       if (comments !== undefined && comments.length > 0) {
         setPage(page + 1);
         setComments(comments);
@@ -110,7 +111,8 @@ export default function Home() {
     if (page > 0) {
       setLoading(true);
       if (searchMode) {
-        const videos = await searchAllCommentsTerms(searchTerm, (page - 1) * limit, limit, searchProps);
+        const search = strictMode ? ' ' + searchTerm + ' ' : searchTerm;
+        const videos = await searchAllCommentsTerms(search, (page - 1) * limit, limit, searchProps);
         if (videos !== undefined && videos.length > 0) {
           setPage(page - 1);
           setComments(videos);
@@ -131,7 +133,8 @@ export default function Home() {
   const currentPage = async () => {
     setLoading(true);
     if (searchMode) {
-      const comments = await searchAllCommentsTerms(searchTerm, page, limit, searchProps);
+      const search = strictMode ? ' ' + searchTerm + ' ' : searchTerm;
+      const comments = await searchAllCommentsTerms(search, page, limit, searchProps);
       if (comments !== undefined && comments.length > 0) {
         setComments(comments);
       }

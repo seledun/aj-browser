@@ -92,7 +92,8 @@ export default function Home() {
   const nextPage = async () => {
     setLoading(true);
     if (searchMode) {
-      const videos = await fetchVideoSearch(searchTerm, (page + 1) * limit, limit, searchProps);
+      const search = strictMode ? ' ' + searchTerm + ' ' : searchTerm;
+      const videos = await fetchVideoSearch(search, (page + 1) * limit, limit, searchProps);
       if (videos !== undefined && videos.length > 0) {
         setPage(page + 1);
         setVideos(videos);
@@ -113,7 +114,8 @@ export default function Home() {
     if (page > 0) {
       setLoading(true);
       if (searchMode) {
-        const videos = await fetchVideoSearch(searchTerm, (page - 1) * limit, limit, searchProps);
+        const search = strictMode ? ' ' + searchTerm + ' ' : searchTerm;
+        const videos = await fetchVideoSearch(search, (page - 1) * limit, limit, searchProps);
         if (videos !== undefined && videos.length > 0) {
           setPage(page - 1);
           setVideos(videos);
@@ -134,7 +136,8 @@ export default function Home() {
   const currentPage = async () => {
     setLoading(true);
     if (searchMode) {
-      const videos = await fetchVideoSearch(searchTerm, page, limit, searchProps);
+      const search = strictMode ? ' ' + searchTerm + ' ' : searchTerm;
+      const videos = await fetchVideoSearch(search, page, limit, searchProps);
       if (videos !== undefined && videos.length > 0) {
         setVideos(videos);
       }
