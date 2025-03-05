@@ -7,6 +7,7 @@ import { useState, useEffect, ChangeEvent } from "react";
 import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card";
 import { Spinner } from "@nextui-org/spinner";
 import { Button } from "@nextui-org/button";
+import { Checkbox } from "@nextui-org/checkbox";
 import { fetchVideoName } from "@/utils/video-utils";
 import { searchComments } from "@/utils/comment-utils";
 import { Input } from "@nextui-org/input";
@@ -35,6 +36,7 @@ export default function Comments() {
     const [commentCount, setCommentCount] = useState<number>(0);
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [searchMode, setSearchMode] = useState<boolean>(false);
+    const [strictMode, setStrictMode] = useState<boolean>(false);
 
     useEffect(() => {
         const ret = new URLSearchParams(window.location.search).get('videoId');
@@ -56,6 +58,21 @@ export default function Comments() {
             currentPage();
         }
     }, [searchMode]);
+
+    useEffect(() =>{
+        const loadVideos = async () => {
+            setSearchMode(true);
+            if (searchTerm.length > 1) {
+                setSearchMode(true);
+                queryComments(0);
+                setPage(0);
+            } else {
+                setSearchMode(false);
+                currentPage();
+            }
+        }
+        loadVideos();
+    }, [searchTerm, strictMode]);
 
     const limit = 25;
 
@@ -88,7 +105,8 @@ export default function Comments() {
     const currentPage = async () => {
         setLoading(true);
         if (searchMode) {
-            const comments = await searchComments(thread, searchTerm, page, limit);
+            const search = strictMode ? ' ' + searchTerm + ' ' : searchTerm;
+            const comments = await searchComments(thread, search, page, limit);
             if (comments !== undefined && comments.length > 0) {
                 setComments(comments);
             }
@@ -101,13 +119,24 @@ export default function Comments() {
 
     const queryComments = async (loadPage: number): Promise<boolean> => {
         setLoading(true);
-        const comments = await searchComments(thread, searchTerm, (limit * loadPage), limit);
+        const search = strictMode ? ' ' + searchTerm + ' ' : searchTerm;
+        const comments = await searchComments(thread, search, (limit * loadPage), limit);
+        
         if (comments !== undefined && comments.length > 0) {
             setCommentCount(comments.length);
             setComments(comments);
             setLoading(false);
             return true;
-        } else {
+        } 
+        
+        else if (strictMode) {
+            setComments([]);
+            setCommentCount(0);
+            setLoading(false);
+            return false;
+        }
+
+        else {
             setLoading(false);
             return false;
         }
@@ -115,15 +144,6 @@ export default function Comments() {
 
     const searchEvent = async (ev: ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(ev.target.value);
-        setSearchMode(true);
-        if (searchTerm.length > 1) {
-            setSearchMode(true);
-            queryComments(0);
-            setPage(0);
-        } else {
-            setSearchMode(false);
-            currentPage();
-        }
     }
 
     const clearSearch = () => {
@@ -183,6 +203,7 @@ export default function Comments() {
                     <span className="text-md mx-4">Page {page + 1}</span>
                     <Button className="dark" size="sm" onPress={() => nextPage()}>Next</Button>
                 </span>
+                <Checkbox onValueChange={setStrictMode} className="col-start-2 mt-2">Strict search</Checkbox>
             </div>
             <div className="flex flex-row items-start justify-center">
                 <ul className="grid grid-cols-1 gap-3 max-w-screen-md min-w-[249px]">
