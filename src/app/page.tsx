@@ -59,6 +59,36 @@ export default function Home() {
     loadVideos();
   }, []);
 
+  useEffect(() => {
+    const searchVideos = async () => {
+      if (searchTerm.length > 1) {
+        setSearchMode(true);
+        setPage(0);
+        setLoading(true);
+
+        const search = strictMode ? ' ' + searchTerm + ' ' : searchTerm;
+        const videos = await fetchVideoSearch(search, page, limit, searchProps);
+        
+        console.log(videos);
+        if (videos !== undefined && videos.length > 0) {
+          setVideos(videos);
+        }
+        
+        else if (strictMode) {
+          setVideos([]);
+          setPage(0);
+          setLoading(false);
+        }
+
+        setLoading(false);
+      } else {
+        setSearchMode(false);
+        currentPage();
+      }
+    }
+    searchVideos();
+  }, [searchTerm, strictMode])
+
   const nextPage = async () => {
     setLoading(true);
     if (searchMode) {
@@ -119,30 +149,6 @@ export default function Home() {
 
   const searchVideos = async (ev: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(ev.target.value);
-    if (searchTerm.length > 1) {
-      setSearchMode(true);
-      setPage(0);
-      setLoading(true);
-
-      const search = strictMode ? ' ' + ev.target.value + ' ' : ev.target.value;
-      const videos = await fetchVideoSearch(search, page, limit, searchProps);
-      
-      console.log(videos);
-      if (videos !== undefined && videos.length > 0) {
-        setVideos(videos);
-      }
-      
-      else if (strictMode) {
-        setVideos([]);
-        setPage(0);
-        setLoading(false);
-      }
-
-      setLoading(false);
-    } else {
-      setSearchMode(false);
-      currentPage();
-    }
   }
 
   const updateSortBySelection = (ev: SharedSelection) => {
@@ -168,7 +174,7 @@ export default function Home() {
       <div className="h-screen w-screen overflow-auto">
         <div className="flex flex-col gap-3 items-center min-w-[271px]">
           <div className="grid grid-cols-3 gap-2 sticky top-0 z-40 bg-background p-5 opacity-90">
-            <h2 className="col-span-3 text-lg text-center"><b>Results for: &quot;{searchTerm ? searchTerm : "all videos"}&quot; ({videos.length})</b></h2>
+            <h2 className="col-span-3 text-lg text-center"><b>{strictMode ? "(strict) " : ""}Results for: &quot;{searchTerm ? searchTerm : "all videos"}&quot; ({videos.length})</b></h2>
             <Button className="dark" size="sm" isDisabled={page === 0} onPress={() => prevPage()}>Back</Button>
             <span className="text-sm align-middle text-center">Page {page + 1}</span>
             <Button className="dark" size="sm" onPress={() => nextPage()}>Next</Button>

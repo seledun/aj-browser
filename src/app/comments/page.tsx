@@ -39,7 +39,7 @@ export default function Home() {
   const [searchMode, setSearchMode] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
 
-  const limit = 40; // cards per page
+  const limit = 36;
 
   useEffect(() => {
     const loadComments = async () => {
@@ -56,6 +56,35 @@ export default function Home() {
     };
     loadComments();
   }, []);
+
+  useEffect(() => {
+    const searchComments = async () => {
+      if (searchTerm.length > 1) {
+        setSearchMode(true);
+        setPage(0);
+        setLoading(true);
+  
+        const search = strictMode ? ' ' + searchTerm + ' ' : searchTerm;
+        const comments = await searchAllCommentsTerms(search, page, limit, searchProps);
+        
+        if (comments !== undefined && comments.length > 0) {
+          setComments(comments);
+        }
+  
+        else if (strictMode) {
+          setComments([]);
+          setPage(0);
+          setLoading(false);
+        }
+  
+        setLoading(false);
+      } else {
+        setSearchMode(false);
+        currentPage();
+      } 
+    }
+    searchComments();
+  }, [searchTerm, strictMode]);
 
   const nextPage = async () => {
     setLoading(true);
@@ -116,30 +145,7 @@ export default function Home() {
   }
 
   const searchVideos = async (ev: ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(ev.target.value); // async
-    if (searchTerm.length > 1) {
-      setSearchMode(true);
-      setPage(0);
-      setLoading(true);
-
-      const search = strictMode ? ' ' + ev.target.value + ' ' : ev.target.value;
-      const comments = await searchAllCommentsTerms(search, page, limit, searchProps);
-      
-      if (comments !== undefined && comments.length > 0) {
-        setComments(comments);
-      }
-
-      else if (strictMode) {
-        setComments([]);
-        setPage(0);
-        setLoading(false);
-      }
-
-      setLoading(false);
-    } else {
-      setSearchMode(false);
-      currentPage();
-    }
+    setSearchTerm(ev.target.value);
   }
 
   const updateSortBySelection = (ev: SharedSelection) => {
@@ -165,7 +171,7 @@ export default function Home() {
       <div className="h-screen w-screen overflow-auto">
         <div className="flex flex-col gap-3 items-center min-w-[271px]">
           <div className="grid grid-cols-3 gap-2 p-5 sticky top-0 z-40 bg-background opacity-90">
-           <h2 className="col-span-3 text-lg text-center"><b>Results for: &quot;{searchTerm ? searchTerm : "all comments"}&quot; ({comments.length})</b></h2>
+           <h2 className="col-span-3 text-lg text-center"><b>{strictMode ? "(strict) " : ""}Results for: &quot;{searchTerm ? searchTerm : "all comments"}&quot; ({comments.length})</b></h2>
             <Button className="dark" size="sm" isDisabled={page === 0} onPress={() => prevPage()}>Back</Button>
             <span className="text-sm align-middle text-center">Page {page + 1}</span>
             <Button className="dark" size="sm" onPress={() => nextPage()}>Next</Button>
