@@ -6,6 +6,7 @@ import { Button } from "@nextui-org/button";
 import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/dropdown";
 import { Spinner } from "@nextui-org/spinner";
+import { Checkbox } from "@nextui-org/checkbox";
 import { Input } from "@nextui-org/input";
 import { SearchProps } from "../utils/video-utils";
 import Footer from "@/components/footer";
@@ -27,6 +28,7 @@ export default function Home() {
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchProps, setSearchProps] = useState<SearchProps>({ orderBy: "Date", desc: true });
+  const [strictMode, setStrictMode] = useState<boolean>(false);
   const [page, setPage] = useState<number>(0);
 
   const [sortBySelection, setSortBySelection] = useState(new Set(["Sort by"]));
@@ -121,11 +123,21 @@ export default function Home() {
       setSearchMode(true);
       setPage(0);
       setLoading(true);
-      const videos = await fetchVideoSearch(searchTerm, page, limit, searchProps);
+
+      const search = strictMode ? ' ' + ev.target.value + ' ' : ev.target.value;
+      const videos = await fetchVideoSearch(search, page, limit, searchProps);
+      
       console.log(videos);
       if (videos !== undefined && videos.length > 0) {
         setVideos(videos);
       }
+      
+      else if (strictMode) {
+        setVideos([]);
+        setPage(0);
+        setLoading(false);
+      }
+
       setLoading(false);
     } else {
       setSearchMode(false);
@@ -183,6 +195,7 @@ export default function Home() {
                 ))}
               </DropdownMenu>
             </Dropdown>
+            <Checkbox onValueChange={setStrictMode} className="col-start-2">Strict search</Checkbox>
             <Link href="/comments" className="col-span-3 text-center align-middle text-sm">Search comments</Link>
           </div>
 

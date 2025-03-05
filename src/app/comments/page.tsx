@@ -7,6 +7,7 @@ import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/dropdown";
 import { Spinner } from "@nextui-org/spinner";
 import { Input } from "@nextui-org/input";
+import { Checkbox } from "@nextui-org/checkbox";
 import { Divider } from "@nextui-org/divider"
 import { SearchProps } from "../../utils/video-utils";
 import Footer from "@/components/footer";
@@ -25,6 +26,7 @@ export default function Home() {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchProps, setSearchProps] = useState<SearchProps>({ orderBy: "Date", desc: true });
+  const [strictMode, setStrictMode] = useState<boolean>(false);
   const [page, setPage] = useState<number>(0);
 
   const [sortBySelection, setSortBySelection] = useState(new Set(["Sort by"]));
@@ -114,15 +116,25 @@ export default function Home() {
   }
 
   const searchVideos = async (ev: ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(ev.target.value);
+    setSearchTerm(ev.target.value); // async
     if (searchTerm.length > 1) {
       setSearchMode(true);
       setPage(0);
       setLoading(true);
-      const comments = await searchAllCommentsTerms(searchTerm, page, limit, searchProps);
+
+      const search = strictMode ? ' ' + ev.target.value + ' ' : ev.target.value;
+      const comments = await searchAllCommentsTerms(search, page, limit, searchProps);
+      
       if (comments !== undefined && comments.length > 0) {
         setComments(comments);
       }
+
+      else if (strictMode) {
+        setComments([]);
+        setPage(0);
+        setLoading(false);
+      }
+
       setLoading(false);
     } else {
       setSearchMode(false);
@@ -180,6 +192,7 @@ export default function Home() {
                 ))}
               </DropdownMenu>
             </Dropdown>
+            <Checkbox onValueChange={setStrictMode} className="col-start-2">Strict search</Checkbox>
             <Link href="/" className="col-span-3 text-center align-middle text-sm">Search videos</Link>
           </div>
           {
