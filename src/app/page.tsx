@@ -84,6 +84,8 @@ export default function Home() {
       orderBy: searchProps.orderBy,
       desc: !searchProps.desc
     });
+
+    setPage(0);
   }
 
   const nextPage = async () => {
