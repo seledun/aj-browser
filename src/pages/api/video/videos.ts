@@ -43,7 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const prisma = new PrismaClient();
 
-    const sortingOrder = params.desc === 'desc' ? 'asc' : 'desc'; 
+    const sortingOrder = params.desc === 'false' ? 'asc' : 'desc';
     const orderByName = typeof params.orderBy === 'string' ? getTableName(params.orderBy) : 'createdAt';
 
     if (params.search !== undefined) {

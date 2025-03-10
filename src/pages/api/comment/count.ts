@@ -22,6 +22,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const prisma = new PrismaClient({log: ['query']});
     const resp = await prisma.comments.count({where: where});
-    console.log(resp);
     return res.status(200).json(resp);
 }

@@ -40,7 +40,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   let where = {};
   let include = {};
   let orderByName = 'createdAt';
-  
+  const sortingOrder = params.desc === 'false' ? 'asc' : 'desc';
+
   if (params.orderBy !== undefined) {
     orderByName = getTableName(params.orderBy);
   }
@@ -64,7 +65,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       skip: params.start,
       where: where,
       orderBy: {
-        [orderByName]: 'desc',
+        [orderByName]: sortingOrder,
       },
       include: include
     });

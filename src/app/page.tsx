@@ -29,6 +29,7 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(true);
   const [searchProps, setSearchProps] = useState<SearchProps>({ orderBy: "Date", desc: true });
   const [strictMode, setStrictMode] = useState<boolean>(false);
+  const [sortDesc, setSortDesc] = useState<boolean>(true);
   const [page, setPage] = useState<number>(0);
 
   const [sortBySelection, setSortBySelection] = useState(new Set(["Sort by"]));
@@ -59,7 +60,6 @@ export default function Home() {
         const search = strictMode ? ' ' + searchTerm + ' ' : searchTerm;
         const videos = await fetchVideoSearch(search, page, limit, searchProps);
         
-        console.log(videos);
         if (videos !== undefined && videos.length > 0) {
           setVideos(videos);
         }
@@ -78,6 +78,13 @@ export default function Home() {
     }
     searchVideos();
   }, [searchTerm, strictMode])
+
+  const toggleSortingOrder = async () => {
+    setSearchProps({
+      orderBy: searchProps.orderBy,
+      desc: !searchProps.desc
+    });
+  }
 
   const nextPage = async () => {
     setLoading(true);
@@ -147,7 +154,7 @@ export default function Home() {
   const updateSortBySelection = (ev: SharedSelection) => {
     if (typeof ev.currentKey === 'string') {
       setSortBySelection(new Set([ev.currentKey]));
-      setSearchProps({ orderBy: ev.currentKey, desc: searchProps.desc });
+      setSearchProps({ orderBy: ev.currentKey, desc: sortDesc });
       setPage(0);
     }
   }
@@ -177,7 +184,7 @@ export default function Home() {
                 <Button
                   variant="flat"
                   size="sm"
-                  className="capitalize dark col-span-3"
+                  className="capitalize dark col-span-2"
                 >
                   {selectedValue}
                 </Button>
@@ -194,6 +201,7 @@ export default function Home() {
                 ))}
               </DropdownMenu>
             </Dropdown>
+            <Checkbox onValueChange={toggleSortingOrder} defaultSelected size="sm">Desc.</Checkbox>
             <Checkbox onValueChange={setStrictMode} size="sm">Strict</Checkbox>
             <Link href="/comments" className="col-span-3 text-center align-middle text-sm no-underline">Search comments</Link>
           </div>

@@ -58,7 +58,6 @@ export default function Comments() {
     const fetchCommentCount = async (id: string) => {
         const count = await fetchUserCommentCount(id);
         if (typeof count !== undefined) {
-            console.log(count);
             setCommentCount(count);
         }
     }
@@ -71,7 +70,6 @@ export default function Comments() {
                 setComments(resp);
             }
         }
-        console.log(loading); // for now :)
         setLoading(false);
     }
 
