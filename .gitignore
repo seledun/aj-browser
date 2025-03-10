@@ -49,4 +49,4 @@ comment-errors
 logs
 
 # Python tools
-python-tools/temp.db
+python-tools/update-database/temp.db
