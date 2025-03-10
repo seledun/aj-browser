@@ -195,15 +195,18 @@ export default function Comments() {
     return (
         <div className="h-screen overflow-auto">
             <div className="grid place-items-center grid-cols-3 w-full my-1 text-center sticky top-0 z-40 bg-background p-5 opacity-80 min-w-[250px]">
-                <h2 className="text-lg col-span-3 max-w-screen-lg">Showing{" " + commentCount} comments for<br></br><b>{title}</b></h2><br />
-                <Link className="no-underline" href={"https://banned.video/watch?id=" + thread} target="_blank" rel="noopener noreferrer">Source</Link>
+                <h2 className="col-span-3 max-w-screen-sm">{strictMode ? "(strict) " : ""}Showing{" " + commentCount} comments for<div className="col-span-3 text-md font-semibold mt-2">{title}</div></h2><br />
+                <Link className="no-underline m-2 text-md" href={"https://banned.video/watch?id=" + thread} target="_blank" rel="noopener noreferrer">Source link</Link>
                 <Input onClear={() => clearSearch()} onChange={searchEvent} isClearable size="sm" className="dark col-span-3 content-center my-2 h-10 w-64" label="Search comments"></Input>
                 <span className="col-span-3">
                     <Button className="dark mt-2" size="sm" isDisabled={page === 0} onPress={() => prevPage()}>Back</Button>
-                    <span className="text-md mx-4">Page {page + 1}</span>
+                    <span className="text-md mx-4 inline-block text-sm content-center text-center">Page {page + 1}</span>
                     <Button className="dark" size="sm" onPress={() => nextPage()}>Next</Button>
                 </span>
-                <Checkbox onValueChange={setStrictMode} className="col-start-2 mt-2">Strict search</Checkbox>
+                <span className="col-start-2 mt-3">
+                    <Checkbox className="mr-8" onValueChange={setStrictMode} size="sm">Strict</Checkbox>
+                    <Checkbox isDisabled size="sm">Desc.</Checkbox>
+                </span>
             </div>
             <div className="flex flex-row items-start justify-center">
                 <ul className="grid grid-cols-1 gap-3 max-w-screen-md min-w-[249px]">
