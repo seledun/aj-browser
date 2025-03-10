@@ -202,7 +202,7 @@ export default function Home() {
               </DropdownMenu>
             </Dropdown>
             <Checkbox onValueChange={toggleSortingOrder} defaultSelected size="sm">Desc.</Checkbox>
-            <Checkbox onValueChange={setStrictMode} size="sm">Strict</Checkbox>
+            <Checkbox onValueChange={setStrictMode} size="sm" className="justify-self-center">Strict</Checkbox>
             <Link href="/" className="col-span-3 text-center align-middle text-sm no-underline">Search videos</Link>
           </div>
           {

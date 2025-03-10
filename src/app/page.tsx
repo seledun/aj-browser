@@ -7,6 +7,7 @@ import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/dropdown";
 import { Spinner } from "@nextui-org/spinner";
 import { Checkbox } from "@nextui-org/checkbox";
+import { Divider } from "@nextui-org/divider";
 import { Input } from "@nextui-org/input";
 import { SearchProps } from "../utils/video-utils";
 import Footer from "@/components/footer";
@@ -204,7 +205,7 @@ export default function Home() {
               </DropdownMenu>
             </Dropdown>
             <Checkbox onValueChange={toggleSortingOrder} defaultSelected size="sm">Desc.</Checkbox>
-            <Checkbox onValueChange={setStrictMode} size="sm">Strict</Checkbox>
+            <Checkbox onValueChange={setStrictMode} size="sm" className="justify-self-center">Strict</Checkbox>
             <Link href="/comments" className="col-span-3 text-center align-middle text-sm no-underline">Search comments</Link>
           </div>
 
