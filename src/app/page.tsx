@@ -177,9 +177,9 @@ export default function Home() {
       <div className="h-screen w-screen overflow-auto">
         <div className="flex flex-col gap-3 items-center min-w-[271px]">
           <div className="grid grid-cols-3 gap-2 sticky top-0 z-40 bg-background p-5 opacity-90">
-            <h2 className="col-span-3 text-lg text-center"><b>{strictMode ? "(strict) " : ""}Results for: &quot;{searchTerm ? searchTerm : "all videos"}&quot; ({videos.length})</b></h2>
-            <Button className="dark" size="sm" isDisabled={page === 0} onPress={() => prevPage()}>Back</Button>
-            <span className="text-sm align-middle text-center">Page {page + 1}</span>
+            <h2 className="col-span-3 text-lg text-center"><b>{strictMode ? "(strict) " : ""}Query: &quot;{searchTerm ? searchTerm : "all videos"}&quot; ({videos.length})</b></h2>
+            <Button className="dark w-1/3" size="sm" isDisabled={page === 0} onPress={() => prevPage()}>Back</Button>
+            <span className="inline-block text-sm content-center text-center">Page {page + 1}</span>
             <Button className="dark" size="sm" onPress={() => nextPage()}>Next</Button>
             <Input isClearable onClear={() => clearSearch()} onChange={searchVideos} size="sm" className="dark col-span-3 h-10" label="Search"></Input>
             <Dropdown>
@@ -204,8 +204,8 @@ export default function Home() {
                 ))}
               </DropdownMenu>
             </Dropdown>
-            <Checkbox onValueChange={setStrictMode} className="col-start-2">Strict search</Checkbox>
-            <Link href="/comments" className="col-span-3 text-center align-middle text-sm">Search comments</Link>
+            <Checkbox onValueChange={setStrictMode} size="sm">Strict</Checkbox>
+            <Link href="/comments" className="col-span-3 text-center align-middle text-sm no-underline">Search comments</Link>
           </div>
 
           {
