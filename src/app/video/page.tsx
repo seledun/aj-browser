@@ -194,7 +194,7 @@ export default function Comments() {
 
     return (
         <div className="h-screen overflow-auto">
-            <div className="grid place-items-center grid-cols-3 w-full my-1 text-center sticky top-0 z-40 bg-background p-5 opacity-80 min-w-[250px]">
+            <div className="grid place-items-center grid-cols-3 w-full my-1 text-center sticky top-0 z-40 bg-background p-5 opacity-80 min-w-[425px]">
                 <h2 className="col-span-3 max-w-screen-sm">{strictMode ? "(strict) " : ""}Showing{" " + commentCount} comments for<div className="col-span-3 text-md font-semibold mt-2">{title}</div></h2><br />
                 <Link className="no-underline m-2 text-md" href={"https://banned.video/watch?id=" + thread} target="_blank" rel="noopener noreferrer">Source link</Link>
                 <Input onClear={() => clearSearch()} onChange={searchEvent} isClearable size="sm" className="dark col-span-3 content-center my-2 h-10 w-64" label="Search comments"></Input>
@@ -204,7 +204,7 @@ export default function Comments() {
                     <Button className="dark" size="sm" onPress={() => nextPage()}>Next</Button>
                 </span>
                 <span className="col-start-2 mt-3">
-                    <Checkbox className="mr-8" onValueChange={setStrictMode} size="sm">Strict</Checkbox>
+                    <Checkbox className="mr-1" onValueChange={setStrictMode} size="sm">Strict</Checkbox>
                     <Checkbox isDisabled size="sm">Desc.</Checkbox>
                 </span>
             </div>
