@@ -1,7 +1,7 @@
 'use client'
 
 import { format, parseISO } from "date-fns";
-import { useState, useEffect, ChangeEvent, useMemo } from "react";
+import { useState, useEffect, ChangeEvent, useMemo, useRef } from "react";
 import { Button } from "@nextui-org/button";
 import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/dropdown";
@@ -38,26 +38,16 @@ export default function Home() {
 
   const [searchMode, setSearchMode] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const isFirstRender = useRef(true);
 
   const limit = 36;
 
   useEffect(() => {
-    const loadComments = async () => {
-      try {
-        const fetchedVideos = await searchAllComments(page, limit, searchProps);
-        if (fetchedVideos !== undefined) {
-          setComments(fetchedVideos);
-        }
-      } catch (err) {
-        console.log(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadComments();
-  }, []);
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
 
-  useEffect(() => {
     const searchComments = async () => {
       if (searchTerm.length > 1) {
         setSearchMode(true);

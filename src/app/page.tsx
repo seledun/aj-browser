@@ -1,7 +1,7 @@
 'use client'
 
 import { format, parseISO } from "date-fns";
-import { useState, useEffect, ChangeEvent, useMemo } from "react";
+import { useState, useEffect, ChangeEvent, useMemo, useRef } from "react";
 import { Button } from "@nextui-org/button";
 import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/dropdown";
@@ -33,33 +33,23 @@ export default function Home() {
 
   const [sortBySelection, setSortBySelection] = useState(new Set(["Sort by"]));
 
+  const [searchMode, setSearchMode] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const isFirstRender = useRef(true);
+
   const selectedValue = useMemo(
     () => Array.from(sortBySelection).join(", ").replaceAll("_", " "),
     [sortBySelection]
   );
 
-  const [searchMode, setSearchMode] = useState<boolean>(false);
-  const [searchTerm, setSearchTerm] = useState<string>("");
-
   const limit = 40; // cards per page
 
   useEffect(() => {
-    const loadVideos = async () => {
-      try {
-        const fetchedVideos = await fetchVideos(page, limit, searchProps);
-        if (fetchedVideos !== undefined) {
-          setVideos(fetchedVideos);
-        }
-      } catch (err) {
-        console.log(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadVideos();
-  }, []);
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
 
-  useEffect(() => {
     const searchVideos = async () => {
       if (searchTerm.length > 1) {
         setSearchMode(true);
