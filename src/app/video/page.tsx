@@ -112,10 +112,7 @@ export default function Comments() {
             if (comments !== undefined && comments.length > 0) {
                 setComments(comments);
             }
-        } else {
-            loadComments();
-            fetchCommentCount(thread);
-        }
+        } 
         setLoading(false);
     }
 

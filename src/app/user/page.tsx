@@ -106,7 +106,7 @@ export default function Comments() {
                 <Accordion className="dark max-w-md bg-black" isCompact variant="bordered" defaultExpandedKeys={["1"]}>
                     <AccordionItem key="1" title="Search options" className="text-center">
                         <div className="mb-3 mx-3">
-                            <h2 className="text-lg">Showing{" " + commentCount} comments for user<br></br><b>{username}</b></h2>
+                            <h2>Showing{" " + commentCount} comments for<br></br><b className="text-md font-semibold">{username}</b></h2>
                             <Button className="dark mt-2" size="sm" isDisabled={page === 0} onPress={() => prevPage()}>Back</Button>
                             <span className="text-md mx-4 inline-block text-sm content-center text-center">Page {page + 1}</span>
                             <Button className="dark" size="sm" onPress={() => nextPage()}>Next</Button>
