@@ -35,27 +35,30 @@ export const ArchiveStatisticsProvider: React.FC<{ children : ReactNode }> = ({ 
     const getVideoCount = async () => {
         const videos = await fetchVideoCount();
         if (videos !== undefined) {
-            let statistics = archiveStatistics;
-            statistics.videoCount = videos; 
-            setArchiveStatistics(statistics);
+            setArchiveStatistics((prevState) => ({
+                ...prevState,
+                videoCount: videos,
+            }));
         }
     }
 
     const getCommentCount = async () => {
         const comments = await fetchCommentCount();
         if (comments !== undefined) {
-            let statistics = archiveStatistics;
-            statistics.commentCount = comments;
-            setArchiveStatistics(statistics);
+            setArchiveStatistics((prevState) => ({
+                ...prevState,
+                commentCount: comments,
+            }));
         }
     }
 
     const getLastUpdated = async () => {
         const lastUpdated = await fetchLastUpdated();
         if (lastUpdated !== undefined) {
-            let statistics = archiveStatistics;
-            statistics.lastUpdated = format(parseISO(lastUpdated), "yy/MM/dd HH:mm:ss");
-            setArchiveStatistics(statistics);
+            setArchiveStatistics((prevState) => ({
+                ...prevState,
+                lastUpdated: format(parseISO(lastUpdated), "yy/MM/dd HH:mm:ss"),
+            }));
         }
     }
 
