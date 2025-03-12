@@ -171,7 +171,7 @@ export default function Home() {
 
   return (
     <NextUIProvider>
-      <div className="h-screen w-screen overflow-auto">
+      <div className="h-screen">
         <div className="flex flex-col gap-3 items-center min-w-[271px]">
           <div className="grid grid-cols-3 gap-2 p-5 sticky top-0 z-40 bg-background opacity-90">
            <h2 className="col-span-3 text-lg text-center"><b>{strictMode ? "(strict) " : ""}Query: &quot;{searchTerm ? searchTerm : "all comments"}&quot; ({comments.length})</b></h2>

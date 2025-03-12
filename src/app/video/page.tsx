@@ -13,6 +13,7 @@ import { searchComments } from "@/utils/comment-utils";
 import { Input } from "@nextui-org/input";
 import Link from "next/link";
 import { Video } from "@/utils/video-utils";
+import { NextUIProvider, SharedSelection } from "@nextui-org/system";
 
 interface Comment {
     id: string,
@@ -59,7 +60,7 @@ export default function Comments() {
         }
     }, [searchMode]);
 
-    useEffect(() =>{
+    useEffect(() => {
         const loadVideos = async () => {
             setSearchMode(true);
             if (searchTerm.length > 1) {
@@ -121,14 +122,14 @@ export default function Comments() {
         setLoading(true);
         const search = strictMode ? ' ' + searchTerm + ' ' : searchTerm;
         const comments = await searchComments(thread, search, (limit * loadPage), limit);
-        
+
         if (comments !== undefined && comments.length > 0) {
             setCommentCount(comments.length);
             setComments(comments);
             setLoading(false);
             return true;
-        } 
-        
+        }
+
         else if (strictMode) {
             setComments([]);
             setCommentCount(0);
@@ -193,46 +194,48 @@ export default function Comments() {
     }
 
     return (
-        <div className="h-screen overflow-auto">
-            <div className="grid place-items-center grid-cols-3 w-full my-1 text-center sticky top-0 z-40 bg-background p-5 opacity-80 min-w-[425px]">
-                <h2 className="col-span-3 max-w-screen-sm">{strictMode ? "(strict) " : ""}Showing{" " + commentCount} comments for<div className="col-span-3 text-md font-semibold mt-2">{title}</div></h2><br />
-                <Link className="no-underline m-2 text-md" href={"https://banned.video/watch?id=" + thread} target="_blank" rel="noopener noreferrer">Source link</Link>
-                <Input onClear={() => clearSearch()} onChange={searchEvent} isClearable size="sm" className="dark col-span-3 content-center my-2 h-10 w-64" label="Search comments"></Input>
-                <span className="col-span-3">
-                    <Button className="dark mt-2" size="sm" isDisabled={page === 0} onPress={() => prevPage()}>Back</Button>
-                    <span className="text-md mx-4 inline-block text-sm content-center text-center">Page {page + 1}</span>
-                    <Button className="dark" size="sm" onPress={() => nextPage()}>Next</Button>
-                </span>
-                <span className="col-start-2 mt-3">
-                    <Checkbox className="mr-1" onValueChange={setStrictMode} size="sm">Strict</Checkbox>
-                    <Checkbox isDisabled size="sm">Desc.</Checkbox>
-                </span>
+        <NextUIProvider>
+            <div className="h-screen overflow-y-auto overflow-x-hidden">
+                <div className="grid place-items-center grid-cols-3 w-screen my-1 text-center sticky top-0 z-40 bg-background p-5 opacity-80 min-w-[425px]">
+                    <h2 className="col-span-3 max-w-screen-sm">{strictMode ? "(strict) " : ""}Showing{" " + commentCount} comments for<div className="col-span-3 text-md font-semibold mt-2">{title}</div></h2><br />
+                    <Link className="no-underline m-2 text-sm" href={"https://banned.video/watch?id=" + thread} target="_blank" rel="noopener noreferrer">Source link</Link>
+                    <Input onClear={() => clearSearch()} onChange={searchEvent} isClearable size="sm" className="dark col-span-3 content-center my-2 h-10 w-64" label="Search comments"></Input>
+                    <span className="col-span-3">
+                        <Button className="dark mt-2" size="sm" isDisabled={page === 0} onPress={() => prevPage()}>Back</Button>
+                        <span className="text-md mx-4 inline-block text-sm content-center text-center">Page {page + 1}</span>
+                        <Button className="dark" size="sm" onPress={() => nextPage()}>Next</Button>
+                    </span>
+                    <span className="col-start-2 mt-3">
+                        <Checkbox className="mr-1" onValueChange={setStrictMode} size="sm">Strict</Checkbox>
+                        <Checkbox isDisabled size="sm">Desc.</Checkbox>
+                    </span>
+                </div>
+                <div className="flex flex-row items-start justify-center">
+                    <ul className="grid grid-cols-1 gap-3 max-w-screen-md min-w-[249px]">
+                        {
+                            !loading ?
+                                comments.map((comment, index) => (
+                                    <li key={comment.id}>
+                                        <Card className="dark opacity-0 animate-fade-in" style={{ animationDelay: `${index * 25}ms` }}>
+                                            <CardHeader><h2 className="text-lg pt-4 pl-1"><b><Link className="no-underline" href={"/user?userId=" + comment.userId}>{comment.username}</Link></b></h2></CardHeader>
+                                            <CardBody className="px-6">{comment.content}</CardBody>
+                                            <CardFooter>
+                                                <ul className="w-full flex justify-evenly text-center text-sm">
+                                                    <li>Posted<br></br><b>{format(parseISO(comment.createdAt), "yy/MM/dd HH:mm")}</b></li>
+                                                    <li>Likes<br></br><b>{comment.posVotes}</b></li>
+                                                    <li>Replies<br></br><b>{comment.replyCount}</b></li>
+                                                </ul>
+                                            </CardFooter>
+                                        </Card>
+                                    </li>
+                                ))
+                                :
+                                <Spinner></Spinner>
+                        }
+                    </ul>
+                </div>
+                <Footer />
             </div>
-            <div className="flex flex-row items-start justify-center">
-                <ul className="grid grid-cols-1 gap-3 max-w-screen-md min-w-[249px]">
-                    {
-                        !loading ?
-                            comments.map((comment, index) => (
-                                <li key={comment.id}>
-                                    <Card className="dark opacity-0 animate-fade-in" style={{ animationDelay: `${index * 25}ms` }}>
-                                        <CardHeader><h2 className="text-lg pt-4 pl-1"><b><Link className="no-underline" href={"/user?userId=" + comment.userId}>{comment.username}</Link></b></h2></CardHeader>
-                                        <CardBody className="px-6">{comment.content}</CardBody>
-                                        <CardFooter>
-                                            <ul className="w-full flex justify-evenly text-center text-sm">
-                                                <li>Posted<br></br><b>{format(parseISO(comment.createdAt), "yy/MM/dd HH:mm")}</b></li>
-                                                <li>Likes<br></br><b>{comment.posVotes}</b></li>
-                                                <li>Replies<br></br><b>{comment.replyCount}</b></li>
-                                            </ul>
-                                        </CardFooter>
-                                    </Card>
-                                </li>
-                            ))
-                            :
-                            <Spinner></Spinner>
-                    }
-                </ul>
-            </div>
-            <Footer />
-        </div>
+        </NextUIProvider>
     )
 }

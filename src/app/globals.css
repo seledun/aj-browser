@@ -3,13 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --background: #1d1d1d;
+  --background: #313131;
   --foreground: #ededed;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #1d1d1d;
+    --background: #313131;
     --foreground: #ededed;
   }
 }
@@ -29,4 +29,10 @@ hr {
   margin-top: 5px;
   margin-left: 2.5%;
   width: 95%;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
