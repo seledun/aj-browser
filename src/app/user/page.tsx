@@ -100,8 +100,8 @@ export default function Comments() {
     }
 
     return (
-        <div className="h-screen overflow-auto">
-            <div className="block w-full my-1 text-center sticky top-0 z-40 bg-background p-5 opacity-80 min-w-[250px]">
+        <div className="h-screen overflow-y-auto overflow-x-hidden">
+            <div className="block w-screen my-1 text-center sticky top-0 z-40 bg-background p-5 opacity-80 min-w-[250px]">
                 <h2 className="text-lg">Showing{" " + commentCount} comments for user<br></br><b>{username}</b></h2>
                 <Button className="dark mt-2" size="sm" isDisabled={page === 0} onPress={() => prevPage()}>Back</Button>
                 <span className="text-md mx-4">Page {page + 1}</span>
