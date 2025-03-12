@@ -80,9 +80,10 @@ export default function Home() {
   const toggleSortingOrder = async () => {
     setSearchProps({
       orderBy: searchProps.orderBy,
-      desc: !searchProps.desc
+      desc: !sortDesc
     });
 
+    setSortDesc(!sortDesc);
     setPage(0);
   }
 
