@@ -176,9 +176,9 @@ export default function Home() {
     <NextUIProvider>
       <div className="h-screen">
         <div className="flex flex-col gap-3 items-center min-w-[271px]">
-          <div className="grid grid-cols-3 gap-2 sticky top-0 z-40 bg-background p-5 opacity-90">
+          <div className="grid grid-cols-3 gap-2 sticky top-0 z-40 bg-black rounded-b-2xl p-6 opacity-90">
             <h2 className="col-span-3 text-lg text-center"><b>{strictMode ? "(strict) " : ""}Query: &quot;{searchTerm ? searchTerm : "all videos"}&quot; ({videos.length})</b></h2>
-            <Button className="dark w-1/3" size="sm" isDisabled={page === 0} onPress={() => prevPage()}>Back</Button>
+            <Button className="dark" size="sm" isDisabled={page === 0} onPress={() => prevPage()}>Back</Button>
             <span className="inline-block text-sm content-center text-center">Page {page + 1}</span>
             <Button className="dark" size="sm" onPress={() => nextPage()}>Next</Button>
             <Input isClearable onClear={() => clearSearch()} onChange={searchVideos} size="sm" className="dark col-span-3 h-10" label="Search"></Input>

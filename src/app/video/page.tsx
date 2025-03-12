@@ -196,7 +196,7 @@ export default function Comments() {
     return (
         <NextUIProvider>
             <div className="h-screen overflow-y-auto overflow-x-hidden">
-                <div className="grid place-items-center grid-cols-3 w-screen my-1 text-center sticky top-0 z-40 bg-background p-5 opacity-80 min-w-[425px]">
+                <div className="grid place-items-center grid-cols-3 w-screen my-1 text-center sticky top-0 z-40 bg-black p-5 opacity-80 min-w-[425px]">
                     <h2 className="col-span-3 max-w-screen-sm">{strictMode ? "(strict) " : ""}Showing{" " + commentCount} comments for<div className="col-span-3 text-md font-semibold mt-2">{title}</div></h2><br />
                     <Link className="no-underline m-2 text-sm" href={"https://banned.video/watch?id=" + thread} target="_blank" rel="noopener noreferrer">Source link</Link>
                     <Input onClear={() => clearSearch()} onChange={searchEvent} isClearable size="sm" className="dark col-span-3 content-center my-2 h-10 w-64" label="Search comments"></Input>

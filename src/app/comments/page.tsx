@@ -173,7 +173,7 @@ export default function Home() {
     <NextUIProvider>
       <div className="h-screen">
         <div className="flex flex-col gap-3 items-center min-w-[271px]">
-          <div className="grid grid-cols-3 gap-2 p-5 sticky top-0 z-40 bg-background opacity-90">
+          <div className="grid grid-cols-3 gap-2 bg-black rounded-b-2xl p-6 sticky top-0 z-40 bg-background opacity-90">
            <h2 className="col-span-3 text-lg text-center"><b>{strictMode ? "(strict) " : ""}Query: &quot;{searchTerm ? searchTerm : "all comments"}&quot; ({comments.length})</b></h2>
             <Button className="dark" size="sm" isDisabled={page === 0} onPress={() => prevPage()}>Back</Button>
             <span className="inline-block text-sm content-center text-center">Page {page + 1}</span>
