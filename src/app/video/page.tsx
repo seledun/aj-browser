@@ -14,6 +14,7 @@ import { Input } from "@nextui-org/input";
 import Link from "next/link";
 import { Video } from "@/utils/video-utils";
 import { NextUIProvider, SharedSelection } from "@nextui-org/system";
+import { Accordion, AccordionItem } from "@nextui-org/accordion";
 
 interface Comment {
     id: string,
@@ -196,19 +197,25 @@ export default function Comments() {
     return (
         <NextUIProvider>
             <div className="h-screen overflow-y-auto overflow-x-hidden">
-                <div className="grid place-items-center grid-cols-3 w-screen my-1 text-center sticky top-0 z-40 bg-black p-5 opacity-80 min-w-[425px]">
-                    <h2 className="col-span-3 max-w-screen-sm">{strictMode ? "(strict) " : ""}Showing{" " + commentCount} comments for<div className="col-span-3 text-md font-semibold mt-2">{title}</div></h2><br />
-                    <Link className="no-underline m-2 text-sm" href={"https://banned.video/watch?id=" + thread} target="_blank" rel="noopener noreferrer">Source link</Link>
-                    <Input onClear={() => clearSearch()} onChange={searchEvent} isClearable size="sm" className="dark col-span-3 content-center my-2 h-10 w-64" label="Search comments"></Input>
-                    <span className="col-span-3">
-                        <Button className="dark mt-2" size="sm" isDisabled={page === 0} onPress={() => prevPage()}>Back</Button>
-                        <span className="text-md mx-4 inline-block text-sm content-center text-center">Page {page + 1}</span>
-                        <Button className="dark" size="sm" onPress={() => nextPage()}>Next</Button>
-                    </span>
-                    <span className="col-start-2 mt-3">
-                        <Checkbox className="mr-1" onValueChange={setStrictMode} size="sm">Strict</Checkbox>
-                        <Checkbox isDisabled size="sm">Desc.</Checkbox>
-                    </span>
+                <div className="flex flex-col gap-3 sticky my-2 top-0 z-40 items-center min-w-[271px] opacity-80">
+                    <Accordion className="dark max-w-md bg-black" isCompact variant="bordered" defaultExpandedKeys={["1"]}>
+                        <AccordionItem key="1" title="Search options" className="">
+                            <div className="grid grid-cols-3 gap-2 bg-black rounded-b-2xl p-6 bg-background opacity-90 text-center">
+                                <h2 className="col-span-3 max-w-screen-sm">{strictMode ? "(strict) " : ""}Showing{" " + commentCount} comments for<div className="col-span-3 text-md font-semibold mt-2">{title}</div></h2><br />
+                                <Link className="no-underline m-2 text-sm" href={"https://banned.video/watch?id=" + thread} target="_blank" rel="noopener noreferrer">Source link</Link>
+                                <Input onClear={() => clearSearch()} onChange={searchEvent} isClearable size="sm" className="dark col-span-3 content-center my-2 h-10 w-64 justify-self-center" label="Search comments"></Input>
+                                <span className="col-span-3 justify-self-center">   
+                                    <Button className="dark mt-2" size="sm" isDisabled={page === 0} onPress={() => prevPage()}>Back</Button>
+                                    <span className="text-md mx-4 inline-block text-sm content-center text-center">Page {page + 1}</span>
+                                    <Button className="dark" size="sm" onPress={() => nextPage()}>Next</Button>
+                                </span>
+                                <span className="col-span-3 justify-evenly mt-2">
+                                    <Checkbox className="mr-1" onValueChange={setStrictMode} size="sm">Strict</Checkbox>
+                                    <Checkbox isDisabled size="sm">Desc.</Checkbox>
+                                </span>
+                            </div>
+                        </AccordionItem>
+                    </Accordion>
                 </div>
                 <div className="flex flex-row items-start justify-center">
                     <ul className="grid grid-cols-1 gap-3 max-w-screen-md min-w-[249px]">

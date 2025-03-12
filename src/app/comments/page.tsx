@@ -11,6 +11,7 @@ import { Checkbox } from "@nextui-org/checkbox";
 import { Divider } from "@nextui-org/divider"
 import { SearchProps } from "../../utils/video-utils";
 import Footer from "@/components/footer";
+import { Accordion, AccordionItem } from "@nextui-org/accordion";
 
 import { Comment, searchAllComments, searchAllCommentsTerms } from "../../utils/comment-utils";
 import Link from "next/link";
@@ -54,25 +55,25 @@ export default function Home() {
         setSearchMode(true);
         setPage(0);
         setLoading(true);
-  
+
         const search = strictMode ? ' ' + searchTerm + ' ' : searchTerm;
         const comments = await searchAllCommentsTerms(search, page, limit, searchProps);
-        
+
         if (comments !== undefined && comments.length > 0) {
           setComments(comments);
         }
-  
+
         else if (strictMode) {
           setComments([]);
           setPage(0);
           setLoading(false);
         }
-  
+
         setLoading(false);
       } else {
         setSearchMode(false);
         currentPage();
-      } 
+      }
     }
     searchComments();
   }, [searchTerm, strictMode]);
@@ -174,38 +175,42 @@ export default function Home() {
     <NextUIProvider>
       <div className="h-screen">
         <div className="flex flex-col gap-3 items-center min-w-[271px]">
-          <div className="grid grid-cols-3 gap-2 bg-black rounded-b-2xl p-6 sticky top-0 z-40 bg-background opacity-90">
-           <h2 className="col-span-3 text-lg text-center"><b>{strictMode ? "(strict) " : ""}Query: &quot;{searchTerm ? searchTerm : "all comments"}&quot; ({comments.length})</b></h2>
-            <Button className="dark" size="sm" isDisabled={page === 0} onPress={() => prevPage()}>Back</Button>
-            <span className="inline-block text-sm content-center text-center">Page {page + 1}</span>
-            <Button className="dark" size="sm" onPress={() => nextPage()}>Next</Button>
-            <Input isClearable onClear={() => clearSearch()} onChange={searchVideos} size="sm" className="dark col-span-3 h-10" label="Search"></Input>
-            <Dropdown>
-              <DropdownTrigger>
-                <Button
-                  variant="flat"
-                  size="sm"
-                  className="capitalize dark col-span-2"
-                >
-                  {selectedValue}
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                className="dark bg-background border-none"
-                disallowEmptySelection
-                selectionMode="single"
-                selectedKeys={sortBySelection}
-                onSelectionChange={updateSortBySelection}
-              >
-                {sortBy.map((val) => (
-                  <DropdownItem className="dark" key={val}>{val}</DropdownItem>
-                ))}
-              </DropdownMenu>
-            </Dropdown>
-            <Checkbox onValueChange={toggleSortingOrder} defaultSelected size="sm">Desc.</Checkbox>
-            <Checkbox onValueChange={setStrictMode} size="sm" className="justify-self-center">Strict</Checkbox>
-            <Link href="/" className="col-span-3 text-center align-middle text-sm no-underline">Search videos</Link>
-          </div>
+          <Accordion className="dark sticky mt-2 top-0 z-40 max-w-md bg-black opacity-80" isCompact variant="bordered" defaultExpandedKeys={["1"]}>
+            <AccordionItem key="1" title="Search options" className="">
+              <div className="grid grid-cols-3 gap-2 bg-black rounded-b-2xl p-6 sticky top-0 z-40 bg-background">
+                <h2 className="col-span-3 text-lg text-center"><b>{strictMode ? "(strict) " : ""}Query: &quot;{searchTerm ? searchTerm : "all comments"}&quot; ({comments.length})</b></h2>
+                <Button className="dark" size="sm" isDisabled={page === 0} onPress={() => prevPage()}>Back</Button>
+                <span className="inline-block text-sm content-center text-center">Page {page + 1}</span>
+                <Button className="dark" size="sm" onPress={() => nextPage()}>Next</Button>
+                <Input isClearable onClear={() => clearSearch()} onChange={searchVideos} size="sm" className="dark col-span-3 h-10" label="Search"></Input>
+                <Dropdown>
+                  <DropdownTrigger>
+                    <Button
+                      variant="flat"
+                      size="sm"
+                      className="capitalize dark col-span-2"
+                    >
+                      {selectedValue}
+                    </Button>
+                  </DropdownTrigger>
+                  <DropdownMenu
+                    className="dark bg-background border-none"
+                    disallowEmptySelection
+                    selectionMode="single"
+                    selectedKeys={sortBySelection}
+                    onSelectionChange={updateSortBySelection}
+                  >
+                    {sortBy.map((val) => (
+                      <DropdownItem className="dark" key={val}>{val}</DropdownItem>
+                    ))}
+                  </DropdownMenu>
+                </Dropdown>
+                <Checkbox onValueChange={toggleSortingOrder} defaultSelected size="sm">Desc.</Checkbox>
+                <Checkbox onValueChange={setStrictMode} size="sm" className="justify-self-center">Strict</Checkbox>
+                <Link href="/" className="col-span-3 text-center align-middle text-sm no-underline">Search videos</Link>
+              </div>
+            </AccordionItem>
+          </Accordion>
           {
             loading ?
               <div style={{

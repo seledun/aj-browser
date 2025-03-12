@@ -9,6 +9,7 @@ import { Spinner } from "@nextui-org/spinner";
 import { Button } from "@nextui-org/button";
 import Link from "next/link";
 import { Video } from "@/utils/video-utils";
+import { Accordion, AccordionItem } from "@nextui-org/accordion";
 
 interface Comment {
     id: string,
@@ -101,38 +102,44 @@ export default function Comments() {
 
     return (
         <div className="h-screen overflow-y-auto overflow-x-hidden">
-            <div className="block w-screen my-1 text-center sticky top-0 z-40 bg-black p-6 opacity-80 min-w-[250px]">
-                <h2 className="text-lg">Showing{" " + commentCount} comments for user<br></br><b>{username}</b></h2>
-                <Button className="dark mt-2" size="sm" isDisabled={page === 0} onPress={() => prevPage()}>Back</Button>
-                <span className="text-md mx-4">Page {page + 1}</span>
-                <Button className="dark" size="sm" onPress={() => nextPage()}>Next</Button>
+            <div className="flex flex-col gap-3 sticky my-2 top-0 z-40 items-center min-w-[271px] opacity-80">
+                <Accordion className="dark max-w-md bg-black" isCompact variant="bordered" defaultExpandedKeys={["1"]}>
+                    <AccordionItem key="1" title="Search options" className="text-center">
+                        <div className="mb-3 mx-3">
+                            <h2 className="text-lg">Showing{" " + commentCount} comments for user<br></br><b>{username}</b></h2>
+                            <Button className="dark mt-2" size="sm" isDisabled={page === 0} onPress={() => prevPage()}>Back</Button>
+                            <span className="text-md mx-4 inline-block text-sm content-center text-center">Page {page + 1}</span>
+                            <Button className="dark" size="sm" onPress={() => nextPage()}>Next</Button>
+                        </div>
+                    </AccordionItem>
+                </Accordion>
             </div>
             <div className="flex flex-row items-start justify-center">
-            <ul className="grid grid-cols-1 gap-3 max-w-screen-md min-w-[249px]">
-                {
-                    !loading ?
-                    comments.map((comment, index) => (
-                        <li key={comment.id}>
-                            <Card className="dark opacity-0 animate-fade-in" style={{ animationDelay: `${index * 25}ms` }}>
-                                <CardHeader className="grid grid-cols-1"><h2 className="text-lg pt-4 pl-1"><b>{comment.username}</b></h2>
-                                    <div className="text-sm pl-1 pt-1"><b><Link className="no-underline" href={"/video?videoId=" + comment.videoId}>{comment.video?.title}</Link></b>
-                                    </div>
-                                    </CardHeader>
-                                <CardBody className="px-6">{comment.content}</CardBody>
-                                <CardFooter className="grid cols-1">
-                                    <ul className="w-full flex justify-evenly text-center text-sm">
-                                        <li>Posted<br></br><b>{format(parseISO(comment.createdAt), "yy/MM/dd HH:mm")}</b></li>
-                                        <li>Likes<br></br><b>{comment.posVotes}</b></li>
-                                        <li>Replies<br></br><b>{comment.replyCount}</b></li>
-                                    </ul>
-                                </CardFooter>
-                            </Card>
-                        </li>
-                    ))
-                    :
-                    <Spinner></Spinner>
-                }
-            </ul>
+                <ul className="grid grid-cols-1 gap-3 max-w-screen-md min-w-[249px]">
+                    {
+                        !loading ?
+                            comments.map((comment, index) => (
+                                <li key={comment.id}>
+                                    <Card className="dark opacity-0 animate-fade-in" style={{ animationDelay: `${index * 25}ms` }}>
+                                        <CardHeader className="grid grid-cols-1"><h2 className="text-lg pt-4 pl-1"><b>{comment.username}</b></h2>
+                                            <div className="text-sm pl-1 pt-1"><b><Link className="no-underline" href={"/video?videoId=" + comment.videoId}>{comment.video?.title}</Link></b>
+                                            </div>
+                                        </CardHeader>
+                                        <CardBody className="px-6">{comment.content}</CardBody>
+                                        <CardFooter className="grid cols-1">
+                                            <ul className="w-full flex justify-evenly text-center text-sm">
+                                                <li>Posted<br></br><b>{format(parseISO(comment.createdAt), "yy/MM/dd HH:mm")}</b></li>
+                                                <li>Likes<br></br><b>{comment.posVotes}</b></li>
+                                                <li>Replies<br></br><b>{comment.replyCount}</b></li>
+                                            </ul>
+                                        </CardFooter>
+                                    </Card>
+                                </li>
+                            ))
+                            :
+                            <Spinner></Spinner>
+                    }
+                </ul>
             </div>
             <Footer />
         </div>
