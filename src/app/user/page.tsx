@@ -4,12 +4,12 @@ import { format, parseISO } from "date-fns";
 import { fetchComments, fetchUserCommentCount, fetchUserComments, fetchUserName } from "@/utils/comment-utils";
 import Footer from "@/components/footer";
 import { useState, useEffect } from "react";
-import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card";
-import { Spinner } from "@nextui-org/spinner";
-import { Button } from "@nextui-org/button";
+import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
+import { Spinner } from "@heroui/spinner";
+import { Button } from "@heroui/button";
 import Link from "next/link";
 import { Video } from "@/utils/video-utils";
-import { Accordion, AccordionItem } from "@nextui-org/accordion";
+import { Accordion, AccordionItem } from "@heroui/accordion";
 
 interface Comment {
     id: string,
@@ -115,7 +115,7 @@ export default function Comments() {
                 </Accordion>
             </div>
             <div className="flex flex-row items-start justify-center">
-                <ul className="grid grid-cols-1 gap-3 max-w-screen-md min-w-[249px]">
+                <ul className="grid grid-cols-1 gap-3 max-w-(--breakpoint-md) min-w-[249px]">
                     {
                         !loading ?
                             comments.map((comment, index) => (

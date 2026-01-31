@@ -9,23 +9,24 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@nextui-org/accordion": "^2.2.7",
-    "@nextui-org/button": "^2.2.9",
-    "@nextui-org/card": "^2.2.9",
-    "@nextui-org/checkbox": "^2.3.8",
-    "@nextui-org/dropdown": "^2.3.9",
-    "@nextui-org/input": "^2.4.8",
-    "@nextui-org/spinner": "^2.2.6",
-    "@nextui-org/system": "^2.4.6",
-    "@nextui-org/theme": "^2.4.5",
+    "@heroui/accordion": "^2.2.27",
+    "@heroui/button": "^2.2.30",
+    "@heroui/card": "^2.2.27",
+    "@heroui/checkbox": "^2.3.30",
+    "@heroui/dropdown": "^2.3.30",
+    "@heroui/input": "^2.4.31",
+    "@heroui/spinner": "^2.2.27",
+    "@heroui/system": "^2.4.26",
+    "@heroui/theme": "^2.4.26",
     "@prisma/client": "^6.4.1",
     "date-fns": "^4.1.0",
-    "framer-motion": "^11.11.11",
+    "framer-motion": "^12.29.2",
     "next": "^16.1.6",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "^20.17.24",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18",
@@ -33,7 +34,7 @@
     "eslint-config-next": "15.0.2",
     "postcss": "^8",
     "prisma": "^6.4.1",
-    "tailwindcss": "3.4.1",
+    "tailwindcss": "^4.1.18",
     "typescript": "^5"
   }
 }
