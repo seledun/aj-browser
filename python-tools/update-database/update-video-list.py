@@ -29,7 +29,7 @@ logging.basicConfig(filename=log_file, level=logging.INFO, format='%(asctime)s %
 logger = logging.getLogger(__name__)
 
 # Copy the database to not update it in place
-shutil.copyfile("../../prisma/store.db", "temp.db")
+# shutil.copyfile("../../prisma/store.db", "temp.db")
 logger.info("Copied store.db to temp.db")
 
 # Create database connection and cursor
@@ -175,6 +175,9 @@ for video_id in ids_to_fetch:
     print("Done with ", video_id, " fetched ", comment_count, "comments")
     dbutils.addCommentCount(con, cur, comment_count, video_id)
     os.remove('comment-errors/' + video_id)
+
+# TODO: Fetch all individual comment threads, where replyCount > 0
+# Might require paging, need to find the query for this.
 
 ### Clean-up and timestamp database 
 dbutils.addTimeStamp(con, cur)
