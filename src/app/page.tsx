@@ -177,33 +177,33 @@ export default function Home() {
     <HeroUIProvider>
       <div className="h-screen">
         <div className="flex flex-col gap-3 items-center min-w-[271px]">
-          <Accordion className="dark sticky mt-2 top-0 z-40 max-w-md bg-black opacity-80" isCompact variant="bordered" defaultExpandedKeys={["1"]}>
+          <Accordion className="sticky mt-2 top-0 z-40 max-w-md bg-black opacity-80" isCompact variant="bordered" defaultExpandedKeys={["1"]}>
             <AccordionItem key="1" title="Search options" className="">
               <div className="grid grid-cols-3 gap-2 bg-black rounded-b-2xl p-6">
                 <h2 className="col-span-3 text-lg text-center"><b>{strictMode ? "(strict) " : ""}Query: &quot;{searchTerm ? searchTerm : "all videos"}&quot; ({videos.length})</b></h2>
-                <Button className="dark" size="sm" isDisabled={page === 0} onPress={() => prevPage()}>Back</Button>
+                <Button size="sm" isDisabled={page === 0} onPress={() => prevPage()}>Back</Button>
                 <span className="inline-block text-sm content-center text-center">Page {page + 1}</span>
-                <Button className="dark" size="sm" onPress={() => nextPage()}>Next</Button>
-                <Input isClearable onClear={() => clearSearch()} onChange={searchVideos} size="sm" className="dark col-span-3 h-10" label="Search"></Input>
+                <Button size="sm" onPress={() => nextPage()}>Next</Button>
+                <Input isClearable onClear={() => clearSearch()} onChange={searchVideos} size="sm" className="col-span-3 h-10" label="Search"></Input>
                 <Dropdown>
                   <DropdownTrigger>
                     <Button
                       variant="flat"
                       size="sm"
-                      className="capitalize dark col-span-2"
+                      className="capitalize col-span-2"
                     >
                       {selectedValue}
                     </Button>
                   </DropdownTrigger>
                   <DropdownMenu
-                    className="dark bg-background border-none"
+                    className="bg-background border-none"
                     disallowEmptySelection
                     selectionMode="single"
                     selectedKeys={sortBySelection}
                     onSelectionChange={updateSortBySelection}
                   >
                     {sortBy.map((val) => (
-                      <DropdownItem className="dark" key={val}>{val}</DropdownItem>
+                      <DropdownItem key={val}>{val}</DropdownItem>
                     ))}
                   </DropdownMenu>
                 </Dropdown>
@@ -228,10 +228,9 @@ export default function Home() {
               <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                 {videos.map((video, index) => (
                   <Card
-                    className="dark min-w-[322px] opacity-0 animate-fade-in"
+                    className="min-w-[322px]"
                     radius="sm"
                     key={video.id}
-                    style={{ animationDelay: `${index * 25}ms` }} // Staggered fade-in effect
                   >
                     <CardHeader className="text-md"><h1 className="px-2 pt-2"><b>{video.title}</b></h1></CardHeader>
                     <CardBody>

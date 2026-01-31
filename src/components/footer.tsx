@@ -8,7 +8,7 @@ export default function Footer() {
     return (
         <div className="w-screen items-center text-sm inset-x-0 bottom-0 grid grid-cols-2 bg-black mt-2 z-40 min-w-[289px]">
             <span className="m-8 text-center">Archive of <a href="https://banned.video">banned.video</a><br></br>
-                by <a href="https://github.com/seledun">@seledun</a><br></br>
+                by <a href="https://github.com/seledun">@sl3dev</a><br></br>
             </span>
             {
                 archiveStatistics !== null ? 

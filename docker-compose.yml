@@ -1,12 +1,13 @@
+name: homelab
 services:
-  app:
+  ajbrowser:
     build: .
     ports:
       - "3100:3000"
     environment:
       DATABASE_URL: "file:./prisma/store.db"
     volumes:
-      - .:/app  # Optional: mount source for live dev
+      - ./prisma/store.db:/app/prisma/store.db
     command: npm run start
     networks:
       - npm
