@@ -1,0 +1,16 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3100:3000"
+    environment:
+      DATABASE_URL: "file:./prisma/store.db"
+    volumes:
+      - .:/app  # Optional: mount source for live dev
+    command: npm run start
+    networks:
+      - npm
+
+networks:
+  npm:
+    external: true

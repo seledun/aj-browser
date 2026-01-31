@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 export interface CommentCountParams {
@@ -20,7 +20,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         where = { userId: params.userId };
     }
 
-    const prisma = new PrismaClient({log: ['query']});
     const resp = await prisma.comments.count({where: where});
     return res.status(200).json(resp);
 }

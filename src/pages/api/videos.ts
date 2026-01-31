@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import type { NextApiRequest, NextApiResponse } from 'next';
 import Error from "next/error";
 
@@ -39,7 +39,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         desc: (typeof req.query.desc === 'string') ? req.query.desc : undefined
     }
 
-    const prisma = new PrismaClient();
     const sortingOrder = params.desc === 'false' ? 'asc' : 'desc';
 
     const orderByName = typeof params.orderBy === 'string' ? getTableName(params.orderBy) : 'createdAt';

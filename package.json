@@ -1,6 +1,6 @@
 {
   "name": "aj-browser",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -18,7 +18,8 @@
     "@heroui/spinner": "^2.2.27",
     "@heroui/system": "^2.4.26",
     "@heroui/theme": "^2.4.26",
-    "@prisma/client": "^6.4.1",
+    "@prisma/adapter-better-sqlite3": "^7.3.0",
+    "@prisma/client": "^7.3.0",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.29.2",
     "next": "^16.1.6",
@@ -33,7 +34,7 @@
     "eslint": "^9.39.2",
     "eslint-config-next": "15.0.2",
     "postcss": "^8",
-    "prisma": "^6.4.1",
+    "prisma": "^7.3.0",
     "tailwindcss": "^4.1.18",
     "typescript": "^5"
   }

@@ -1,7 +1,5 @@
 import {heroui} from '@heroui/theme';
-import {nextui} from '@nextui-org/theme';
 import type { Config } from "tailwindcss";
-
 
 const config: Config = {
   content: [

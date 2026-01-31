@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import type { NextApiRequest, NextApiResponse } from 'next';
 import Error from "next/error";
 
@@ -59,7 +59,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const prisma = new PrismaClient();
     const comments = await prisma.comments.findMany({
       take: params.limit,
       skip: params.start,

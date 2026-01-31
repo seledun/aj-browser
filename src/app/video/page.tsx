@@ -4,17 +4,17 @@ import { format, parseISO } from "date-fns";
 import { fetchComments, fetchVideoCommentCount } from "@/utils/comment-utils";
 import Footer from "@/components/footer";
 import { useState, useEffect, ChangeEvent } from "react";
-import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card";
-import { Spinner } from "@nextui-org/spinner";
-import { Button } from "@nextui-org/button";
-import { Checkbox } from "@nextui-org/checkbox";
+import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
+import { Spinner } from "@heroui/spinner";
+import { Button } from "@heroui/button";
+import { Checkbox } from "@heroui/checkbox";
 import { fetchVideoName } from "@/utils/video-utils";
 import { searchComments } from "@/utils/comment-utils";
-import { Input } from "@nextui-org/input";
+import { Input } from "@heroui/input";
 import Link from "next/link";
 import { Video } from "@/utils/video-utils";
-import { NextUIProvider, SharedSelection } from "@nextui-org/system";
-import { Accordion, AccordionItem } from "@nextui-org/accordion";
+import { HeroUIProvider, SharedSelection } from "@heroui/system";
+import { Accordion, AccordionItem } from "@heroui/accordion";
 
 interface Comment {
     id: string,
@@ -192,7 +192,7 @@ export default function Comments() {
     }
 
     return (
-        <NextUIProvider>
+        <HeroUIProvider>
             <div className="h-screen overflow-y-auto overflow-x-hidden">
                 <div className="flex flex-col gap-3 sticky my-2 top-0 z-40 items-center min-w-[271px] opacity-80">
                     <Accordion className="dark max-w-md bg-black" isCompact variant="bordered" defaultExpandedKeys={["1"]}>
@@ -240,6 +240,6 @@ export default function Comments() {
                 </div>
                 <Footer />
             </div>
-        </NextUIProvider>
+        </HeroUIProvider>
     )
 }

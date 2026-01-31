@@ -1,11 +1,9 @@
 generator client {
   provider      = "prisma-client-js"
-  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
 }
 
 model videos {
@@ -33,6 +31,18 @@ model comments {
   createdAt  String
   replyCount Int
   video      videos  @relation(fields: [videoId], references: [id])
+}
+
+model replies {
+  id         String   @unique
+  content    String
+  liked      String
+  userId     String 
+  userName   String
+  voteCount  Int
+  linkedUser String?
+  createdAt  String
+  replyTo    String
 }
 
 model updated {
