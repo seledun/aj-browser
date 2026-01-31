@@ -2,20 +2,19 @@
 
 import { format, parseISO } from "date-fns";
 import { useState, useEffect, ChangeEvent, useMemo, useRef } from "react";
-import { Button } from "@nextui-org/button";
-import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card";
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/dropdown";
-import { Spinner } from "@nextui-org/spinner";
-import { Checkbox } from "@nextui-org/checkbox";
-import { Divider } from "@nextui-org/divider";
-import { Input } from "@nextui-org/input";
+import { Button } from "@heroui/button";
+import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/dropdown";
+import { Spinner } from "@heroui/spinner";
+import { Checkbox } from "@heroui/checkbox";
+import { Input } from "@heroui/input";
 import { SearchProps } from "../utils/video-utils";
 import Footer from "@/components/footer";
 
 import { Video, fetchVideos, fetchVideoSearch } from "../utils/video-utils";
 import Link from "next/link";
-import { NextUIProvider, SharedSelection } from "@nextui-org/system";
-import { Accordion, AccordionItem } from "@nextui-org/accordion";
+import { HeroUIProvider, SharedSelection } from "@heroui/system";
+import { Accordion, AccordionItem } from "@heroui/accordion";
 
 const sortBy = [
   'Anger',
@@ -175,7 +174,7 @@ export default function Home() {
   }
 
   return (
-    <NextUIProvider>
+    <HeroUIProvider>
       <div className="h-screen">
         <div className="flex flex-col gap-3 items-center min-w-[271px]">
           <Accordion className="dark sticky mt-2 top-0 z-40 max-w-md bg-black opacity-80" isCompact variant="bordered" defaultExpandedKeys={["1"]}>
@@ -262,6 +261,6 @@ export default function Home() {
         </div>
         <Footer />
       </div>
-    </NextUIProvider>
+    </HeroUIProvider>
   );
 }

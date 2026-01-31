@@ -1,5 +1,5 @@
 import { useArchiveStatisticsData } from "@/contexts/ArchiveStatisticsContext";
-import { Spinner } from "@nextui-org/spinner";
+import { Spinner } from "@heroui/spinner";
 
 export default function Footer() {
 
