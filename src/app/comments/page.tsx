@@ -15,7 +15,7 @@ import { Accordion, AccordionItem } from "@heroui/accordion";
 
 import { Comment, searchAllComments, searchAllCommentsTerms } from "../../utils/comment-utils";
 import Link from "next/link";
-import { HeroUIProvider, SharedSelection } from "@heroui/system";
+import { HeroUIProvider, SharedSelection } from "@heroui/react";
 
 const sortBy = [
   'Date',

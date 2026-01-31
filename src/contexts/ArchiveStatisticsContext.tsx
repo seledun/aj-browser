@@ -1,6 +1,7 @@
 'use client'
 
 import { fetchCommentCount } from "@/utils/comment-utils";
+import { fetchReplyCount } from "@/utils/reply-utils";
 import { fetchLastUpdated } from "@/utils/updated-utils";
 import { fetchVideoCount } from "@/utils/video-utils";
 import { format, parseISO } from "date-fns";

@@ -46,7 +46,7 @@ dbutils.initializeTables(cur)
 logger.info(f"Fetching videos from {HOST}")
 offset = 0
 while True:
-    body = get_request_bodies(CHANNEL_ID, LIMIT, offset)
+    body = get_request_bodies.getVideoRequestBody(CHANNEL_ID, LIMIT, offset)
     try:
         resp = requests.post(HOST, json=body)
         obj = json.loads(resp.text)

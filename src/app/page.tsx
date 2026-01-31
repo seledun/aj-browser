@@ -13,7 +13,7 @@ import Footer from "@/components/footer";
 
 import { Video, fetchVideos, fetchVideoSearch } from "../utils/video-utils";
 import Link from "next/link";
-import { HeroUIProvider, SharedSelection } from "@heroui/system";
+import { HeroUIProvider, SharedSelection } from "@heroui/react";
 import { Accordion, AccordionItem } from "@heroui/accordion";
 
 const sortBy = [
@@ -225,10 +225,10 @@ export default function Home() {
                 <Spinner />
               </div>
               :
-              <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+              <ul className="grid">
                 {videos.map((video, index) => (
                   <Card
-                    className="min-w-[322px]"
+                    className="min-w-80.5 my-3"
                     radius="sm"
                     key={video.id}
                   >

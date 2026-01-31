@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ArchiveStatisticsProvider } from "@/contexts/ArchiveStatisticsContext";
+import { HeroUIProvider } from "@heroui/system";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -19,18 +20,23 @@ export const metadata: Metadata = {
   description: "banned.video browser",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+// app/layout.tsx
+
+// globals.css includes @tailwind directives
+// adjust the path if necessary
+import "@/app/globals.css";
+import {Providers} from "./providers";
+
+export default function RootLayout({children}: { children: React.ReactNode }) {
   return (
-    <ArchiveStatisticsProvider>
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {children}
+    <html lang="en" className='dark'>
+      <body>
+        <Providers>
+            <ArchiveStatisticsProvider>
+               {children}
+            </ArchiveStatisticsProvider>
+        </Providers>
       </body>
     </html>
-    </ArchiveStatisticsProvider>
-  );
-}
+  )
+};

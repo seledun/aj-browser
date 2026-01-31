@@ -15,6 +15,7 @@
     "@heroui/checkbox": "^2.3.30",
     "@heroui/dropdown": "^2.3.30",
     "@heroui/input": "^2.4.31",
+    "@heroui/react": "^2.8.8",
     "@heroui/spinner": "^2.2.27",
     "@heroui/system": "^2.4.26",
     "@heroui/theme": "^2.4.26",

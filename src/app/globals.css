@@ -1,4 +1,8 @@
-@import 'tailwindcss';
+@import "tailwindcss";
+@plugin '../lib/hero.ts';
+/* Note: You may need to change the path to fit your project structure */
+@source '../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
+@custom-variant dark (&:is(.dark *));
 
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
@@ -33,7 +37,6 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Cantarell, Helvetica, sans-serif;
 }
 
 a {
@@ -50,5 +53,4 @@ hr {
 html, body {
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
 }
