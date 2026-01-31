@@ -176,7 +176,7 @@ export default function Home() {
   return (
     <HeroUIProvider>
       <div className="h-screen">
-        <div className="flex flex-col gap-3 items-center min-w-[271px]">
+        <div className="flex flex-col gap-3 items-center min-w-67.75">
           <Accordion className="sticky mt-2 top-0 z-40 max-w-md bg-black opacity-80" isCompact variant="bordered" defaultExpandedKeys={["1"]}>
             <AccordionItem key="1" title="Search options" className="">
               <div className="grid grid-cols-3 gap-2 bg-black rounded-b-2xl p-6">

@@ -102,7 +102,7 @@ export default function Comments() {
 
     return (
         <div className="h-screen overflow-y-auto overflow-x-hidden">
-            <div className="flex flex-col gap-3 sticky my-2 top-0 z-40 items-center min-w-[271px] opacity-80">
+            <div className="flex flex-col gap-3 sticky my-2 top-0 z-40 items-center min-w-67.75 opacity-80">
                 <Accordion className=" max-w-md bg-black" isCompact variant="bordered" defaultExpandedKeys={["1"]}>
                     <AccordionItem key="1" title="Search options" className="text-center">
                         <div className="mb-3 mx-3">
@@ -115,7 +115,7 @@ export default function Comments() {
                 </Accordion>
             </div>
             <div className="flex flex-row items-start justify-center">
-                <ul className="grid grid-cols-1 gap-3 max-w-(--breakpoint-md) min-w-[249px]">
+                <ul className="grid grid-cols-1 gap-3 max-w-(--breakpoint-md) min-w-62.25">
                     {
                         !loading ?
                             comments.map((comment, index) => (
