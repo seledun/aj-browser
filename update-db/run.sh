@@ -4,6 +4,9 @@ SESSION_NAME="aj-browser-update"
 LOG_FILE="logs/"$(date "+%y-%m-%d-%H-%M.txt")
 PYTHON_SCRIPT="main.py"
 
+# Change wd to script path
+cd "$(dirname "$0")" || exit 1
+
 tmux new-session -d -s $SESSION_NAME
 
 tmux rename-window -t $SESSION_NAME:0 "Script"

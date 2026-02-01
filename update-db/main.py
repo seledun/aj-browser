@@ -8,6 +8,7 @@
 from datetime import datetime, timezone
 
 from helpers import get_request_bodies
+from helpers import jsonutils
 from helpers import dbutils
 
 import requests
@@ -20,13 +21,13 @@ import os
 HOST                = "https://api.banned.video/graphql"
 CHANNEL_ID          = "5b885d33e6646a0015a6fa2d"
 REPLY_ERROR_PATH    = "errors/reply-errors"
-ERROR_PATH          = "errors/comment-errors"
+COMMENT_ERROR_PATH  = "errors/comment-errors"
 DB_PATH             = "../prisma/store.db"
 LOG_DIR             = "logs"
 LIMIT               = 250
 
 os.makedirs(LOG_DIR, exist_ok=True)
-os.makedirs(ERROR_PATH, exist_ok=True)
+os.makedirs(COMMENT_ERROR_PATH, exist_ok=True)
 os.makedirs(REPLY_ERROR_PATH, exist_ok=True)
 
 # Set up logging
@@ -120,7 +121,7 @@ for idx, video_id in enumerate(id_list):
                 logger.warning(f"Retry {retries}/3 for video {video_id} due to {e}")
                 continue
             else:
-                with open(f'{ERROR_PATH}/{video_id}', 'w') as file:
+                with open(f'{COMMENT_ERROR_PATH}/{video_id}', 'w') as file:
                     json.dump(body, file)
                 logger.error(f"Failed to fetch comments for video {video_id} after 3 retries")
                 break
@@ -129,7 +130,7 @@ for idx, video_id in enumerate(id_list):
 
 ### Trying to resolve comment errors
 logger.info(f"Trying to resolve comment-errors")
-ids_to_fetch = os.listdir('comment-errors')
+ids_to_fetch = os.listdir(COMMENT_ERROR_PATH)
 for video_id in ids_to_fetch:
     offset = 0
     comment_count = 0    
@@ -294,4 +295,4 @@ hours, remainder = divmod(duration.seconds, 3600)
 minutes = remainder // 60
 
 logger.info(f"Archiving finished in {hours}h {minutes}min")
-logger.info(f"Comment errors left: {len(os.listdir(ERROR_PATH))}")
+logger.info(f"Comment errors left: {len(os.listdir(COMMENT_ERROR_PATH))}")
