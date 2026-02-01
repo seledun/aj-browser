@@ -2,24 +2,26 @@
 #   Author:
 #   a: Sebastian Ledung - seledun@github
 #   c: 2025-02-28
-#   u: 2026-01-31
+#   u: 2026-02-01
 #
 
 from datetime import datetime, timezone
-import get_request_bodies
-import jsonutils
+
+from helpers import get_request_bodies
+from helpers import dbutils
+
 import requests
 import sqlite3
 import logging
-import dbutils
 import shutil
 import json
 import os
 
 HOST                = "https://api.banned.video/graphql"
 CHANNEL_ID          = "5b885d33e6646a0015a6fa2d"
-REPLY_ERROR_PATH    = "reply-errors"
-ERROR_PATH          = "comment-errors"
+REPLY_ERROR_PATH    = "errors/reply-errors"
+ERROR_PATH          = "errors/comment-errors"
+DB_PATH             = "../prisma/store.db"
 LOG_DIR             = "logs"
 LIMIT               = 250
 
@@ -33,7 +35,7 @@ logging.basicConfig(filename=log_file, level=logging.INFO, format='%(asctime)s %
 logger = logging.getLogger(__name__)
 
 # Copy the database to not update it in place
-shutil.copyfile("../../prisma/store.db", "temp.db")
+shutil.copyfile(DB_PATH, "temp.db")
 logger.info("Copied store.db to temp.db")
 
 # Create database connection and cursor
@@ -185,7 +187,7 @@ for idx, (comment_id, video_id, reply_count) in enumerate(comments):
             resp = requests.post(HOST, json=body)
             obj = resp.json()
 
-            if resp.status_code != 200:
+            if resp.status_code != 200 or obj is None:
                 logger.error(f"Failed to fetch replies for comment {comment_id}: {resp.status_code}")
                 break
 
@@ -282,7 +284,7 @@ for comment_id in ids_to_fetch:
 dbutils.addTimeStamp(con, cur)
 con.close()
 
-shutil.move("temp.db", "../../prisma/store.db")
+shutil.move("temp.db", DB_PATH)
 logger.info("Replaced store.db with updated temp.db")
 
 ### Print run-time information

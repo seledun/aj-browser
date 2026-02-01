@@ -46,6 +46,7 @@ prisma/*
 
 __pycache__
 comment-errors
+reply-errors
 logs
 
 # Python tools
