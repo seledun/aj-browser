@@ -50,4 +50,4 @@ reply-errors
 logs
 
 # Python tools
-python-tools/update-database/temp.db
+update-db/temp.db
