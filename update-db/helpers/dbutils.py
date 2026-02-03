@@ -88,6 +88,7 @@ def addComment(con: sqlite3.Connection, cur: sqlite3.Cursor, videoId, id, conten
             SET posVotes = ?, replyCount = ?
             WHERE id = ?
         """, (posVotes, replyCount, id))
+        con.commit()
         return f"Comment {id} already exists in the database, updating values."
     
 def addReply(con: sqlite3.Connection, cur: sqlite3.Cursor, id, content, liked, userId, userName, voteCount, linkedUser, createdAt, replyTo):

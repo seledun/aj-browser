@@ -3,9 +3,7 @@ def json_response_is_error(msg):
 
         :param msg: loaded JSON object
     """
-    if 'errors' in msg:
-        return True;    
-    return False
+    return isinstance(msg, dict) and 'errors' in msg
 
 def json_response_is_ok(msg):
     """Checks if JSON response is an ok response
@@ -15,11 +13,12 @@ def json_response_is_ok(msg):
 
         :param msg: loaded JSON object
     """
-    if 'data' in msg and msg['data'] != None:
-        return True
-    return False
+    return (
+        isinstance(msg, dict)
+        and isinstance(msg.get('data'), dict)
+    )
 
-def json_response_is_finished(msg):
+def json_response_is_finished(msg, field):
     """Checks if JSON response is a finished message
 
         Finished message entails that there are not comments to process,
@@ -27,7 +26,8 @@ def json_response_is_finished(msg):
 
         :param msg: loaded JSON object
     """
-    if 'data' in msg and msg['data'] != None:
-        if len(msg['data']['getVideoComments']) == 0: # If the response is valid, and have 0 comments.
-            return True
-    return False
+    if not json_response_is_ok(msg):
+        return False
+
+    items = msg['data'].get(field)
+    return isinstance(items, list) and len(items) == 0
