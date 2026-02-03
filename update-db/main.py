@@ -40,7 +40,7 @@ logging.basicConfig(filename=log_file, level=LOG_LEVEL, format='%(asctime)s %(le
 logger = logging.getLogger(__name__)
 
 # Copy the database to not update it in place
-# shutil.copyfile(DB_PATH, "temp.db")
+shutil.copyfile(DB_PATH, "temp.db")
 logger.info("Copied database: store.db → temp.db")
 
 # Create database connection and cursor
