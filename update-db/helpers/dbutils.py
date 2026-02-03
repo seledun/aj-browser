@@ -1,7 +1,10 @@
+"""
+Docstring for update-db.helpers.dbutils
+"""
 from datetime import datetime, timezone
 import sqlite3
 
-def initializeTables(cur: sqlite3.Cursor):
+def initialize_tables(cur):
     """Initialize the database tables, if they don't already exist in the database
 
     :param cur: SQLite cursor obj
@@ -27,9 +30,12 @@ def initializeTables(cur: sqlite3.Cursor):
             replyTo TEXT
         )
     """)
-    cur.execute("CREATE TABLE IF NOT EXISTS updated (id INTEGER PRIMARY KEY AUTOINCREMENT, updated TEXT)")
+    cur.execute(
+        "CREATE TABLE IF NOT EXISTS updated (id INTEGER PRIMARY KEY AUTOINCREMENT, updated TEXT)")
 
-def addVideo(con: sqlite3.Connection, cur: sqlite3.Cursor, id, title, summary, playCount, likeCount, angerCount, duration, createdAt, commentCount):
+
+def add_video(cur, _id, title, summary, play_count, like_count,
+              anger_count, duration, created_at, comment_count):
     """Adds or updates video in the database depending on the context.
 
     :param con: SQLite connection obj
@@ -47,19 +53,20 @@ def addVideo(con: sqlite3.Connection, cur: sqlite3.Cursor, id, title, summary, p
         cur.execute("""
             INSERT INTO videos (id, title, summary, playCount, likeCount, angerCount,
             duration, createdAt, commentCount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (id, title, summary, playCount, likeCount, angerCount, duration, createdAt, commentCount))
-        con.commit()
+        """, (_id, title, summary, play_count, like_count,
+              anger_count, duration, created_at, comment_count))
         return 1
     except sqlite3.IntegrityError:
         cur.execute("""
             UPDATE videos
             SET playCount = ?, likeCount = ?, angerCount = ?
             WHERE id = ?
-        """, (playCount, likeCount, angerCount, id))
-        con.commit()
+        """, (play_count, like_count, anger_count, _id))
         return 0
 
-def addComment(con: sqlite3.Connection, cur: sqlite3.Cursor, videoId, id, content, userId, username, userType, posVotes, linkedUser, createdAt, replyCount):
+
+def add_comment(cur: sqlite3.Cursor, video_id, _id, content, user_id, username,
+                user_type, pos_votes, linked_user, created_at, reply_count):
     """Adds or updates comments in the database depending on the context.
 
     :param con: SQLite connection obj
@@ -79,19 +86,20 @@ def addComment(con: sqlite3.Connection, cur: sqlite3.Cursor, videoId, id, conten
         cur.execute("""
             INSERT INTO comments (id, videoId, content, userId, username, userType,
             posVotes, linkedUser, createdAt, replyCount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (id, videoId, content, userId, username, userType, posVotes, linkedUser, createdAt, replyCount))
-        con.commit()
+        """, (_id, video_id, content, user_id, username, user_type,
+              pos_votes, linked_user, created_at, reply_count))
         return 1
     except sqlite3.IntegrityError:
         cur.execute("""
             UPDATE comments
             SET posVotes = ?, replyCount = ?
             WHERE id = ?
-        """, (posVotes, replyCount, id))
-        con.commit()
+        """, (pos_votes, reply_count, _id))
         return 0
-    
-def addReply(con: sqlite3.Connection, cur: sqlite3.Cursor, id, content, liked, userId, userName, voteCount, linkedUser, createdAt, replyTo):
+
+
+def add_reply(cur, _id, content, liked, user_id, user_name,
+              vote_count, linked_user, created_at, reply_to):
     """Adds or updates replies in the database depending on the context.
 
     :param con: SQLite connection obj
@@ -107,36 +115,37 @@ def addReply(con: sqlite3.Connection, cur: sqlite3.Cursor, id, content, liked, u
     :param createdAt: time when the comment was posted
     :param replyCount: reply count to this comment
     """
-    
     try:
         cur.execute("""
             INSERT INTO replies (id, content, liked, userId, userName,
             voteCount, linkedUser, createdAt, replyTo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (id, content, liked, userId, userName, voteCount, linkedUser, createdAt, replyTo))
-        con.commit()
+        """, (_id, content, liked, user_id, user_name, vote_count,
+              linked_user, created_at, reply_to))
         return 1
     except sqlite3.IntegrityError:
         cur.execute("""
             UPDATE replies
             SET voteCount = ?
             WHERE id = ?
-        """, (voteCount, id))
+        """, (vote_count, _id))
         return 0
 
-def addCommentCount(con: sqlite3.Connection, cur: sqlite3.Cursor, count, video_id):
+
+def add_comment_count(cur, count, video_id):
     """Update the comment count for a specific video
-    
+
     :param con: SQLite connection obj
     :param cur: SQLite cursor obj
     :param count: Updated count
     :param video_id: Video ID
     """
     if count > 0:  # Default value = 0 in database
-        cur.execute("UPDATE videos SET commentCount = ? WHERE id = ?", (count, video_id))
-        con.commit()
+        cur.execute(
+            "UPDATE videos SET commentCount = ? WHERE id = ?", (count, video_id))
         return f"Updated video {video_id} with comment count {count}"
 
-def addTimeStamp(con: sqlite3.Connection, cur: sqlite3.Cursor):
+
+def add_timestamp(cur):
     """Adds a timestamp for the archiving
 
     Used when the backup is finished to display when the last fetch was completed.
@@ -146,13 +155,14 @@ def addTimeStamp(con: sqlite3.Connection, cur: sqlite3.Cursor):
     """
     timestamp = datetime.now(timezone.utc).isoformat(timespec='milliseconds')
     cur.execute("INSERT INTO updated (updated) VALUES (?)", (timestamp,))
-    con.commit()
     return f"Dump finished at {timestamp}"
 
-def getAllComments(cur: sqlite3.Cursor):
+
+def get_all_comments(cur):
     """Get all currently stored comments
-    
+
     :param cur: SQLite cursor obj
     """
-    cur.execute("SELECT id, videoId, replyCount FROM comments WHERE replyCount > 0")
+    cur.execute(
+        "SELECT id, videoId, replyCount FROM comments WHERE replyCount > 0")
     return cur.fetchall()
