@@ -49,7 +49,7 @@ def addVideo(con: sqlite3.Connection, cur: sqlite3.Cursor, id, title, summary, p
             duration, createdAt, commentCount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (id, title, summary, playCount, likeCount, angerCount, duration, createdAt, commentCount))
         con.commit()
-        return f"Added video {id}"
+        return 1
     except sqlite3.IntegrityError:
         cur.execute("""
             UPDATE videos
@@ -57,7 +57,7 @@ def addVideo(con: sqlite3.Connection, cur: sqlite3.Cursor, id, title, summary, p
             WHERE id = ?
         """, (playCount, likeCount, angerCount, id))
         con.commit()
-        return f"Video {id} already exists in the database, updating values."
+        return 0
 
 def addComment(con: sqlite3.Connection, cur: sqlite3.Cursor, videoId, id, content, userId, username, userType, posVotes, linkedUser, createdAt, replyCount):
     """Adds or updates comments in the database depending on the context.
@@ -81,7 +81,7 @@ def addComment(con: sqlite3.Connection, cur: sqlite3.Cursor, videoId, id, conten
             posVotes, linkedUser, createdAt, replyCount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (id, videoId, content, userId, username, userType, posVotes, linkedUser, createdAt, replyCount))
         con.commit()
-        return f"Added comment {id}"
+        return 1
     except sqlite3.IntegrityError:
         cur.execute("""
             UPDATE comments
@@ -89,7 +89,7 @@ def addComment(con: sqlite3.Connection, cur: sqlite3.Cursor, videoId, id, conten
             WHERE id = ?
         """, (posVotes, replyCount, id))
         con.commit()
-        return f"Comment {id} already exists in the database, updating values."
+        return 0
     
 def addReply(con: sqlite3.Connection, cur: sqlite3.Cursor, id, content, liked, userId, userName, voteCount, linkedUser, createdAt, replyTo):
     """Adds or updates replies in the database depending on the context.
@@ -114,14 +114,14 @@ def addReply(con: sqlite3.Connection, cur: sqlite3.Cursor, id, content, liked, u
             voteCount, linkedUser, createdAt, replyTo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (id, content, liked, userId, userName, voteCount, linkedUser, createdAt, replyTo))
         con.commit()
-        return f"Added comment {id}"
+        return 1
     except sqlite3.IntegrityError:
         cur.execute("""
             UPDATE replies
             SET voteCount = ?
             WHERE id = ?
         """, (voteCount, id))
-        return f"Comment {id} already exists in the database, updating values."
+        return 0
 
 def addCommentCount(con: sqlite3.Connection, cur: sqlite3.Cursor, count, video_id):
     """Update the comment count for a specific video

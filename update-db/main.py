@@ -50,6 +50,11 @@ con = sqlite3.connect("temp.db")
 cur = con.cursor()
 dbutils.initializeTables(cur)
 
+# Stat counters
+new_videos      = 0
+new_comments    = 0
+new_replies     = 0
+
 ## Fetch all videos
 logger.info(f"Fetching videos from {HOST}")
 total_videos = 0
@@ -67,9 +72,8 @@ while True:
     if videos:
         logger.info(f"Fetched {len(videos)} videos @ offset {offset}")
         for video in videos:
-            dbutils.addVideo(con, cur, video['_id'], video['title'], video['summary'], video['playCount'],
+            new_videos += dbutils.addVideo(con, cur, video['_id'], video['title'], video['summary'], video['playCount'],
                         video['likeCount'], video['angerCount'], video['videoDuration'], video['createdAt'], None)
-        total_videos += len(videos)
 
         # Don't need to query the next page if this is not full
         if len(videos) < LIMIT:
@@ -80,7 +84,6 @@ while True:
         break
 
     offset += LIMIT
-logger.info(f"Video fetch complete — total: {total_videos}")
 
 ## Fetch all comments
 logger.info("Fetching all video comments")
@@ -114,7 +117,7 @@ for idx, video_id in enumerate(id_list):
             if comments:
                 logger.info(f"[{video_id}] fetched {len(comments)} comments @ offset {offset}")
                 for comment in comments:
-                    dbutils.addComment(
+                    new_comments += dbutils.addComment(
                         con, cur, video_id, comment['_id'], comment['content'],
                         comment['user']['_id'], comment['user']['username'],
                         comment['user']['__typename'], comment['voteCount']['positive'],
@@ -180,7 +183,7 @@ for counter, video_id in enumerate(ids_to_fetch):
             
                 if comments:
                     for comment in comments:
-                        dbutils.addComment(
+                        new_comments += dbutils.addComment(
                             con, cur, video_id, comment['_id'], comment['content'],
                             comment['user']['_id'], comment['user']['username'],
                             comment['user']['__typename'], comment['voteCount']['positive'],
@@ -236,7 +239,7 @@ for idx, (comment_id, video_id, reply_count) in enumerate(comments):
                             else None
                         )
                         
-                        dbutils.addReply(
+                        new_replies += dbutils.addReply(
                             con, cur, reply['_id'], reply['content'],
                             reply['liked'], reply['user']['_id'],
                             reply['user']['username'], reply['voteCount']['positive'],
@@ -319,7 +322,7 @@ for counter, comment_id in enumerate(ids_to_fetch):
                         else None
                     )
 
-                    dbutils.addReply(
+                    new_replies += dbutils.addReply(
                         con, cur, reply['_id'], reply['content'],
                         reply['liked'], reply['user']['_id'],
                         reply['user']['username'],
@@ -355,6 +358,18 @@ duration = end_time - start_time
 hours, remainder = divmod(duration.seconds, 3600)
 minutes = remainder // 60
 
-logger.info(f"Archive finished in {hours}h {minutes}m")
-logger.info(f"Remaining comment errors: {len(os.listdir(COMMENT_ERROR_PATH))}")
-logger.info(f"Remaining reply errors: {len(os.listdir(REPLY_ERROR_PATH))}")
+# stats to both log and stdout
+def stdoutAndLog(msg):
+  logger.info(msg)
+  print(msg)  
+
+summary = f"""**Archive Summary**
+- Finished in: {hours}h {minutes}m
+- New videos: {new_videos}
+- New comments: {new_comments}
+- New replies: {new_replies}
+- Comments DLQ size: {len(os.listdir(COMMENT_ERROR_PATH))}
+- Reply DLQ size: {len(os.listdir(REPLY_ERROR_PATH))}
+"""
+
+stdoutAndLog(summary)
