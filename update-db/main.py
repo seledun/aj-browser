@@ -256,7 +256,7 @@ for counter, video_id in enumerate(ids_to_fetch):
             logger.error("[%s] request error @ offset %s",
                          video_id, offset)
             break
-        
+
         except (json.JSONDecodeError, TypeError, ValidationError):
             logger.error(
                 "[%s] malformed response @ offset %s", video_id, offset)
@@ -409,7 +409,7 @@ for counter, comment_id in enumerate(ids_to_fetch):
 
                 continue
 
-        except (requests.RequestException):
+        except requests.RequestException:
             logger.error("[%s] request error @ offset %d",
                          comment_id, offset)
             break
