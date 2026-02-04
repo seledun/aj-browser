@@ -279,9 +279,9 @@ for idx, (comment_id, video_id, reply_count) in enumerate(comments):
                 for reply in replies:
                     linked_user_name = None
                     linked_user_id = None
-                    if reply.replyTo:
-                        linked_user_name = reply.replyTo.user.username
-                        linked_user_id = reply.replyTo.user.id
+                    if reply.linkedUser:
+                        linked_user_name = reply.linkedUser.username
+                        linked_user_id = reply.linkedUser.id
                     new_replies += dbutils.add_reply(
                         cur, reply.id, reply.content,
                         reply.liked, reply.user.id,
@@ -349,9 +349,9 @@ for counter, comment_id in enumerate(ids_to_fetch):
                 for reply in replies:
                     linked_user_name = None
                     linked_user_id = None
-                    if reply.replyTo:
-                        linked_user_name = reply.replyTo.user.username
-                        linked_user_id = reply.replyTo.user.id
+                    if reply.linkedUser:
+                        linked_user_name = reply.linkedUser.username
+                        linked_user_id = reply.linkedUser.id
                     new_replies += dbutils.add_reply(
                         cur, reply.id, reply.content,
                         reply.liked, reply.user.id,
