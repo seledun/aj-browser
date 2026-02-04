@@ -4,6 +4,7 @@ Docstring for update-db.helpers.dbutils
 from datetime import datetime, timezone
 import sqlite3
 
+
 def initialize_tables(cur):
     """Initialize the database tables, if they don't already exist in the database
 
@@ -26,12 +27,25 @@ def initialize_tables(cur):
     cur.execute("""
         CREATE TABLE IF NOT EXISTS replies (
             id TEXT NOT NULL UNIQUE, content TEXT, liked TEXT, userId TEXT,
-            userName TEXT, voteCount INTEGER, linkedUser TEXT, createdAt TEXT,
+            userName TEXT, voteCount INTEGER, linkedUserName TEXT, linkedUserId TEXT, createdAt TEXT,
             replyTo TEXT
         )
     """)
     cur.execute(
         "CREATE TABLE IF NOT EXISTS updated (id INTEGER PRIMARY KEY AUTOINCREMENT, updated TEXT)")
+
+
+def setup_indexes(cur):
+    """Create indexes for faster querying
+
+    :param cur: SQLite cursor obj
+    """
+    cur.execute(
+        "CREATE INDEX IF NOT EXISTS idx_comments_videoId ON comments (videoId)")
+    cur.execute(
+        "CREATE INDEX IF NOT EXISTS idx_replies_replyTo ON replies (replyTo)")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_comments_id ON comments (id)")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_replies_id ON replies (id)")
 
 
 def add_video(cur, _id, title, summary, play_count, like_count,
@@ -99,7 +113,7 @@ def add_comment(cur: sqlite3.Cursor, video_id, _id, content, user_id, username,
 
 
 def add_reply(cur, _id, content, liked, user_id, user_name,
-              vote_count, linked_user, created_at, reply_to):
+              vote_count, linked_user_name, linked_user_id, created_at, reply_to):
     """Adds or updates replies in the database depending on the context.
 
     :param con: SQLite connection obj
@@ -120,7 +134,7 @@ def add_reply(cur, _id, content, liked, user_id, user_name,
             INSERT INTO replies (id, content, liked, userId, userName,
             voteCount, linkedUser, createdAt, replyTo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (_id, content, liked, user_id, user_name, vote_count,
-              linked_user, created_at, reply_to))
+              linked_user_name, linked_user_id, created_at, reply_to))
         return 1
     except sqlite3.IntegrityError:
         cur.execute("""
@@ -158,11 +172,24 @@ def add_timestamp(cur):
     return f"Dump finished at {timestamp}"
 
 
-def get_all_comments(cur):
-    """Get all currently stored comments
-
-    :param cur: SQLite cursor obj
+def get_pending_comments(cur):
     """
-    cur.execute(
-        "SELECT id, videoId, replyCount FROM comments WHERE replyCount > 0")
+    Fetches only comments where the expected replyCount is greater 
+    than the number of replies currently stored in the database.
+    """
+    query = """
+    SELECT 
+        c.id, 
+        c.videoId, 
+        c.replyCount
+    FROM comments c
+    LEFT JOIN (
+        SELECT replyTo, COUNT(*) as actual_count 
+        FROM replies 
+        GROUP BY replyTo
+    ) r ON c.id = r.replyTo
+    WHERE c.replyCount > 0 
+      AND c.replyCount > COALESCE(r.actual_count, 0)
+    """
+    cur.execute(query)
     return cur.fetchall()

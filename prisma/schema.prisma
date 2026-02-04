@@ -34,15 +34,16 @@ model comments {
 }
 
 model replies {
-  id         String   @unique
-  content    String
-  liked      String
-  userId     String 
-  userName   String
-  voteCount  Int
-  linkedUser String?
-  createdAt  String
-  replyTo    String
+  id              String   @unique
+  content         String
+  liked           String
+  userId          String 
+  userName        String
+  voteCount       Int
+  linkedUserName  String?
+  linkedUserId    String?
+  createdAt       String
+  replyTo         String
 }
 
 model updated {

@@ -2,7 +2,7 @@
 Script to update the local database with new videos, comments, and replies from the API.
 Author: (sl3) seledun@github
 Date Created: 2025-02-28
-Date Updated: 2026-02-03
+Date Updated: 2026-02-04
 """
 import os
 import json
@@ -18,12 +18,19 @@ from helpers import dbutils
 
 import requests
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+def get_path(relative_path):
+    """Joins the script's base directory with a relative path"""
+    return os.path.join(BASE_DIR, relative_path)
+
 HOST = "https://api.banned.video/graphql"
 CHANNEL_ID = "5b885d33e6646a0015a6fa2d"
-REPLY_ERROR_PATH = "errors/reply-errors"
-COMMENT_ERROR_PATH = "errors/comment-errors"
-DB_PATH = "../prisma/store.db"
-LOG_DIR = "logs"
+REPLY_ERROR_PATH = get_path("errors/reply-errors")
+COMMENT_ERROR_PATH = get_path("errors/comment-errors")
+MAIN_DB_PATH = get_path("../prisma/store.db")
+TEMP_DB_PATH = get_path("temp.db")
+LOG_DIR = get_path("logs")
 
 EXP_BACKOFF_LIMIT = 50  # Used as initial limit for the exp. backoff
 LIMIT = 500             # Number of items to fetch per request
@@ -46,15 +53,17 @@ logging.basicConfig(filename=f'{LOG_DIR}/current.txt',
 logger = logging.getLogger(__name__)
 
 # Copy the database to not update it in place
-shutil.copyfile(DB_PATH, "temp.db")
-logger.info("Copied database: store.db → temp.db")
+shutil.copyfile(MAIN_DB_PATH, TEMP_DB_PATH)
+logger.info ("Copied database: store.db → temp.db")
 
 # Create database connection and cursor
 logger.info("Connecting to database and initializing tables")
 start_time = datetime.now(timezone.utc)
-con = sqlite3.connect("temp.db")
+con = sqlite3.connect(TEMP_DB_PATH)
 cur = con.cursor()
 dbutils.initialize_tables(cur)
+dbutils.setup_indexes(cur)
+con.commit()
 
 # Stat counters
 new_videos = 0
@@ -241,7 +250,7 @@ con.commit()
 
 # Fetch all comment replies
 logger.info("Fetching comment replies")
-comments = dbutils.get_all_comments(cur)
+comments = dbutils.get_pending_comments(cur)
 counter = 0
 
 for idx, (comment_id, video_id, reply_count) in enumerate(comments):
@@ -249,6 +258,7 @@ for idx, (comment_id, video_id, reply_count) in enumerate(comments):
     logger.info("[%s] fetching replies (%d/%d)",
                 comment_id, counter, len(comments))
     counter += 1
+
     while True:
         body = get_request_bodies.get_comment_replies_request_body(
             comment_id, LIMIT, offset)
@@ -266,12 +276,16 @@ for idx, (comment_id, video_id, reply_count) in enumerate(comments):
                 logger.info(
                     "[%s] %d replies @ offset %d", comment_id, len(replies), offset)
                 for reply in replies:
-                    linked_user = None
+                    linked_user_name = None
+                    linked_user_id = None
+                    if reply.replyTo:
+                        linked_user_name = reply.replyTo.user.username
+                        linked_user_id = reply.replyTo.user.id
                     new_replies += dbutils.add_reply(
                         cur, reply.id, reply.content,
                         reply.liked, reply.user.id,
                         reply.user.username, reply.voteCount.positive,
-                        linked_user, reply.createdAt, reply.replyTo.id
+                        linked_user_name, linked_user_id, reply.createdAt, reply.replyTo.id
                     )
                     reply_count_fetched += 1
 
@@ -332,13 +346,17 @@ for counter, comment_id in enumerate(ids_to_fetch):
             if isinstance(validation, pyd.GetCommentRepliesResponse):
                 replies = validation.data.getCommentReplies
                 for reply in replies:
-                    linked_user = None
+                    linked_user_name = None
+                    linked_user_id = None
+                    if reply.replyTo:
+                        linked_user_name = reply.replyTo.user.username
+                        linked_user_id = reply.replyTo.user.id
                     new_replies += dbutils.add_reply(
                         cur, reply.id, reply.content,
                         reply.liked, reply.user.id,
                         reply.user.username,
                         reply.voteCount.positive,
-                        linked_user, reply.createdAt,
+                        linked_user_name, linked_user_id, reply.createdAt,
                         reply.replyTo.id
                     )
 
@@ -382,7 +400,7 @@ con.commit()
 con.close()
 logger.info("Added timestamp and closed database")
 
-shutil.move("temp.db", DB_PATH)
+shutil.move(TEMP_DB_PATH, MAIN_DB_PATH)
 logger.info("Database updated successfully (temp.db → store.db)")
 
 # Print run-time information
