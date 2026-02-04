@@ -8,4 +8,6 @@
 !.yarn/releases
 !.yarn/versions
 
+# lfs files
 /prisma/store.db
+/update-db

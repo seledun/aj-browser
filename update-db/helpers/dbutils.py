@@ -36,7 +36,7 @@ def initialize_tables(cur):
     )
     """)
     cur.execute(
-        "CREATE TABLE IF NOT EXISTS ModifiedDate (id INTEGER PRIMARY KEY AUTOINCREMENT, updated TEXT)")
+        "CREATE TABLE IF NOT EXISTS Modified (id INTEGER PRIMARY KEY AUTOINCREMENT, updated TEXT)")
 
 
 def setup_indexes(cur):
@@ -171,7 +171,7 @@ def add_timestamp(cur):
     :param cur: SQLite cursor obj    
     """
     timestamp = datetime.now(timezone.utc).isoformat(timespec='milliseconds')
-    cur.execute("INSERT INTO updated (updated) VALUES (?)", (timestamp,))
+    cur.execute("INSERT INTO Modified (updated) VALUES (?)", (timestamp,))
     return f"Dump finished at {timestamp}"
 
 
