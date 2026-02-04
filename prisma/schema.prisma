@@ -20,18 +20,19 @@ model videos {
 }
 
 model comments {
-  id         String    @unique
-  videoId    String
-  content    String
-  userId     String
-  username   String
-  userType   String
-  posVotes   Int
-  linkedUser String?
-  createdAt  String
-  replyCount Int
-  video      videos    @relation(fields: [videoId], references: [id])
-  replies    replies[]
+  id             String    @unique
+  videoId        String
+  content        String
+  userId         String
+  username       String
+  userType       String
+  posVotes       Int
+  linkedUserName String?
+  linkedUserId   String?
+  createdAt      String
+  replyCount     Int
+  video          videos    @relation(fields: [videoId], references: [id])
+  replies        replies[]
 }
 
 model replies {

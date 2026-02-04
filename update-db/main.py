@@ -1,9 +1,12 @@
+# pylint: disable=C0103
+
 """
 Script to update the local database with new videos, comments, and replies from the API.
 Author: (sl3) seledun@github
 Date Created: 2025-02-28
 Date Updated: 2026-02-04
 """
+
 import os
 import json
 import sqlite3
@@ -20,9 +23,11 @@ import requests
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
+
 def get_path(relative_path):
     """Joins the script's base directory with a relative path"""
     return os.path.join(BASE_DIR, relative_path)
+
 
 HOST = "https://api.banned.video/graphql"
 CHANNEL_ID = "5b885d33e6646a0015a6fa2d"
@@ -35,8 +40,8 @@ LOG_DIR = get_path("logs")
 EXP_BACKOFF_LIMIT = 50  # Used as initial limit for the exp. backoff
 LIMIT = 500             # Number of items to fetch per request
 
-# LOG_LEVEL = logging.INFO
-LOG_LEVEL = logging.WARNING
+LOG_LEVEL = logging.INFO
+# LOG_LEVEL = logging.WARNING
 
 os.makedirs(LOG_DIR, exist_ok=True)
 os.makedirs(COMMENT_ERROR_PATH, exist_ok=True)
@@ -55,7 +60,7 @@ logger = logging.getLogger(__name__)
 
 # Copy the database to not update it in place
 shutil.copyfile(MAIN_DB_PATH, TEMP_DB_PATH)
-logger.info ("Copied database: store.db → temp.db")
+logger.info("Copied database: store.db → temp.db")
 
 # Create database connection and cursor
 logger.info("Connecting to database and initializing tables")
@@ -143,11 +148,16 @@ for idx, video_id in enumerate(id_list):
                 logger.info("[%s] fetched %d comments @ offset %d",
                             video_id, len(comments), offset)
                 for comment in comments:
+                    linked_user_name = None
+                    linked_user_id = None
+                    if comment.linkedUser:
+                        linked_user_name = comment.linkedUser.username
+                        linked_user_id = comment.linkedUser.id
                     new_comments += dbutils.add_comment(
                         cur, video_id, comment.id, comment.content,
                         comment.user.id, comment.user.username,
                         comment.user.typename, comment.voteCount.positive,
-                        None, comment.createdAt, comment.replyCount
+                        linked_user_name, linked_user_id, comment.createdAt, comment.replyCount
                     )
                     comment_count += 1
 
@@ -210,11 +220,16 @@ for counter, video_id in enumerate(ids_to_fetch):
             if isinstance(validation, pyd.GetVideoCommentsResponse):
                 comments = validation.data.getVideoComments
                 for comment in comments:
+                    linked_user_name = None
+                    linked_user_id = None
+                    if comment.linkedUser:
+                        linked_user_name = comment.linkedUser.username
+                        linked_user_id = comment.linkedUser.id
                     new_comments += dbutils.add_comment(
                         cur, video_id, comment.id, comment.content,
                         comment.user.id, comment.user.username,
                         comment.user.typename, comment.voteCount.positive,
-                        None, comment.createdAt, comment.replyCount
+                        linked_user_name, linked_user_id, comment.createdAt, comment.replyCount
                     )
                     logger.info("[%s] added comment @ %s", video_id, offset)
                     comment_count += 1
@@ -310,12 +325,12 @@ for idx, (comment_id, video_id, reply_count) in enumerate(comments):
                 logger.warning("[%s] retry %d/3 due to %s",
                                comment_id, retries, e)
                 continue
-            else:
-                with open(f'{REPLY_ERROR_PATH}/{comment_id}', 'w', encoding="UTF-8") as file:
-                    json.dump(body, file)
-                logger.error(
-                    "[%s] failed to fetch replies after 3 retries", comment_id)
-                break
+
+            with open(f'{REPLY_ERROR_PATH}/{comment_id}', 'w', encoding="UTF-8") as file:
+                json.dump(body, file)
+            logger.error(
+                "[%s] failed to fetch replies after 3 retries", comment_id)
+            break
 
         offset += LIMIT
 con.commit()
