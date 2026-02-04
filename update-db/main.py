@@ -108,13 +108,11 @@ while True:
     except (AttributeError) as e:
         logger.error(e)
 
-    except (requests.RequestException,
-            requests.HTTPError,
-            json.JSONDecodeError,
-            TypeError,
-            ValidationError
-            ) as e:
+    except (requests.RequestException, requests.HTTPError):
         logger.error("Video fetch failed @ offset %s", offset)
+
+    except (json.JSONDecodeError, TypeError, ValidationError):
+        logger.error("Malformed video response @ offset %d", offset)
 
     offset += LIMIT
 con.commit()
@@ -174,12 +172,7 @@ for idx, video_id in enumerate(id_list):
                     "[%s] failed fetching comments after 3 retries", video_id)
                 break
 
-        except (requests.RequestException,
-                requests.HTTPError,
-                json.JSONDecodeError,
-                TypeError,
-                ValidationError
-                ) as e:
+        except (requests.RequestException, requests.HTTPError) as e:
             if retries < 2:
                 retries += 1
                 logger.warning("[%s] retry %d/3 due to %s",
@@ -191,6 +184,11 @@ for idx, video_id in enumerate(id_list):
                 logger.error(
                     "[%s] failed fetching comments after 3 retries", video_id)
                 break
+
+        except (json.JSONDecodeError, TypeError, ValidationError):
+            logger.error("[%s] malformed response @ offset %d",
+                         video_id, offset)
+            break
 
         offset += LIMIT
 con.commit()
@@ -254,8 +252,14 @@ for counter, video_id in enumerate(ids_to_fetch):
                 current_limit = max(1, current_limit // 2)
                 continue
 
-        except (requests.RequestException, json.JSONDecodeError, TypeError, ValidationError) as e:
-            logger.exception("[%s] fatal error @ offset %s", video_id, offset)
+        except requests.RequestException as e:
+            logger.error("[%s] request error @ offset %s",
+                         video_id, offset)
+            break
+        
+        except (json.JSONDecodeError, TypeError, ValidationError):
+            logger.error(
+                "[%s] malformed response @ offset %s", video_id, offset)
             break
 
     logger.info("[%s] Done — %d recovered comments", video_id, comment_count)
@@ -318,17 +322,21 @@ for idx, (comment_id, video_id, reply_count) in enumerate(comments):
                     "[%s] failed to fetch replies after 3 retries", comment_id)
                 break
 
-        except (requests.RequestException, json.JSONDecodeError, TypeError, ValidationError) as e:
+        except (requests.RequestException) as e:
             if retries < 2:
                 retries += 1
                 logger.warning("[%s] retry %d/3 due to %s",
                                comment_id, retries, e)
                 continue
-
             with open(f'{REPLY_ERROR_PATH}/{comment_id}', 'w', encoding="UTF-8") as file:
                 json.dump(body, file)
             logger.error(
                 "[%s] failed to fetch replies after 3 retries", comment_id)
+            break
+
+        except (json.JSONDecodeError, TypeError, ValidationError):
+            logger.error("[%s] malformed response @ offset %d",
+                         comment_id, offset)
             break
 
         offset += LIMIT
@@ -401,9 +409,13 @@ for counter, comment_id in enumerate(ids_to_fetch):
 
                 continue
 
-        except (requests.RequestException, json.JSONDecodeError, TypeError, ValidationError) as e:
-            logger.exception("[%s] fatal error @ offset %d",
-                             comment_id, offset)
+        except (requests.RequestException):
+            logger.error("[%s] request error @ offset %d",
+                         comment_id, offset)
+            break
+        except (json.JSONDecodeError, TypeError, ValidationError):
+            logger.error("[%s] malformed response @ offset %d",
+                         comment_id, offset)
             break
 
     logger.info("[%s] done, got %d replies", comment_id, reply_count_fetched)
