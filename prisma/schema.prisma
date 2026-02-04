@@ -44,10 +44,10 @@ model replies {
   linkedUserId    String?
   createdAt       String
   replyTo         String
+  comment         comments @relation(fields: [replyTo], references: [id])
 }
 
 model updated {
   id      Int     @id @default(autoincrement())
   updated String?
 }
-

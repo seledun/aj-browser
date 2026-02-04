@@ -35,7 +35,8 @@ LOG_DIR = get_path("logs")
 EXP_BACKOFF_LIMIT = 50  # Used as initial limit for the exp. backoff
 LIMIT = 500             # Number of items to fetch per request
 
-LOG_LEVEL = logging.INFO
+# LOG_LEVEL = logging.INFO
+LOG_LEVEL = logging.WARNING
 
 os.makedirs(LOG_DIR, exist_ok=True)
 os.makedirs(COMMENT_ERROR_PATH, exist_ok=True)

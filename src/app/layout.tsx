@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ArchiveStatisticsProvider } from "@/contexts/ArchiveStatisticsContext";
-import { HeroUIProvider } from "@heroui/system";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -16,7 +15,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Informatiks Wars",
+  title: "Bland.video - Browse Banned Videos",
   description: "banned.video browser",
 };
 
