@@ -51,3 +51,4 @@ logs
 
 # Python tools
 update-db/temp.db
+update-db/temp.db-journal
