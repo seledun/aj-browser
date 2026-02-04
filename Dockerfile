@@ -28,7 +28,6 @@ COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/public ./public
 
 ENV NODE_ENV=production
-ENV DATABASE_URL="file:./prisma/store.db"
 
 EXPOSE 3000
 CMD ["npm", "run", "start"]
