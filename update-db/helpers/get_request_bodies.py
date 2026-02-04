@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long
 
 """
 Docstring for update-db.helpers.get_request_bodies

@@ -6,7 +6,7 @@ datasource db {
   provider = "sqlite"
 }
 
-model videos {
+model Video {
   id           String     @unique
   title        String
   summary      String
@@ -16,10 +16,10 @@ model videos {
   duration     Float?
   createdAt    String
   commentCount Int?
-  comments     comments[]
+  comments     Comment[]
 }
 
-model comments {
+model Comment {
   id             String    @unique
   videoId        String
   content        String
@@ -31,11 +31,11 @@ model comments {
   linkedUserId   String?
   createdAt      String
   replyCount     Int
-  video          videos    @relation(fields: [videoId], references: [id])
-  replies        replies[]
+  video          Video    @relation(fields: [videoId], references: [id])
+  replies        Reply[]
 }
 
-model replies {
+model Reply {
   id             String   @unique
   content        String
   liked          String
@@ -46,7 +46,7 @@ model replies {
   linkedUserId   String?
   createdAt      String
   replyTo        String
-  comment        comments @relation(fields: [replyTo], references: [id])
+  comment        Comment @relation(fields: [replyTo], references: [id])
 }
 
 model updated {

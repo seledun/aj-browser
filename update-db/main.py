@@ -121,8 +121,7 @@ con.commit()
 
 # Fetch all comments
 logger.info("Fetching all video comments")
-cur.execute("SELECT id FROM videos")
-id_list = [row[0] for row in cur.fetchall()]
+id_list = dbutils.get_all_video_ids(cur)
 counter = 0
 
 for idx, video_id in enumerate(id_list):
