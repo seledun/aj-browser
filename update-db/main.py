@@ -310,7 +310,7 @@ for idx, (comment_id, video_id, reply_count) in enumerate(comments):
 
                 # Don't need to query the next page if this is not full
                 if len(replies) < LIMIT:
-                    logger.info("[%s] no replies @ offset %d",
+                    logger.info("[%s] no more replies @ offset %d",
                                 comment_id, offset)
                     break
             else:
