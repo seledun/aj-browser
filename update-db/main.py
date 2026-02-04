@@ -204,9 +204,7 @@ for counter, video_id in enumerate(ids_to_fetch):
                         cur, video_id, comment.id, comment.content,
                         comment.user.id, comment.user.username,
                         comment.user.typename, comment.voteCount.positive,
-                        None if not comment.linkedUser else json.dumps(
-                            comment.linkedUser),
-                        comment.createdAt, comment.replyCount
+                        None, comment.createdAt, comment.replyCount
                     )
                     logger.info("[%s] added comment @ %s", video_id, offset)
                     comment_count += 1
@@ -268,12 +266,7 @@ for idx, (comment_id, video_id, reply_count) in enumerate(comments):
                 logger.info(
                     "[%s] %d replies @ offset %d", comment_id, len(replies), offset)
                 for reply in replies:
-                    linked_user = (
-                        json.dumps(reply['linkedUser'])
-                        if reply.get('linkedUser')
-                        else None
-                    )
-
+                    linked_user = None
                     new_replies += dbutils.add_reply(
                         cur, reply.id, reply.content,
                         reply.liked, reply.user.id,
@@ -339,12 +332,7 @@ for counter, comment_id in enumerate(ids_to_fetch):
             if isinstance(validation, pyd.GetCommentRepliesResponse):
                 replies = validation.data.getCommentReplies
                 for reply in replies:
-                    linked_user = (
-                        json.dumps(reply['linkedUser'])
-                        if reply.get('linkedUser')
-                        else None
-                    )
-
+                    linked_user = None
                     new_replies += dbutils.add_reply(
                         cur, reply.id, reply.content,
                         reply.liked, reply.user.id,

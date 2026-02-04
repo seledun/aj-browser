@@ -10,7 +10,9 @@ from pydantic import BaseModel, ConfigDict, Field
 
 class GraphQLBaseModel(BaseModel):
     """
-    Docstring for GraphQLBaseModel
+    Base model for GraphQL responses. 
+    This model ignores any extra fields in the response and 
+    only populates fields defined in the model.
     """
     model_config = ConfigDict(extra="ignore", populate_by_name=True)
 
@@ -19,14 +21,15 @@ class GraphQLBaseModel(BaseModel):
 
 class GraphQLErrorMsg(GraphQLBaseModel):
     """
-    Docstring for GraphQLErrorMsg
+    Error message model for GraphQL errors, containing only the message field.
+    This model is used for all error messages returned by the GraphQL API.
     """
     message: str
 
 
 class ErrorResponse(GraphQLBaseModel):
     """
-    Docstring for ErrorResponse
+    Model for GraphQL error responses, containing a list of error messages.
     """
     errors: List[GraphQLErrorMsg]
 
