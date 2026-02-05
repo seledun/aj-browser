@@ -14,20 +14,29 @@ function VideoCard({ video }: { video: Video }) {
       isHoverable
       key={video.id}
     >
-      <CardHeader className="flex-col items-start px-4 pt-4">
-        <Tooltip
-          content={video.title}
-          delay={500}
-          closeDelay={0}
-          className="max-w-xs"
+<CardHeader className="flex-col items-start px-4 pt-4">
+  <Tooltip
+    content={video.title}
+    delay={500}
+    closeDelay={0}
+    className="max-w-xs"
+  >
+    <h1 className="text-md font-bold leading-tight cursor-help">
+      {video.commentCount > 0 ? (
+        <Link 
+          href={`/video?videoId=${video.id}`} 
+          className="line-clamp-3 hover:underline no-underline!"
         >
-          <h1 className="text-md font-bold leading-tight cursor-help">
-            <Link href={`/video?videoId=${video.id}`} className="line-clamp-3 hover:underline no-underline!">
-              {video.title}
-            </Link>
-          </h1>
-        </Tooltip>
-      </CardHeader>
+          {video.title}
+        </Link>
+      ) : (
+        <span className="line-clamp-3">
+          {video.title}
+        </span>
+      )}
+    </h1>
+  </Tooltip>
+</CardHeader>
 
       <CardBody className="py-2">
         <p className="text-sm text-default-500">
