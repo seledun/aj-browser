@@ -1,8 +1,8 @@
 'use client'
 
 import { fetchCommentCount } from "@/utils/comment-utils";
-import { fetchReplyCount } from "@/utils/reply-utils";
 import { fetchLastUpdated } from "@/utils/updated-utils";
+import { fetchReplyCount } from "@/utils/reply-utils";
 import { fetchVideoCount } from "@/utils/video-utils";
 import { format, parseISO } from "date-fns";
 import { createContext, useState, useContext, useEffect, ReactNode } from "react";
@@ -10,6 +10,7 @@ import { createContext, useState, useContext, useEffect, ReactNode } from "react
 interface ArchiveStatistics {
     videoCount: number,
     commentCount: number,
+    replyCount: number,
     lastUpdated: string
 }
 
@@ -24,12 +25,14 @@ export const ArchiveStatisticsProvider: React.FC<{ children : ReactNode }> = ({ 
     const [archiveStatistics, setArchiveStatistics] = useState<ArchiveStatistics>({
         videoCount: 0,
         commentCount: 0,
+        replyCount: 0,
         lastUpdated: ""
     });
 
     useEffect(() => {
         getVideoCount();
         getCommentCount();
+        getReplyCount();
         getLastUpdated();
     }, []);
 
@@ -39,6 +42,16 @@ export const ArchiveStatisticsProvider: React.FC<{ children : ReactNode }> = ({ 
             setArchiveStatistics((prevState) => ({
                 ...prevState,
                 videoCount: videos,
+            }));
+        }
+    }
+
+    const getReplyCount = async () => {
+        const replies = await fetchReplyCount();
+        if (replies !== undefined) {
+            setArchiveStatistics((prevState) => ({
+                ...prevState,
+                replyCount: replies,
             }));
         }
     }

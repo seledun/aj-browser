@@ -11,7 +11,7 @@ import Footer from "@/components/Footer";
 
 import { Video, fetchVideos, fetchVideoSearch } from "../utils/video-utils";
 import Link from "next/link";
-import { SharedSelection } from "@heroui/react";
+import { Divider, SharedSelection } from "@heroui/react";
 import { Accordion, AccordionItem } from "@heroui/accordion";
 import VideoCard from "@/components/Cards/VideoCard";
 
@@ -173,64 +173,136 @@ export default function Home() {
   }
 
   return (
-    <div className="h-screen">
-      <div className="flex flex-col gap-3 items-center min-w-67.75">
-        <Accordion className="sticky mt-2 top-0 z-40 max-w-md bg-black opacity-80" isCompact variant="bordered" defaultExpandedKeys={["1"]}>
-          <AccordionItem key="1" title="Search options" className="">
-            <div className="grid grid-cols-3 gap-2 bg-black rounded-b-2xl p-6">
-              <h2 className="col-span-3 text-lg text-center"><b>{strictMode ? "(strict) " : ""}Query: &quot;{searchTerm ? searchTerm : "all videos"}&quot; ({videos.length})</b></h2>
-              <Button size="sm" isDisabled={page === 0} onPress={() => prevPage()}>Back</Button>
-              <span className="inline-block text-sm content-center text-center">Page {page + 1}</span>
-              <Button size="sm" onPress={() => nextPage()}>Next</Button>
-              <Input isClearable onClear={() => clearSearch()} onChange={searchVideos} size="sm" className="col-span-3 h-10" label="Search"></Input>
-              <Dropdown>
-                <DropdownTrigger>
-                  <Button
-                    variant="flat"
-                    size="sm"
-                    className="capitalize col-span-2"
-                  >
-                    {selectedValue}
-                  </Button>
-                </DropdownTrigger>
-                <DropdownMenu
-                  className="bg-background border-none"
-                  disallowEmptySelection
-                  selectionMode="single"
-                  selectedKeys={sortBySelection}
-                  onSelectionChange={updateSortBySelection}
-                >
-                  {sortBy.map((val) => (
-                    <DropdownItem key={val}>{val}</DropdownItem>
-                  ))}
-                </DropdownMenu>
-              </Dropdown>
-              <Checkbox onValueChange={toggleSortingOrder} defaultSelected size="sm">Desc.</Checkbox>
-              <Checkbox onValueChange={setStrictMode} size="sm" className="justify-self-center">Strict</Checkbox>
-              <Link href="/comments" className="col-span-3 text-center align-middle text-sm no-underline">Search comments</Link>
-            </div>
-          </AccordionItem>
-        </Accordion>
-        {
-          loading ?
-            <div style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "100vh",
-              width: "100vw"
-            }}>
-              <Spinner />
-            </div>
-            :
-            <ul className="grid">
-              {videos.map((video, index) => (
-                <VideoCard video={video} key={index} />
-              ))}
-            </ul>
-        }
+<div className="min-h-screen flex flex-col">
+  {/* Header/Accordion Section */}
+  <div className="flex flex-col gap-3 items-center w-full px-4">
+<Accordion 
+  className="sticky mt-2 top-0 z-40 w-full max-w-2xl mx-auto" // Slightly wider for better breathing room
+  variant="shadow" // Shadow variant feels more premium in HeroUI
+  isCompact
+  defaultExpandedKeys={["1"]}
+>
+  <AccordionItem 
+    key="1" 
+    aria-label="Search Options"
+    title={
+      <div className="flex items-center gap-2">
+        <span className="text-sm font-medium">Search Settings</span>
+        {!loading && (
+          <span className="text-tiny bg-default-100 px-2 py-0.5 rounded-full text-default-600">
+            {searchTerm ? `"${searchTerm}"` : "All videos"} ({videos.length})
+          </span>
+        )}
       </div>
-      <Footer />
+    }
+  >
+    <div className="flex flex-col gap-6 p-4 pt-0">
+      {/* Search Bar Section */}
+      <div className="flex gap-2">
+        <Input
+          isClearable
+          fullWidth
+          onClear={() => clearSearch()}
+          onChange={searchVideos}
+          placeholder="Search videos..."
+          variant="flat"
+        />
+      </div>
+
+      {/* Controls Section */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Sort Group */}
+        <div className="flex gap-2 items-center">
+          <Dropdown>
+            <DropdownTrigger>
+              <Button 
+                variant="bordered" 
+                size="sm" 
+                className="w-full justify-between"
+              >
+                Sort by: {selectedValue}
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu
+              disallowEmptySelection
+              selectionMode="single"
+              selectedKeys={sortBySelection}
+              onSelectionChange={updateSortBySelection}
+            >
+              {sortBy.map((val) => (
+                <DropdownItem key={val}>{val}</DropdownItem>
+              ))}
+            </DropdownMenu>
+          </Dropdown>
+          
+          <Checkbox 
+            onValueChange={toggleSortingOrder} 
+            defaultSelected 
+            size="sm"
+            color="primary"
+          >
+            Desc
+          </Checkbox>
+        </div>
+
+        {/* Pagination & Strict Mode Group */}
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-1">
+            <Button isIconOnly size="sm" variant="flat" isDisabled={page === 0} onPress={() => prevPage()}>
+              Back
+            </Button>
+            <span className="text-tiny font-semibold min-w-[60px] text-center">
+              Page {page + 1}
+            </span>
+            <Button isIconOnly size="sm" variant="flat" onPress={() => nextPage()}>
+              Next
+            </Button>
+          </div>
+
+          <Checkbox 
+            onValueChange={setStrictMode} 
+            size="sm" 
+            isSelected={strictMode}
+            color="warning"
+          >
+            Strict
+          </Checkbox>
+        </div>
+      </div>
+
+      {/* Footer Link */}
+      <Divider />
+      <div className="flex justify-center">
+        <Link 
+          href="/comments" 
+          className="text-default-500 hover:text-primary transition-colors"
+        >
+          Search inside comments
+        </Link>
+      </div>
     </div>
+  </AccordionItem>
+</Accordion>
+
+    {/* Content Section */}
+    <main className="w-full max-w-7xl mx-auto p-4">
+      {loading ? (
+        <div className="flex justify-center items-center h-[60vh] w-full">
+          <Spinner size="lg" />
+        </div>
+      ) : (
+        /* The Responsive Grid */
+        <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+          {videos.map((video, index) => (
+            <li key={index} className="list-none">
+              <VideoCard video={video} />
+            </li>
+          ))}
+        </ul>
+      )}
+    </main>
+  </div>
+  <Footer />
+</div>
   );
 }
