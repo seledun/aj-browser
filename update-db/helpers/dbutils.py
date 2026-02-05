@@ -204,3 +204,11 @@ def get_all_video_ids(cur):
     query = "SELECT id FROM Video"
     cur.execute(query)
     return [row[0] for row in cur.fetchall()]
+
+def get_comment_reply_count(cur, comment_id):
+    """
+    Fetches the current number of replies stored in the database for a given comment ID.
+    """
+    query = "SELECT COUNT(*) FROM Reply WHERE replyTo = ?"
+    cur.execute(query, (comment_id,))
+    return cur.fetchone()[0]

@@ -15,57 +15,27 @@ import shutil
 from datetime import datetime, timezone
 from pydantic import ValidationError, TypeAdapter
 
+import config as conf
 from helpers import validator as pyd
 from helpers import get_request_bodies
 from helpers import dbutils
 
 import requests
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+start_time = datetime.now(timezone.utc)
 
-
-def get_path(relative_path):
-    """Joins the script's base directory with a relative path"""
-    return os.path.join(BASE_DIR, relative_path)
-
-
-HOST = "https://api.banned.video/graphql"
-CHANNEL_ID = "5b885d33e6646a0015a6fa2d"
-REPLY_ERROR_PATH = get_path("errors/reply-errors")
-COMMENT_ERROR_PATH = get_path("errors/comment-errors")
-MAIN_DB_PATH = get_path("../prisma/store.db")
-TEMP_DB_PATH = get_path("temp.db")
-LOG_DIR = get_path("logs")
-
-EXP_BACKOFF_LIMIT = 50  # Used as initial limit for the exp. backoff
-LIMIT = 500             # Number of items to fetch per request
-
-LOG_LEVEL = logging.INFO
-# LOG_LEVEL = logging.WARNING
-
-os.makedirs(LOG_DIR, exist_ok=True)
-os.makedirs(COMMENT_ERROR_PATH, exist_ok=True)
-os.makedirs(REPLY_ERROR_PATH, exist_ok=True)
-
-# Set up logging
-LOG_FILE = f"{LOG_DIR}/{datetime.now().strftime('%y-%m-%d-%H-%M')}.txt"
-
-logging.basicConfig(filename=f'{LOG_DIR}/current.txt',
-                    level=LOG_LEVEL,
-                    format='%(asctime)s %(levelname)s: %(message)s',
-                    filemode='w+'
-                    )
-
+conf.setup_logger()
 logger = logging.getLogger(__name__)
 
+"""Sets up the database connection and cursor"""
 # Copy the database to not update it in place
-shutil.copyfile(MAIN_DB_PATH, TEMP_DB_PATH)
-logger.info("Copied database: store.db → temp.db")
+logger = logging.getLogger(__name__)
+# shutil.copyfile(conf.MAIN_DB_PATH, conf.TEMP_DB_PATH)
+# logger.info("Copied database: store.db → temp.db")
 
 # Create database connection and cursor
 logger.info("Connecting to database and initializing tables")
-start_time = datetime.now(timezone.utc)
-con = sqlite3.connect(TEMP_DB_PATH)
+con = sqlite3.connect(conf.TEMP_DB_PATH)
 cur = con.cursor()
 dbutils.initialize_tables(cur)
 dbutils.setup_indexes(cur)
@@ -77,13 +47,14 @@ new_comments = 0
 new_replies = 0
 
 # Fetch all videos
-logger.info("Fetching videos from %s", HOST)
+logger.info("Fetching videos from %s", conf.HOST)
 total_videos = 0
 offset = 0
 while True:
-    body = get_request_bodies.get_video_request_body(CHANNEL_ID, LIMIT, offset)
+    body = get_request_bodies.get_video_request_body(
+        conf.CHANNEL_ID, conf.LIMIT, offset)
     try:
-        resp = requests.post(HOST, json=body, timeout=30)
+        resp = requests.post(conf.HOST, json=body, timeout=30)
         resp.raise_for_status()
         obj = resp.json()
 
@@ -99,12 +70,12 @@ while True:
                                                 video.createdAt, None)
                 total_videos += 1
 
-            if len(videos) < LIMIT:
+            if len(videos) < conf.LIMIT:
                 break
 
         else:
-            logger.error("[%s] @ offset %d contains error", CHANNEL_ID, offset)
-
+            logger.error("[%s] @ offset %d contains error",
+                         conf.CHANNEL_ID, offset)
     except (AttributeError) as e:
         logger.error(e)
 
@@ -114,7 +85,7 @@ while True:
     except (json.JSONDecodeError, TypeError, ValidationError):
         logger.error("Malformed video response @ offset %d", offset)
 
-    offset += LIMIT
+    offset += conf.LIMIT
 con.commit()
 
 # Fetch all comments
@@ -130,9 +101,9 @@ for idx, video_id in enumerate(id_list):
 
     while True:
         body = get_request_bodies.get_comment_request_body(
-            video_id, LIMIT, offset)
+            video_id, conf.LIMIT, offset)
         try:
-            resp = requests.post(HOST, json=body, timeout=30)
+            resp = requests.post(conf.HOST, json=body, timeout=30)
             resp.raise_for_status()
             obj = resp.json()
 
@@ -159,14 +130,14 @@ for idx, video_id in enumerate(id_list):
                     comment_count += 1
 
                 # Don't need to query the next page if this is not full
-                if len(comments) < LIMIT:
+                if len(comments) < conf.LIMIT:
                     dbutils.add_comment_count(cur, comment_count, video_id)
                     break
 
             else:
                 logger.error("[%s] @ offset %d contains error",
                              video_id, offset)
-                with open(f'{COMMENT_ERROR_PATH}/{video_id}', 'w', encoding="UTF-8") as file:
+                with open(f'{conf.COMMENT_ERROR_PATH}/{video_id}', 'w', encoding="UTF-8") as file:
                     json.dump(body, file)
                 logger.error(
                     "[%s] failed fetching comments after 3 retries", video_id)
@@ -179,7 +150,7 @@ for idx, video_id in enumerate(id_list):
                                video_id, retries, e)
                 continue
 
-            with open(f'{COMMENT_ERROR_PATH}/{video_id}', 'w', encoding="UTF-8") as file:
+            with open(f'{conf.COMMENT_ERROR_PATH}/{video_id}', 'w', encoding="UTF-8") as file:
                 json.dump(body, file)
                 logger.error(
                     "[%s] failed fetching comments after 3 retries", video_id)
@@ -190,12 +161,12 @@ for idx, video_id in enumerate(id_list):
                          video_id, offset)
             break
 
-        offset += LIMIT
+        offset += conf.LIMIT
 con.commit()
 
 # Trying to resolve comment errors
 logger.info("Resolving comment errors")
-ids_to_fetch = os.listdir(COMMENT_ERROR_PATH)
+ids_to_fetch = os.listdir(conf.COMMENT_ERROR_PATH)
 
 for counter, video_id in enumerate(ids_to_fetch):
     offset = 0
@@ -203,13 +174,13 @@ for counter, video_id in enumerate(ids_to_fetch):
 
     logger.info("[%s] retrying comments (%d/%d)",
                 video_id, counter, len(ids_to_fetch))
-    current_limit = EXP_BACKOFF_LIMIT
+    current_limit = conf.EXP_BACKOFF_LIMIT
 
     while True:
         body = get_request_bodies.get_comment_request_body(
             video_id, current_limit, offset)
         try:
-            resp = requests.post(HOST, json=body, timeout=30)
+            resp = requests.post(conf.HOST, json=body, timeout=30)
             resp.raise_for_status()
             obj = json.loads(resp.text)
 
@@ -232,13 +203,19 @@ for counter, video_id in enumerate(ids_to_fetch):
                     comment_count += 1
 
                 offset += len(comments)
-                current_limit = EXP_BACKOFF_LIMIT
+                current_limit = conf.EXP_BACKOFF_LIMIT
 
                 if len(validation.data.getVideoComments) == 0:
                     logger.info("[%s] no more comments to index", video_id)
                     break
 
-            else:
+            elif isinstance(validation, pyd.ErrorResponse):
+                if f"INVALID_ID: {video_id}" in validation.errors[0].message:
+                    logger.warning(
+                        "[%s] invalid request id, stopping retries", video_id
+                    )
+                    break
+
                 logger.warning(
                     "[%s] bad comment @ offset %s with limit %s", video_id, offset, current_limit)
 
@@ -246,7 +223,7 @@ for counter, video_id in enumerate(ids_to_fetch):
                     logger.warning(
                         "[%s] skipping bad comment @ offset %s", video_id, offset)
                     offset += 1
-                    current_limit = EXP_BACKOFF_LIMIT
+                    current_limit = conf.EXP_BACKOFF_LIMIT
                     continue
 
                 current_limit = max(1, current_limit // 2)
@@ -264,7 +241,7 @@ for counter, video_id in enumerate(ids_to_fetch):
 
     logger.info("[%s] Done — %d recovered comments", video_id, comment_count)
     dbutils.add_comment_count(cur, comment_count, video_id)
-    os.remove(f"{COMMENT_ERROR_PATH}/{video_id}")
+    os.remove(f"{conf.COMMENT_ERROR_PATH}/{video_id}")
 con.commit()
 
 # Fetch all comment replies
@@ -280,10 +257,10 @@ for idx, (comment_id, video_id, reply_count) in enumerate(comments):
 
     while True:
         body = get_request_bodies.get_comment_replies_request_body(
-            comment_id, LIMIT, offset)
+            comment_id, conf.LIMIT, offset)
 
         try:
-            resp = requests.post(HOST, json=body, timeout=30)
+            resp = requests.post(conf.HOST, json=body, timeout=30)
             resp.raise_for_status()
             obj = resp.json()
 
@@ -309,14 +286,14 @@ for idx, (comment_id, video_id, reply_count) in enumerate(comments):
                     reply_count_fetched += 1
 
                 # Don't need to query the next page if this is not full
-                if len(replies) < LIMIT:
+                if len(replies) < conf.LIMIT:
                     logger.info("[%s] no more replies @ offset %d",
                                 comment_id, offset)
                     break
             else:
                 logger.error("[%s] bad response @ offset %d",
                              comment_id, offset)
-                with open(f'{REPLY_ERROR_PATH}/{comment_id}', 'w', encoding="UTF-8") as file:
+                with open(f'{conf.REPLY_ERROR_PATH}/{comment_id}', 'w', encoding="UTF-8") as file:
                     json.dump(body, file)
                 logger.error(
                     "[%s] failed to fetch replies after 3 retries", comment_id)
@@ -328,7 +305,7 @@ for idx, (comment_id, video_id, reply_count) in enumerate(comments):
                 logger.warning("[%s] retry %d/3 due to %s",
                                comment_id, retries, e)
                 continue
-            with open(f'{REPLY_ERROR_PATH}/{comment_id}', 'w', encoding="UTF-8") as file:
+            with open(f'{conf.REPLY_ERROR_PATH}/{comment_id}', 'w', encoding="UTF-8") as file:
                 json.dump(body, file)
             logger.error(
                 "[%s] failed to fetch replies after 3 retries", comment_id)
@@ -339,20 +316,26 @@ for idx, (comment_id, video_id, reply_count) in enumerate(comments):
                          comment_id, offset)
             break
 
-        offset += LIMIT
+        offset += conf.LIMIT
 con.commit()
 
 # Trying to resolve reply errors (exponential back-off)
 logger.info("Resolving reply errors")
-ids_to_fetch = os.listdir(REPLY_ERROR_PATH)
+ids_to_fetch = os.listdir(conf.REPLY_ERROR_PATH)
 
 for counter, comment_id in enumerate(ids_to_fetch):
     offset = 0
     reply_count_fetched = 0
-    current_limit = EXP_BACKOFF_LIMIT
+    current_limit = conf.EXP_BACKOFF_LIMIT
+    comment_reply_count = dbutils.get_comment_reply_count(cur, comment_id)
 
     logger.info(
-        "[%s] retrying replies (%d/%d)", comment_id, counter, len(ids_to_fetch))
+        "[%s] retrying replies (%d/%d) expecting %d comments",
+        comment_id,
+        counter,
+        len(ids_to_fetch),
+        comment_reply_count
+    )
 
     while True:
         body = get_request_bodies.get_comment_replies_request_body(
@@ -360,7 +343,7 @@ for counter, comment_id in enumerate(ids_to_fetch):
         )
 
         try:
-            resp = requests.post(HOST, json=body, timeout=30)
+            resp = requests.post(conf.HOST, json=body, timeout=30)
             obj = resp.json()
 
             adapter = TypeAdapter(pyd.GetCommentRepliesUnion)
@@ -391,9 +374,15 @@ for counter, comment_id in enumerate(ids_to_fetch):
                     break
 
                 offset += len(replies)
-                current_limit = EXP_BACKOFF_LIMIT
+                current_limit = conf.EXP_BACKOFF_LIMIT
 
-            else:
+            elif isinstance(validation, pyd.ErrorResponse):
+                if f"INVALID_ID: {comment_id}" in validation.errors[0].message:
+                    logger.warning(
+                        "[%s] invalid request id, stopping retries", comment_id
+                    )
+                    break
+
                 logger.warning(
                     "[%s] bad reply @ offset %d with limit %d", comment_id, offset, current_limit
                 )
@@ -403,7 +392,15 @@ for counter, comment_id in enumerate(ids_to_fetch):
                         "[%s] skipping poisoned reply @ offset %d", comment_id, offset
                     )
                     offset += 1
-                    current_limit = EXP_BACKOFF_LIMIT
+
+                    if offset >= comment_reply_count:
+                        logger.warning(
+                            "[%s] reached expected reply count, stopping retries", comment_id
+                        )
+                        break
+
+                    current_limit = conf.EXP_BACKOFF_LIMIT
+
                 else:
                     current_limit = max(1, current_limit // 2)
 
@@ -419,7 +416,7 @@ for counter, comment_id in enumerate(ids_to_fetch):
             break
 
     logger.info("[%s] done, got %d replies", comment_id, reply_count_fetched)
-    os.remove(f"{REPLY_ERROR_PATH}/{comment_id}")
+    os.remove(f"{conf.REPLY_ERROR_PATH}/{comment_id}")
 
 # Clean-up and timestamp database
 dbutils.add_timestamp(cur)
@@ -427,7 +424,7 @@ con.commit()
 con.close()
 logger.info("Added timestamp and closed database")
 
-shutil.move(TEMP_DB_PATH, MAIN_DB_PATH)
+shutil.move(conf.TEMP_DB_PATH, conf.MAIN_DB_PATH)
 logger.info("Database updated successfully (temp.db → store.db)")
 
 # Print run-time information
@@ -442,8 +439,8 @@ summary = f"""**Archive Summary**
 - New videos: {new_videos}
 - New comments: {new_comments}
 - New replies: {new_replies}
-- Comments DLQ size: {len(os.listdir(COMMENT_ERROR_PATH))}
-- Reply DLQ size: {len(os.listdir(REPLY_ERROR_PATH))}
+- Comments DLQ size: {len(os.listdir(conf.COMMENT_ERROR_PATH))}
+- Reply DLQ size: {len(os.listdir(conf.REPLY_ERROR_PATH))}
 """
 logger.info(summary)
-shutil.copy(f"{LOG_DIR}/current.txt", LOG_FILE)
+shutil.copy(f"{conf.LOG_DIR}/current.txt", conf.LOG_FILE)

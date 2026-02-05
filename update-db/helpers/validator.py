@@ -31,7 +31,7 @@ class ErrorResponse(GraphQLBaseModel):
     """
     Model for GraphQL error responses, containing a list of error messages.
     """
-    errors: List[GraphQLErrorMsg]
+    errors: List[GraphQLErrorMsg] = Field(..., min_length=1)
 
 # Get Channel Videos Validation
 
