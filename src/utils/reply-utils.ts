@@ -43,3 +43,18 @@ export const fetchCommentReplies = async(commentId: string) => {
         return undefined;
     }
 }
+
+export const getReplyById = async(replyId: string) => {
+    try {
+        const response = await fetch(`/api/reply/by-id?replyId=` + replyId);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        return data;
+    }
+    catch (error) {
+        console.error("Failed to fetch reply by ID.", error);
+        return undefined;
+    }
+}

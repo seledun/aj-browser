@@ -99,7 +99,7 @@ export default function SingleCommentPage() {
                                     <div className="flex flex-col items-center">
                                         <p className="text-[11px] uppercase text-default-400 font-bold mb-1">Posted</p>
                                         <p className="text-sm font-semibold text-default-600">
-                                            {format(parseISO(commentData.createdAt), "yyyy/MM/dd")}
+                                            {format(parseISO(commentData.createdAt), "yyyy/MM/dd HH:mm")}
                                         </p>
                                     </div>
 
