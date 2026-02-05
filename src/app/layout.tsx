@@ -15,7 +15,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Bland.video - Browse Banned Videos",
+  title: "bland.video - banned.video archive browser",
   description: "banned.video browser",
 };
 
@@ -24,20 +24,21 @@ export const metadata: Metadata = {
 // globals.css includes @tailwind directives
 // adjust the path if necessary
 import "@/app/globals.css";
-import {Providers} from "./providers";
+import { Providers } from "./providers";
 import MainNavBar from "@/components/MainNavBar";
 import Footer from "@/components/Footer";
 
-export default function RootLayout({children}: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className='dark'>
       <body>
         <Providers>
+          <ArchiveStatisticsProvider>
             <MainNavBar />
-            <ArchiveStatisticsProvider>
-               {children}
-            </ArchiveStatisticsProvider>
+            {children}
             <Footer />
+          </ArchiveStatisticsProvider>
+
         </Providers>
       </body>
     </html>

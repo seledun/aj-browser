@@ -1,6 +1,8 @@
+'use client';
+
 import { useArchiveStatisticsData } from "@/contexts/ArchiveStatisticsContext";
 import { Spinner } from "@heroui/spinner";
-import { Link, Divider, Card } from "@heroui/react";
+import { Link, Divider } from "@heroui/react";
 
 export default function Footer() {
   const { archiveStatistics } = useArchiveStatisticsData();

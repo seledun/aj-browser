@@ -23,7 +23,9 @@ export default function MainNavBar() {
         <Navbar>
             <NavbarContent className="hidden sm:flex gap-8" justify="start">
                 <NavbarBrand className="pr-4">
-                    <p className="font-bold text-inherit mx-2">bland.video</p>
+                    <Link href="/" className="flex items-center gap-2 text-foreground! no-underline!">
+                        <p className="font-bold text-lg text-inherit mx-2">bland.video</p>
+                    </Link>
                 </NavbarBrand>
                 <NavbarItem>
                     <Link className="text-foreground! no-underline!" color="foreground" href="/">
