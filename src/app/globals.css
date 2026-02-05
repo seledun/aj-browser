@@ -23,13 +23,13 @@
 }
 
 :root {
-  --background: #313131;
+  --background: #1c1c1c;
   --foreground: #ededed;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #313131;
+    --background: #1c1c1c;
     --foreground: #ededed;
   }
 }
