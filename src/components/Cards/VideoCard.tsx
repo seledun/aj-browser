@@ -1,21 +1,20 @@
 import { Video } from "@/utils/video-utils"
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card"
-import { Tooltip } from "@heroui/tooltip" // Import Tooltip
-import { Divider } from "@heroui/divider" // Cleaner than <hr>
+import { Tooltip } from "@heroui/tooltip"
+import { Divider } from "@heroui/divider"
 import { format, parseISO } from "date-fns"
 import Link from "next/link"
 
 function VideoCard({ video }: { video: Video }) {
   return (
     <Card
-      className="w-full my-3" // Changed min-w to w-full for your grid layout
+      className="w-full my-3"
       radius="lg"
       shadow="sm"
       isHoverable
       key={video.id}
     >
       <CardHeader className="flex-col items-start px-4 pt-4">
-        {/* Tooltip handles the hover, line-clamp-3 handles the truncation */}
         <Tooltip 
           content={video.title} 
           delay={500} 

@@ -14,7 +14,7 @@ import Footer from "@/components/Footer";
 import { Accordion, AccordionItem } from "@heroui/accordion";
 
 import { Comment, searchAllComments, searchAllCommentsTerms } from "../../utils/comment-utils";
-import { Link } from "@heroui/react";
+import { Link, Tooltip } from "@heroui/react";
 import { SharedSelection } from "@heroui/react";
 
 const sortBy = [
@@ -172,86 +172,151 @@ export default function Home() {
   }
 
   return (
-    <div className="h-screen">
-      <div className="flex flex-col gap-3 items-center min-w-67.75">
-        <Accordion className=" sticky mt-2 top-0 z-40 max-w-md bg-black opacity-80" isCompact variant="bordered" defaultExpandedKeys={["1"]}>
-          <AccordionItem key="1" title="Search options" className="">
-            <div className="grid grid-cols-3 gap-2 bg-black rounded-b-2xl p-6 sticky top-0 z-40">
-              <h2 className="col-span-3 text-lg text-center"><b>{strictMode ? "(strict) " : ""}Query: &quot;{searchTerm ? searchTerm : "all comments"}&quot; ({comments.length})</b></h2>
-              <Button className="" size="sm" isDisabled={page === 0} onPress={() => prevPage()}>Back</Button>
-              <span className="inline-block text-sm content-center text-center">Page {page + 1}</span>
-              <Button className="" size="sm" onPress={() => nextPage()}>Next</Button>
-              <Input isClearable onClear={() => clearSearch()} onChange={searchVideos} size="sm" className=" col-span-3 h-10" label="Search"></Input>
-              <Dropdown>
-                <DropdownTrigger>
-                  <Button
-                    variant="flat"
-                    size="sm"
-                    className="capitalize  col-span-2"
-                  >
-                    {selectedValue}
-                  </Button>
-                </DropdownTrigger>
-                <DropdownMenu
-                  className=" bg-background border-none"
-                  disallowEmptySelection
-                  selectionMode="single"
-                  selectedKeys={sortBySelection}
-                  onSelectionChange={updateSortBySelection}
-                >
-                  {sortBy.map((val) => (
-                    <DropdownItem className="" key={val}>{val}</DropdownItem>
-                  ))}
-                </DropdownMenu>
-              </Dropdown>
-              <Checkbox onValueChange={toggleSortingOrder} defaultSelected size="sm">Desc.</Checkbox>
-              <Checkbox onValueChange={setStrictMode} size="sm" className="justify-self-center">Strict</Checkbox>
-              <Link href="/" className="col-span-3 text-center align-middle text-sm no-underline">Search videos</Link>
+    <div className="min-h-screen flex flex-col bg-background">
+      <div className="flex flex-col gap-6 items-center w-full px-4 py-4">
+
+        {/* Refactored Accordion: Unified with Video Search Page */}
+        <Accordion
+          className="sticky top-2 z-40 w-full max-w-2xl mx-auto"
+          variant="shadow"
+          isCompact
+          defaultExpandedKeys={["1"]}
+        >
+          <AccordionItem
+            key="1"
+            title={
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-default-600">Comment Search</span>
+                {!loading && (
+                  <span className="text-tiny bg-default-100 px-2 py-0.5 rounded-full text-default-600">
+                    {searchTerm ? `"${searchTerm}"` : "All comments"} ({comments.length})
+                  </span>
+                )}
+              </div>
+            }
+          >
+            <div className="flex flex-col gap-6 p-4 pt-0">
+              {/* Main Search Bar */}
+              <Input
+                isClearable
+                fullWidth
+                onClear={() => clearSearch()}
+                onChange={searchVideos}
+                placeholder="Search comments across all videos..."
+                size="md"
+                variant="flat"
+              />
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Sorting & Order */}
+                <div className="flex gap-2 items-center">
+                  <Dropdown>
+                    <DropdownTrigger>
+                      <Button variant="flat" size="sm" className="w-full justify-between capitalize">
+                        {selectedValue}
+                      </Button>
+                    </DropdownTrigger>
+                    <DropdownMenu
+                      disallowEmptySelection
+                      selectionMode="single"
+                      selectedKeys={sortBySelection}
+                      onSelectionChange={updateSortBySelection}
+                    >
+                      {sortBy.map((val) => (
+                        <DropdownItem key={val}>{val}</DropdownItem>
+                      ))}
+                    </DropdownMenu>
+                  </Dropdown>
+                  <Checkbox onValueChange={toggleSortingOrder} defaultSelected size="sm">Desc</Checkbox>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1">
+                    <Button isIconOnly size="sm" variant="flat" isDisabled={page === 0} onPress={() => prevPage()}>‹</Button>
+                    <span className="text-tiny font-semibold px-2 min-w-[60px] text-center">Page {page + 1}</span>
+                    <Button isIconOnly size="sm" variant="flat" onPress={() => nextPage()}>›</Button>
+                  </div>
+                  <Checkbox onValueChange={setStrictMode} size="sm" isSelected={strictMode}>Strict</Checkbox>
+                </div>
+              </div>
+
+              <Divider />
+              <div className="flex justify-center">
+                <Link href="/" size="sm" showAnchorIcon className="text-default-500 font-medium">
+                  Switch to Video Search
+                </Link>
+              </div>
             </div>
           </AccordionItem>
         </Accordion>
-        {
-          loading ?
-            <div style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "100vh",
-              width: "100vw"
-            }}>
-              <Spinner />
+
+        {/* Responsive Comments Grid */}
+        <main className="w-full max-w-7xl mx-auto px-2">
+          {loading ? (
+            <div className="flex justify-center items-center h-[50vh]">
+              <Spinner size="lg" color="primary" label="Searching comments..." />
             </div>
-            :
-            <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          ) : (
+            <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 list-none p-0">
               {comments.map((comment, index) => (
-                <Card
-                  radius="sm"
-                  key={comment.id}
-                >
-                  <CardHeader>
-                    <Link className="no-underline font-bold" href={"/video?videoId=" + comment.videoId}><span className="text-medium">{comment.video?.title}</span></Link>
-                  </CardHeader>
-                  <Divider className="my-2" />
-                  <CardBody>
-                    <span className="px-2 pb-1 text-medium">
-                      <Link className="no-underline font-bold" href={"/user?userId=" + comment.userId}>{comment.username}</Link>
-                    </span>
-                    <p className="px-4">
-                      {comment.content}
-                    </p>
-                  </CardBody>
-                  <hr></hr>
-                  <CardFooter>
-                    <div className="grid grid-cols-3 xl:grid-cols-3 gap-2 text-center text-sm w-full">
-                      <p>Posted<br></br><b>{format(parseISO(comment.createdAt), "yy/MM/dd HH:mm")}</b></p>
-                      <p>Likes<br></br><b>{comment.posVotes}</b></p>
-                      <p>Replies<br></br><b>{comment.replyCount}</b></p>
-                    </div>
-                  </CardFooter>
-                </Card>
+                <li key={comment.id || index}>
+                  <Card shadow="sm" radius="lg" isHoverable className="h-full border-none">
+                    <CardHeader className="flex flex-col items-start px-4 pt-4">
+                      <Tooltip
+                        content={comment.video?.title}
+                        delay={500}
+                        portalContainer={typeof window !== "undefined" ? document.body : undefined}
+                      >
+                        <div className="w-full pointer-events-auto">
+                          <Link
+                            className="text-xs font-bold text-primary line-clamp-1 hover:underline"
+                            href={`/video?videoId=${comment.videoId}`}
+                          >
+                            {comment.video?.title}
+                          </Link>
+                        </div>
+                      </Tooltip>
+                    </CardHeader>
+
+                    <CardBody className="py-2">
+                      <div className="mb-2">
+                        <Link
+                          className="text-sm font-semibold text-default-700 hover:text-primary"
+                          href={`/user?userId=${comment.userId}`}
+                        >
+                          @{comment.username}
+                        </Link>
+                      </div>
+                      <p className="text-default-600 text-sm line-clamp-4">
+                        {comment.content}
+                      </p>
+                    </CardBody>
+
+                    <Divider />
+
+                    <CardFooter className="bg-default-50/30">
+                      <div className="grid grid-cols-3 gap-2 text-center w-full">
+                        <div>
+                          <p className="text-[10px] uppercase text-default-400 font-bold">Posted</p>
+                          <p className="text-tiny font-semibold text-default-600">
+                            {format(parseISO(comment.createdAt), "yy/MM/dd")}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] uppercase text-default-400 font-bold">Likes</p>
+                          <p className="text-tiny font-mono font-bold text-default-700">{comment.posVotes}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] uppercase text-default-400 font-bold">Replies</p>
+                          <p className="text-tiny font-mono font-bold text-default-700">{comment.replyCount}</p>
+                        </div>
+                      </div>
+                    </CardFooter>
+                  </Card>
+                </li>
               ))}
             </ul>
-        }
+          )}
+        </main>
       </div>
       <Footer />
     </div>

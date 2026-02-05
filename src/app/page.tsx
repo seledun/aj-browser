@@ -10,7 +10,7 @@ import { SearchProps } from "../utils/video-utils";
 import Footer from "@/components/Footer";
 
 import { Video, fetchVideos, fetchVideoSearch } from "../utils/video-utils";
-import Link from "next/link";
+import { Link } from "@heroui/react";
 import { Divider, SharedSelection } from "@heroui/react";
 import { Accordion, AccordionItem } from "@heroui/accordion";
 import VideoCard from "@/components/Cards/VideoCard";
@@ -274,6 +274,7 @@ export default function Home() {
       <Divider />
       <div className="flex justify-center">
         <Link 
+          showAnchorIcon
           href="/comments" 
           className="text-default-500 hover:text-primary transition-colors"
         >
