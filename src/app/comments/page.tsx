@@ -16,6 +16,7 @@ import { Accordion, AccordionItem } from "@heroui/accordion";
 import { Comment, searchAllComments, searchAllCommentsTerms } from "../../utils/comment-utils";
 import { Link, Tooltip } from "@heroui/react";
 import { SharedSelection } from "@heroui/react";
+import CommentReplyDrawer from "@/components/CommentReplyDrawer";
 
 const sortBy = [
   'Date',
@@ -30,6 +31,9 @@ export default function Home() {
   const [strictMode, setStrictMode] = useState<boolean>(false);
   const [sortDesc, setSortDesc] = useState<boolean>(true);
   const [page, setPage] = useState<number>(0);
+
+  const [replyDrawerOpen, setReplyDrawerOpen] = useState<boolean>(false);
+  const [selectedComment, setSelectedComment] = useState<Comment | null>(null);
 
   const [sortBySelection, setSortBySelection] = useState(new Set(["Sort by"]));
 
@@ -180,7 +184,6 @@ export default function Home() {
           className="sticky top-2 z-40 w-full max-w-2xl mx-auto"
           variant="shadow"
           isCompact
-          defaultExpandedKeys={["1"]}
         >
           <AccordionItem
             key="1"
@@ -251,6 +254,13 @@ export default function Home() {
 
         {/* Responsive Comments Grid */}
         <main className="w-full max-w-7xl mx-auto">
+          {selectedComment && (
+            <CommentReplyDrawer
+              isOpen={replyDrawerOpen}
+              onClose={() => setReplyDrawerOpen(false)}
+              parent={selectedComment}
+            />
+          )}
           {loading ? (
             <div className="flex justify-center items-center h-[50vh]">
               <Spinner size="lg" color="primary" label="Searching comments..." />
@@ -268,7 +278,7 @@ export default function Home() {
                       >
                         <div className="w-full pointer-events-auto">
                           <Link
-                            className="text-s font-bold text-primary line-clamp-3 hover:underline"
+                            className="text-s font-bold text-primary line-clamp-3 hover:underline no-underline!"
                             href={`/video?videoId=${comment.videoId}`}
                           >
                             {comment.video?.title}
@@ -278,15 +288,13 @@ export default function Home() {
                     </CardHeader>
 
                     <CardBody className="py-2">
-                      <div className="mb-2">
+                      <p className="text-default-600 text-sm">
                         <Link
-                          className="text-sm font-semibold text-default-700 hover:text-primary"
+                          className="text-sm font-semibold text-default-700 hover:text-primary pr-1 no-underline!"
                           href={`/user?userId=${comment.userId}`}
                         >
-                          @{comment.username}
+                          @{comment.username}:
                         </Link>
-                      </div>
-                      <p className="text-default-600 text-sm">
                         {comment.content}
                       </p>
                     </CardBody>
@@ -307,7 +315,17 @@ export default function Home() {
                         </div>
                         <div>
                           <p className="text-[10px] uppercase text-default-400 font-bold">Replies</p>
-                          <p className="text-tiny font-mono font-bold text-default-700">{comment.replyCount}</p>
+                          <button
+                            className={`text-sm font-mono ${comment.replyCount > 0 ? "text-primary hover:underline cursor-pointer" : "text-default-400 cursor-default"}`}
+                            onClick={() => {
+                              if (comment.replyCount > 0) {
+                                setSelectedComment(comment);
+                                setReplyDrawerOpen(true);
+                              }
+                            }}
+                          >
+                            {comment.replyCount}
+                          </button>
                         </div>
                       </div>
                     </CardFooter>

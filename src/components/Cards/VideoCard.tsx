@@ -22,7 +22,9 @@ function VideoCard({ video }: { video: Video }) {
           className="max-w-xs"
         >
           <h1 className="text-md font-bold leading-tight line-clamp-3 cursor-help">
+            <Link href={`/video?videoId=${video.id}`} className="hover:underline no-underline!">
             {video.title}
+            </Link>
           </h1>
         </Tooltip>
       </CardHeader>

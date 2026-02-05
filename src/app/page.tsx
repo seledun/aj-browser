@@ -179,7 +179,6 @@ export default function Home() {
           className="sticky mt-2 top-0 z-40 w-full max-w-2xl mx-auto" // Slightly wider for better breathing room
           variant="shadow" // Shadow variant feels more premium in HeroUI
           isCompact
-          defaultExpandedKeys={["1"]}
         >
           <AccordionItem
             key="1"
@@ -268,7 +267,7 @@ export default function Home() {
             </div>
           </AccordionItem>
         </Accordion>
-        <main className="w-full mx-auto">
+        <main className="w-full mx-auto mb-8">
           {loading ? (
             <div className="flex justify-center items-center h-[60vh] w-full">
               <Spinner size="lg" />

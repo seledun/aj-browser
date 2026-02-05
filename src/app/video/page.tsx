@@ -15,6 +15,7 @@ import { Link } from "@heroui/react";
 import { Video } from "@/utils/video-utils";
 import { Divider, HeroUIProvider, SharedSelection } from "@heroui/react";
 import { Accordion, AccordionItem } from "@heroui/accordion";
+import CommentReplyDrawer from "@/components/CommentReplyDrawer";
 
 interface Comment {
     id: string,
@@ -39,6 +40,9 @@ export default function Comments() {
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [searchMode, setSearchMode] = useState<boolean>(false);
     const [strictMode, setStrictMode] = useState<boolean>(false);
+
+    const [selectedComment, setSelectedComment] = useState<Comment | null>(null);
+    const [replyDrawerOpen, setReplyDrawerOpen] = useState<boolean>(false);
 
     useEffect(() => {
         const ret = new URLSearchParams(window.location.search).get('videoId');
@@ -201,7 +205,6 @@ export default function Comments() {
                         className="sticky top-2 z-40 w-full max-w-2xl"
                         variant="shadow"
                         isCompact
-                        defaultExpandedKeys={["1"]}
                     >
                         <AccordionItem
                             key="1"
@@ -263,47 +266,67 @@ export default function Comments() {
                     {/* Comments Feed Section */}
                     <main className="w-full max-w-3xl mx-auto">
                         {!loading ? (
-                            <ul className="flex flex-col gap-4 list-none">
-                                {comments.map((comment) => (
-                                    <li key={comment.id}>
-                                        <Card className="border-none bg-content1 shadow-sm" radius="lg" isHoverable>
-                                            <CardHeader className="flex gap-3 px-6 pt-5">
-                                                <div className="flex flex-col">
-                                                    <Link
-                                                        className="text-md font-bold text-primary"
-                                                        href={"/user?userId=" + comment.userId}
-                                                    >
-                                                        @{comment.username}
-                                                    </Link>
-                                                </div>
-                                            </CardHeader>
-
-                                            <CardBody className="px-6 py-2 text-default-700 leading-relaxed">
-                                                <p className="whitespace-pre-wrap">{comment.content}</p>
-                                            </CardBody>
-
-                                            <Divider className="my-2" />
-
-                                            <CardFooter className="px-6 pb-5">
-                                                <div className="flex justify-between w-full text-tiny text-default-400">
+                            <div>
+                                {/* Only render the drawer if selectedComment is not null */}
+                                {selectedComment && (
+                                    <CommentReplyDrawer
+                                        isOpen={replyDrawerOpen}
+                                        onClose={() => setReplyDrawerOpen(false)}
+                                        parent={selectedComment}
+                                    />
+                                )}
+                                <ul className="flex flex-col gap-4 list-none">
+                                    {comments.map((comment) => (
+                                        <li key={comment.id}>
+                                            <Card className="border-none bg-content1 shadow-sm" radius="lg" isHoverable>
+                                                <CardHeader className="flex gap-3 px-6 pt-5">
                                                     <div className="flex flex-col">
-                                                        <span className="font-bold uppercase tracking-tighter">Posted</span>
-                                                        <span>{format(parseISO(comment.createdAt), "yy/MM/dd HH:mm")}</span>
+                                                        <Link
+                                                            className="text-md font-bold text-primary"
+                                                            href={"/user?userId=" + comment.userId}
+                                                        >
+                                                            @{comment.username}
+                                                        </Link>
                                                     </div>
-                                                    <div className="flex flex-col items-center">
-                                                        <span className="font-bold uppercase tracking-tighter">Likes</span>
-                                                        <span className="font-mono text-success-600">{comment.posVotes}</span>
+                                                </CardHeader>
+
+                                                <CardBody className="px-6 py-2 text-default-700 leading-relaxed">
+                                                    <p className="whitespace-pre-wrap">{comment.content}</p>
+                                                </CardBody>
+
+                                                <Divider className="my-2" />
+
+                                                <CardFooter className="px-6 pb-5">
+                                                    <div className="flex justify-between w-full text-tiny text-default-400">
+                                                        <div className="flex flex-col">
+                                                            <span className="font-bold uppercase tracking-tighter">Posted</span>
+                                                            <span>{format(parseISO(comment.createdAt), "yy/MM/dd HH:mm")}</span>
+                                                        </div>
+                                                        <div className="flex flex-col items-center">
+                                                            <span className="font-bold uppercase tracking-tighter">Likes</span>
+                                                            <span className="font-mono text-success-600">{comment.posVotes}</span>
+                                                        </div>
+                                                        <div className="flex flex-col items-end">
+                                                            <span className="font-bold uppercase tracking-tighter">Replies</span>
+                                                            <button
+                                                                className={`text-sm font-mono ${comment.replyCount > 0 ? "text-primary hover:underline cursor-pointer" : "text-default-400 cursor-default"}`}
+                                                                onClick={() => {
+                                                                    if (comment.replyCount > 0) {
+                                                                        setSelectedComment(comment);
+                                                                        setReplyDrawerOpen(true);
+                                                                    }
+                                                                }}
+                                                            >
+                                                                {comment.replyCount}
+                                                            </button>
+                                                        </div>
                                                     </div>
-                                                    <div className="flex flex-col items-end">
-                                                        <span className="font-bold uppercase tracking-tighter">Replies</span>
-                                                        <span className="font-mono text-default-600">{comment.replyCount}</span>
-                                                    </div>
-                                                </div>
-                                            </CardFooter>
-                                        </Card>
-                                    </li>
-                                ))}
-                            </ul>
+                                                </CardFooter>
+                                            </Card>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
                         ) : (
                             <div className="flex flex-col items-center justify-center h-[50vh] gap-4">
                                 <Spinner size="lg" />

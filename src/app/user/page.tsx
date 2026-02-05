@@ -11,6 +11,7 @@ import { Link } from "@heroui/react";
 import { Video } from "@/utils/video-utils";
 import { Accordion, AccordionItem } from "@heroui/accordion";
 import { Divider, Tooltip } from "@heroui/react";
+import CommentReplyDrawer from "@/components/CommentReplyDrawer";
 
 interface Comment {
     id: string,
@@ -32,6 +33,9 @@ export default function Comments() {
     const [userId, setUserId] = useState<string>("");
     const [username, setUsername] = useState<string>("");
     const [commentCount, setCommentCount] = useState<number>(0);
+
+    const [replyDrawerOpen, setReplyDrawerOpen] = useState<boolean>(false);
+    const [selectedComment, setSelectedComment] = useState<Comment | null>(null);
 
     useEffect(() => {
         const ret = new URLSearchParams(window.location.search).get('userId');
@@ -109,7 +113,6 @@ export default function Comments() {
                     className="sticky top-2 z-40 w-full max-w-2xl mx-auto"
                     variant="shadow"
                     isCompact
-                    defaultExpandedKeys={["1"]}
                 >
                     <AccordionItem
                         key="1"
@@ -160,56 +163,76 @@ export default function Comments() {
                 {/* Comments List Section */}
                 <main className="w-full max-w-3xl mx-auto pb-10">
                     {!loading ? (
-                        <ul className="flex flex-col gap-4 p-0 list-none">
-                            {comments.map((comment) => (
-                                <li key={comment.id}>
-                                    <Card shadow="sm" radius="lg" isHoverable className="border-none">
-                                        <CardHeader className="flex-col items-start px-6 pt-5 gap-1">
-                                            <h2 className="text-md font-bold text-default-700">@{comment.username}</h2>
+                        <div>
+                            {selectedComment && (
+                                <CommentReplyDrawer
+                                    isOpen={replyDrawerOpen}
+                                    onClose={() => setReplyDrawerOpen(false)}
+                                    parent={selectedComment}
+                                />
+                            )}
 
-                                            {/* Tooltip for the specific video title */}
-                                            <Tooltip
-                                                content={comment.video?.title}
-                                                delay={500}
-                                                portalContainer={typeof window !== "undefined" ? document.body : undefined}
-                                            >
-                                                <div className="w-full pointer-events-auto">
-                                                    <Link
-                                                        href={"/video?videoId=" + comment.videoId}
-                                                        className="text-xs font-semibold text-primary line-clamp-1"
-                                                    >
-                                                        {comment.video?.title}
-                                                    </Link>
-                                                </div>
-                                            </Tooltip>
-                                        </CardHeader>
+                            <ul className="flex flex-col gap-4 p-0 list-none">
+                                {comments.map((comment) => (
+                                    <li key={comment.id}>
+                                        <Card shadow="sm" radius="lg" isHoverable className="border-none">
+                                            <CardHeader className="flex-col items-start px-6 pt-5 gap-1">
+                                                <h2 className="text-md font-bold text-default-700">@{comment.username}</h2>
 
-                                        <CardBody className="px-6 py-2 text-default-600 leading-relaxed">
-                                            <p className="whitespace-pre-wrap">{comment.content}</p>
-                                        </CardBody>
+                                                {/* Tooltip for the specific video title */}
+                                                <Tooltip
+                                                    content={comment.video?.title}
+                                                    delay={500}
+                                                    portalContainer={typeof window !== "undefined" ? document.body : undefined}
+                                                >
+                                                    <div className="w-full pointer-events-auto">
+                                                        <Link
+                                                            href={"/video?videoId=" + comment.videoId}
+                                                            className="text-xs font-semibold text-primary line-clamp-1"
+                                                        >
+                                                            {comment.video?.title}
+                                                        </Link>
+                                                    </div>
+                                                </Tooltip>
+                                            </CardHeader>
 
-                                        <Divider className="my-2" />
+                                            <CardBody className="px-6 py-2 text-default-600 leading-relaxed">
+                                                <p className="whitespace-pre-wrap">{comment.content}</p>
+                                            </CardBody>
 
-                                        <CardFooter className="px-6 pb-5">
-                                            <div className="flex justify-between w-full text-tiny text-default-400">
-                                                <div className="flex flex-col">
-                                                    <span className="font-bold uppercase tracking-tighter text-[10px]">Posted</span>
-                                                    <span className="font-medium text-default-500">{format(parseISO(comment.createdAt), "yy/MM/dd HH:mm")}</span>
+                                            <Divider className="my-2" />
+
+                                            <CardFooter className="px-6 pb-5">
+                                                <div className="flex justify-between w-full text-tiny text-default-400">
+                                                    <div className="flex flex-col">
+                                                        <span className="font-bold uppercase tracking-tighter text-[10px]">Posted</span>
+                                                        <span className="font-medium text-default-500">{format(parseISO(comment.createdAt), "yy/MM/dd HH:mm")}</span>
+                                                    </div>
+                                                    <div className="flex flex-col items-center">
+                                                        <span className="font-bold uppercase tracking-tighter text-[10px]">Likes</span>
+                                                        <span className="font-mono text-success-600 font-semibold">{comment.posVotes}</span>
+                                                    </div>
+                                                    <div className="flex flex-col items-end">
+                                                        <span className="font-bold uppercase tracking-tighter text-[10px]">Replies</span>
+                                                        <button
+                                                            className={`text-sm font-mono ${comment.replyCount > 0 ? "text-primary hover:underline cursor-pointer" : "text-default-400 cursor-default"}`}
+                                                            onClick={() => {
+                                                                if (comment.replyCount > 0) {
+                                                                    setSelectedComment(comment);
+                                                                    setReplyDrawerOpen(true);
+                                                                }
+                                                            }}
+                                                        >
+                                                            {comment.replyCount}
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                                <div className="flex flex-col items-center">
-                                                    <span className="font-bold uppercase tracking-tighter text-[10px]">Likes</span>
-                                                    <span className="font-mono text-success-600 font-semibold">{comment.posVotes}</span>
-                                                </div>
-                                                <div className="flex flex-col items-end">
-                                                    <span className="font-bold uppercase tracking-tighter text-[10px]">Replies</span>
-                                                    <span className="font-mono text-default-600 font-semibold">{comment.replyCount}</span>
-                                                </div>
-                                            </div>
-                                        </CardFooter>
-                                    </Card>
-                                </li>
-                            ))}
-                        </ul>
+                                            </CardFooter>
+                                        </Card>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
                     ) : (
                         <div className="flex justify-center items-center h-[50vh]">
                             <Spinner size="lg" label="Loading user comments..." />
