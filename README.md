@@ -1,4 +1,4 @@
-## The project
+## banned.video archival project
 The aj-browser archive tools are part of an archival project to backup channels on the https://banned.video website.
 
 The goal of the archive is 1. to archive the contents of the channels available at the site, and 2. make the archived data available and searchable to anyone interested in its content.

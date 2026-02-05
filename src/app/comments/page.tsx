@@ -177,11 +177,11 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="flex flex-col gap-8 items-center w-full px-4 py-4">
+      <div className="flex flex-col gap-8 items-center w-full px-4 pb-4">
 
         {/* Refactored Accordion: Unified with Video Search Page */}
         <Accordion
-          className="sticky top-2 z-40 w-full max-w-2xl mx-auto"
+          className="sticky top-18 z-40 w-full max-w-2xl mx-auto"
           variant="shadow"
           isCompact
         >
@@ -368,7 +368,6 @@ export default function Home() {
           )}
         </main>
       </div>
-      <Footer />
     </div>
   );
 }

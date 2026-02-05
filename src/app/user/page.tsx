@@ -108,9 +108,9 @@ export default function Comments() {
     return (
         <div className="min-h-screen flex flex-col">
             {/* Header Section */}
-            <div className="flex flex-col gap-6 items-center w-full px-4 py-4">
+            <div className="flex flex-col gap-6 items-center w-full px-4 pb-4">
                 <Accordion
-                    className="sticky top-2 z-40 w-full max-w-2xl mx-auto"
+                    className="sticky top-18 z-40 w-full max-w-2xl mx-auto"
                     variant="shadow"
                     isCompact
                 >
@@ -267,7 +267,6 @@ export default function Comments() {
                     )}
                 </main>
             </div>
-            <Footer />
         </div>
     )
 }

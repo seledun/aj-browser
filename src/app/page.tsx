@@ -176,7 +176,7 @@ export default function Home() {
     <div className="min-h-screen flex flex-col">
       <div className="flex flex-col gap-3 items-center w-full px-4">
         <Accordion
-          className="sticky mt-2 top-0 z-40 w-full max-w-2xl mx-auto" // Slightly wider for better breathing room
+          className="sticky mt-2 top-18 z-40 w-full max-w-2xl mx-auto" // Slightly wider for better breathing room
           variant="shadow" // Shadow variant feels more premium in HeroUI
           isCompact
         >
@@ -283,7 +283,6 @@ export default function Home() {
           )}
         </main>
       </div>
-      <Footer />
     </div>
   );
 }

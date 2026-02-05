@@ -13,7 +13,7 @@ import { searchComments } from "@/utils/comment-utils";
 import { Input } from "@heroui/input";
 import { Link, Tooltip } from "@heroui/react";
 import { Video } from "@/utils/video-utils";
-import { Divider, HeroUIProvider, SharedSelection } from "@heroui/react";
+import { Divider } from "@heroui/react";
 import { Accordion, AccordionItem } from "@heroui/accordion";
 import CommentReplyDrawer from "@/components/CommentReplyDrawer";
 
@@ -196,167 +196,165 @@ export default function Comments() {
     }
 
     return (
-        <HeroUIProvider>
-            <div className="min-h-screen flex flex-col">
-                <div className="flex flex-col gap-6 items-center w-full px-4 py-4">
+        <div className="min-h-screen flex flex-col">
+            <div className="flex flex-col gap-6 items-center w-full px-4 pb-4">
 
-                    {/* Search & Header Section */}
-                    <Accordion
-                        className="sticky top-2 z-40 w-full max-w-2xl"
-                        variant="shadow"
-                        isCompact
+                {/* Search & Header Section */}
+                <Accordion
+                    className="sticky top-18 z-40 w-full max-w-2xl"
+                    variant="shadow"
+                    isCompact
+                >
+                    <AccordionItem
+                        key="1"
+                        title={
+                            <div className="flex flex-col gap-1">
+                                <span className="text-sm font-medium text-default-600">
+                                    {strictMode ? "(Strict) " : ""}Showing {commentCount} comments
+                                </span>
+                                <span className="text-small font-bold line-clamp-2 max-w-xs sm:max-w-md">
+                                    {title}
+                                </span>
+                            </div>
+                        }
                     >
-                        <AccordionItem
-                            key="1"
-                            title={
-                                <div className="flex flex-col gap-1">
-                                    <span className="text-sm font-medium text-default-600">
-                                        {strictMode ? "(Strict) " : ""}Showing {commentCount} comments
-                                    </span>
-                                    <span className="text-small font-bold line-clamp-2 max-w-xs sm:max-w-md">
-                                        {title}
-                                    </span>
-                                </div>
-                            }
-                        >
-                            <div className="flex flex-col gap-4 p-4 pt-0">
-                                <div className="flex justify-between items-center">
-                                    <Link
-                                        isExternal
-                                        showAnchorIcon
-                                        size="sm"
-                                        href={"https://banned.video/watch?id=" + thread}
-                                        className="text-primary font-medium"
-                                    >
-                                        View Source on banned.video
-                                    </Link>
+                        <div className="flex flex-col gap-4 p-4 pt-0">
+                            <div className="flex justify-between items-center">
+                                <Link
+                                    isExternal
+                                    showAnchorIcon
+                                    size="sm"
+                                    href={"https://banned.video/watch?id=" + thread}
+                                    className="text-primary font-medium"
+                                >
+                                    View Source on banned.video
+                                </Link>
+                            </div>
+
+                            <Input
+                                onClear={() => clearSearch()}
+                                onChange={searchEvent}
+                                isClearable
+                                size="md"
+                                label="Search in this thread"
+                                variant="flat"
+                            />
+
+                            <div className="flex flex-wrap items-center justify-between gap-4">
+                                {/* Pagination Group */}
+                                <div className="flex items-center gap-2">
+                                    <Button isIconOnly size="sm" variant="flat" isDisabled={page === 0} onPress={() => prevPage()}>‹</Button>
+                                    <span className="text-tiny font-semibold px-2">Page {page + 1}</span>
+                                    <Button isIconOnly size="sm" variant="flat" onPress={() => nextPage()}>›</Button>
                                 </div>
 
-                                <Input
-                                    onClear={() => clearSearch()}
-                                    onChange={searchEvent}
-                                    isClearable
-                                    size="md"
-                                    label="Search in this thread"
-                                    variant="flat"
+                                {/* Toggles Group */}
+                                <div className="flex gap-4">
+                                    <Checkbox onValueChange={setStrictMode} isSelected={strictMode} size="sm" color="warning">
+                                        Strict
+                                    </Checkbox>
+                                    <Checkbox isDisabled size="sm">
+                                        Desc.
+                                    </Checkbox>
+                                </div>
+                            </div>
+                        </div>
+                    </AccordionItem>
+                </Accordion>
+
+                {/* Comments Feed Section */}
+                <main className="w-full max-w-3xl mx-auto">
+                    {!loading ? (
+                        <div>
+                            {/* Only render the drawer if selectedComment is not null */}
+                            {selectedComment && (
+                                <CommentReplyDrawer
+                                    isOpen={replyDrawerOpen}
+                                    onClose={() => setReplyDrawerOpen(false)}
+                                    parent={selectedComment}
                                 />
+                            )}
+                            <ul className="flex flex-col gap-4 list-none">
+                                {comments.map((comment) => (
+                                    <li key={comment.id}>
+                                        <Card className="border-none bg-content1 shadow-sm" radius="lg" isHoverable>
+                                            <CardHeader className="flex gap-3 px-6 pt-5">
+                                                <div className="flex flex-col">
+                                                    <Link
+                                                        className="text-md font-bold text-primary no-underline!"
+                                                        href={"/user?userId=" + comment.userId}
+                                                    >
+                                                        {comment.username}
+                                                    </Link>
+                                                </div>
+                                            </CardHeader>
 
-                                <div className="flex flex-wrap items-center justify-between gap-4">
-                                    {/* Pagination Group */}
-                                    <div className="flex items-center gap-2">
-                                        <Button isIconOnly size="sm" variant="flat" isDisabled={page === 0} onPress={() => prevPage()}>‹</Button>
-                                        <span className="text-tiny font-semibold px-2">Page {page + 1}</span>
-                                        <Button isIconOnly size="sm" variant="flat" onPress={() => nextPage()}>›</Button>
-                                    </div>
+                                            <CardBody className="px-6 py-2 text-default-700 leading-relaxed">
+                                                <p className="whitespace-pre-wrap">{comment.content}</p>
+                                            </CardBody>
 
-                                    {/* Toggles Group */}
-                                    <div className="flex gap-4">
-                                        <Checkbox onValueChange={setStrictMode} isSelected={strictMode} size="sm" color="warning">
-                                            Strict
-                                        </Checkbox>
-                                        <Checkbox isDisabled size="sm">
-                                            Desc.
-                                        </Checkbox>
-                                    </div>
-                                </div>
-                            </div>
-                        </AccordionItem>
-                    </Accordion>
+                                            <Divider className="my-2" />
 
-                    {/* Comments Feed Section */}
-                    <main className="w-full max-w-3xl mx-auto">
-                        {!loading ? (
-                            <div>
-                                {/* Only render the drawer if selectedComment is not null */}
-                                {selectedComment && (
-                                    <CommentReplyDrawer
-                                        isOpen={replyDrawerOpen}
-                                        onClose={() => setReplyDrawerOpen(false)}
-                                        parent={selectedComment}
-                                    />
-                                )}
-                                <ul className="flex flex-col gap-4 list-none">
-                                    {comments.map((comment) => (
-                                        <li key={comment.id}>
-                                            <Card className="border-none bg-content1 shadow-sm" radius="lg" isHoverable>
-                                                <CardHeader className="flex gap-3 px-6 pt-5">
+                                            <CardFooter className="px-6 pb-5">
+                                                <div className="flex justify-between w-full text-tiny text-default-400">
                                                     <div className="flex flex-col">
-                                                        <Link
-                                                            className="text-md font-bold text-primary no-underline!"
-                                                            href={"/user?userId=" + comment.userId}
+                                                        <span className="font-bold uppercase tracking-tighter">Posted</span>
+                                                        <span>{format(parseISO(comment.createdAt), "yy/MM/dd HH:mm")}</span>
+                                                    </div>
+                                                    <div className="flex flex-col items-center">
+                                                        <span className="font-bold uppercase tracking-tighter">Likes</span>
+                                                        <span className="font-mono text-success-600">{comment.posVotes}</span>
+                                                    </div>
+                                                    <div className="flex flex-col items-end">
+                                                        <span className="font-bold uppercase tracking-tighter">Replies</span>
+                                                        <button
+                                                            className={`text-sm font-mono ${comment.replyCount > 0 ? "text-primary hover:underline cursor-pointer" : "text-default-400 cursor-default"}`}
+                                                            onClick={() => {
+                                                                if (comment.replyCount > 0) {
+                                                                    setSelectedComment(comment);
+                                                                    setReplyDrawerOpen(true);
+                                                                }
+                                                            }}
                                                         >
-                                                            {comment.username}
-                                                        </Link>
+                                                            {comment.replyCount}
+                                                        </button>
                                                     </div>
-                                                </CardHeader>
-
-                                                <CardBody className="px-6 py-2 text-default-700 leading-relaxed">
-                                                    <p className="whitespace-pre-wrap">{comment.content}</p>
-                                                </CardBody>
-
-                                                <Divider className="my-2" />
-
-                                                <CardFooter className="px-6 pb-5">
-                                                    <div className="flex justify-between w-full text-tiny text-default-400">
-                                                        <div className="flex flex-col">
-                                                            <span className="font-bold uppercase tracking-tighter">Posted</span>
-                                                            <span>{format(parseISO(comment.createdAt), "yy/MM/dd HH:mm")}</span>
-                                                        </div>
-                                                        <div className="flex flex-col items-center">
-                                                            <span className="font-bold uppercase tracking-tighter">Likes</span>
-                                                            <span className="font-mono text-success-600">{comment.posVotes}</span>
-                                                        </div>
-                                                        <div className="flex flex-col items-end">
-                                                            <span className="font-bold uppercase tracking-tighter">Replies</span>
-                                                            <button
-                                                                className={`text-sm font-mono ${comment.replyCount > 0 ? "text-primary hover:underline cursor-pointer" : "text-default-400 cursor-default"}`}
-                                                                onClick={() => {
-                                                                    if (comment.replyCount > 0) {
-                                                                        setSelectedComment(comment);
-                                                                        setReplyDrawerOpen(true);
-                                                                    }
-                                                                }}
+                                                    {/* NEW Column 4: Share (Single View) */}
+                                                    <div className="flex flex-col items-end justify-center">
+                                                        <Tooltip content="Open Single View" delay={500}>
+                                                            <Link
+                                                                href={`/comments/single-comment?commentId=${comment.id}`}
+                                                                className="text-default-400 hover:text-primary transition-colors"
                                                             >
-                                                                {comment.replyCount}
-                                                            </button>
-                                                        </div>
-                                                        {/* NEW Column 4: Share (Single View) */}
-                                                        <div className="flex flex-col items-end justify-center">
-                                                            <Tooltip content="Open Single View" delay={500}>
-                                                                <Link
-                                                                    href={`/comments/single-comment?commentId=${comment.id}`}
-                                                                    className="text-default-400 hover:text-primary transition-colors"
+                                                                <svg
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    fill="none"
+                                                                    viewBox="0 0 24 24"
+                                                                    strokeWidth={2}
+                                                                    stroke="currentColor"
+                                                                    className="w-5 h-5"
                                                                 >
-                                                                    <svg
-                                                                        xmlns="http://www.w3.org/2000/svg"
-                                                                        fill="none"
-                                                                        viewBox="0 0 24 24"
-                                                                        strokeWidth={2}
-                                                                        stroke="currentColor"
-                                                                        className="w-5 h-5"
-                                                                    >
-                                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-                                                                    </svg>
-                                                                </Link>
-                                                            </Tooltip>
-                                                        </div>
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                                                                </svg>
+                                                            </Link>
+                                                        </Tooltip>
                                                     </div>
-                                                </CardFooter>
-                                            </Card>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        ) : (
-                            <div className="flex flex-col items-center justify-center h-[50vh] gap-4">
-                                <Spinner size="lg" />
-                                <p className="text-default-400 animate-pulse">Loading thread...</p>
-                            </div>
-                        )}
-                    </main>
-                </div>
-                <Footer />
+                                                </div>
+                                            </CardFooter>
+                                        </Card>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ) : (
+                        <div className="flex flex-col items-center justify-center h-[50vh] gap-4">
+                            <Spinner size="lg" />
+                            <p className="text-default-400 animate-pulse">Loading thread...</p>
+                        </div>
+                    )}
+                </main>
             </div>
-        </HeroUIProvider>
+        </div>
+
     )
 }

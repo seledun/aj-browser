@@ -25,15 +25,19 @@ export const metadata: Metadata = {
 // adjust the path if necessary
 import "@/app/globals.css";
 import {Providers} from "./providers";
+import MainNavBar from "@/components/MainNavBar";
+import Footer from "@/components/Footer";
 
 export default function RootLayout({children}: { children: React.ReactNode }) {
   return (
     <html lang="en" className='dark'>
       <body>
         <Providers>
+            <MainNavBar />
             <ArchiveStatisticsProvider>
                {children}
             </ArchiveStatisticsProvider>
+            <Footer />
         </Providers>
       </body>
     </html>

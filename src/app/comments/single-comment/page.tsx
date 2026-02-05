@@ -133,7 +133,6 @@ export default function SingleCommentPage() {
                     </div>
                 )}
             </main>
-            <Footer />
         </div>
     );
 }
