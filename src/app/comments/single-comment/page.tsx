@@ -63,6 +63,7 @@ export default function SingleCommentPage() {
                     <div className="w-full max-w-5xl">
                         <Card shadow="md" radius="lg" className="border-none bg-content1">
                             <CardHeader className="flex flex-col items-start px-6 pt-6">
+                                <span className="text-sm text-slate-500 pb-2">comment for video</span>
                                 <Tooltip
                                     content={videoData.title}
                                     delay={500}
