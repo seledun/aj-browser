@@ -74,3 +74,17 @@ export const fetchVideoSearch = async (str: string, start: number, limit: number
         return undefined;
     }
 }
+
+export const getVideoById = async (id: string): Promise<Video | undefined> => {
+    try {
+        const response = await fetch(`/api/video/by-id?videoId=${id}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Failed to fetch video:", error);
+        return undefined;
+    }
+}

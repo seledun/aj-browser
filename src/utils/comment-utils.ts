@@ -150,3 +150,17 @@ export const fetchUserComments = async (user: string, start: number, limit: numb
         return undefined;
     }
 };
+
+export const getCommentById = async (id: string): Promise<Comment | undefined> => {
+    try {
+        const response = await fetch(`/api/comment/by-id?commentId=${id}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Failed to fetch comment:", error);
+        return undefined;
+    }
+};
