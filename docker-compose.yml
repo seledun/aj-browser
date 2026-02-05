@@ -4,8 +4,6 @@ services:
     build: .
     ports:
       - "3100:3000"
-    environment:
-      DATABASE_URL: "file:./prisma/store.db"
     volumes:
       - ./prisma/store.db:/app/prisma/store.db
     command: npm run start
