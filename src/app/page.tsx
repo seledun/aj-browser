@@ -251,7 +251,7 @@ export default function Home() {
             <Button isIconOnly size="sm" variant="flat" isDisabled={page === 0} onPress={() => prevPage()}>
               Back
             </Button>
-            <span className="text-tiny font-semibold min-w-[60px] text-center">
+            <span className="text-tiny font-semibold min-w-15 text-center">
               Page {page + 1}
             </span>
             <Button isIconOnly size="sm" variant="flat" onPress={() => nextPage()}>

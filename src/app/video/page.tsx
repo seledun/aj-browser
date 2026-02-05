@@ -11,9 +11,9 @@ import { Checkbox } from "@heroui/checkbox";
 import { fetchVideoName } from "@/utils/video-utils";
 import { searchComments } from "@/utils/comment-utils";
 import { Input } from "@heroui/input";
-import Link from "next/link";
+import { Link } from "@heroui/react";
 import { Video } from "@/utils/video-utils";
-import { HeroUIProvider, SharedSelection } from "@heroui/react";
+import { Divider, HeroUIProvider, SharedSelection } from "@heroui/react";
 import { Accordion, AccordionItem } from "@heroui/accordion";
 
 interface Comment {
@@ -112,7 +112,7 @@ export default function Comments() {
             if (comments !== undefined && comments.length > 0) {
                 setComments(comments);
             }
-        } 
+        }
         setLoading(false);
     }
 
@@ -193,45 +193,124 @@ export default function Comments() {
 
     return (
         <HeroUIProvider>
-            <div>
-                <div>
-                    <Accordion defaultExpandedKeys={["1"]}>
-                        <AccordionItem key="1" title="Search options" className="">
-                            <div className="p-6 text-center">
-                                <h2>{strictMode ? "(strict) " : ""}Showing{" " + commentCount} comments for<div className="text-md font-semibold">{title}</div></h2><br />
-                                <Link className="no-underline m-2 text-sm" href={"https://banned.video/watch?id=" + thread} target="_blank" rel="noopener noreferrer">Source link</Link>
-                                <Input onClear={() => clearSearch()} onChange={searchEvent} isClearable size="sm" label="Search comments"></Input>
-                                    <Button size="sm" isDisabled={page === 0} onPress={() => prevPage()}>Back</Button>
-                                    <Button size="sm" onPress={() => nextPage()}>Next</Button>
-                                    <Checkbox onValueChange={setStrictMode}>Strict</Checkbox>
-                                    <Checkbox isDisabled>Desc.</Checkbox>
+            <div className="min-h-screen flex flex-col bg-background">
+                <div className="flex flex-col gap-6 items-center w-full px-4 py-4">
+
+                    {/* Search & Header Section */}
+                    <Accordion
+                        className="sticky top-2 z-40 w-full max-w-2xl"
+                        variant="shadow"
+                        isCompact
+                        defaultExpandedKeys={["1"]}
+                    >
+                        <AccordionItem
+                            key="1"
+                            title={
+                                <div className="flex flex-col gap-1">
+                                    <span className="text-sm font-medium text-default-600">
+                                        {strictMode ? "(Strict) " : ""}Showing {commentCount} comments
+                                    </span>
+                                    <span className="text-small font-bold line-clamp-2 max-w-xs sm:max-w-md">
+                                        {title}
+                                    </span>
+                                </div>
+                            }
+                        >
+                            <div className="flex flex-col gap-4 p-4 pt-0">
+                                <div className="flex justify-between items-center">
+                                    <Link
+                                        isExternal
+                                        showAnchorIcon
+                                        size="sm"
+                                        href={"https://banned.video/watch?id=" + thread}
+                                        className="text-primary font-medium"
+                                    >
+                                        View Source on banned.video
+                                    </Link>
+                                </div>
+
+                                <Input
+                                    onClear={() => clearSearch()}
+                                    onChange={searchEvent}
+                                    isClearable
+                                    size="md"
+                                    label="Search in this thread"
+                                    variant="flat"
+                                />
+
+                                <div className="flex flex-wrap items-center justify-between gap-4">
+                                    {/* Pagination Group */}
+                                    <div className="flex items-center gap-2">
+                                        <Button isIconOnly size="sm" variant="flat" isDisabled={page === 0} onPress={() => prevPage()}>‹</Button>
+                                        <span className="text-tiny font-semibold px-2">Page {page + 1}</span>
+                                        <Button isIconOnly size="sm" variant="flat" onPress={() => nextPage()}>›</Button>
+                                    </div>
+
+                                    {/* Toggles Group */}
+                                    <div className="flex gap-4">
+                                        <Checkbox onValueChange={setStrictMode} isSelected={strictMode} size="sm" color="warning">
+                                            Strict
+                                        </Checkbox>
+                                        <Checkbox isDisabled size="sm">
+                                            Desc.
+                                        </Checkbox>
+                                    </div>
+                                </div>
                             </div>
                         </AccordionItem>
                     </Accordion>
-                </div>
-                <div>
-                    <ul>
-                        {
-                            !loading ?
-                                comments.map((comment, index) => (
+
+                    {/* Comments Feed Section */}
+                    <main className="w-full max-w-3xl mx-auto pb-10">
+                        {!loading ? (
+                            <ul className="flex flex-col gap-4 list-none p-0">
+                                {comments.map((comment) => (
                                     <li key={comment.id}>
-                                        <Card radius="lg">
-                                            <CardHeader><h2 className="text-lg pt-4 pl-1"><b><Link className="no-underline" href={"/user?userId=" + comment.userId}>{comment.username}</Link></b></h2></CardHeader>
-                                            <CardBody className="px-6">{comment.content}</CardBody>
-                                            <CardFooter>
-                                                <ul className="w-full flex justify-evenly text-center text-sm">
-                                                    <li>Posted<br></br><b>{format(parseISO(comment.createdAt), "yy/MM/dd HH:mm")}</b></li>
-                                                    <li>Likes<br></br><b>{comment.posVotes}</b></li>
-                                                    <li>Replies<br></br><b>{comment.replyCount}</b></li>
-                                                </ul>
+                                        <Card className="border-none bg-content1 shadow-sm" radius="lg" isHoverable>
+                                            <CardHeader className="flex gap-3 px-6 pt-5">
+                                                <div className="flex flex-col">
+                                                    <Link
+                                                        className="text-md font-bold text-primary"
+                                                        href={"/user?userId=" + comment.userId}
+                                                    >
+                                                        @{comment.username}
+                                                    </Link>
+                                                </div>
+                                            </CardHeader>
+
+                                            <CardBody className="px-6 py-2 text-default-700 leading-relaxed">
+                                                <p className="whitespace-pre-wrap">{comment.content}</p>
+                                            </CardBody>
+
+                                            <Divider className="my-2" />
+
+                                            <CardFooter className="px-6 pb-5">
+                                                <div className="flex justify-between w-full text-tiny text-default-400">
+                                                    <div className="flex flex-col">
+                                                        <span className="font-bold uppercase tracking-tighter">Posted</span>
+                                                        <span>{format(parseISO(comment.createdAt), "yy/MM/dd HH:mm")}</span>
+                                                    </div>
+                                                    <div className="flex flex-col items-center">
+                                                        <span className="font-bold uppercase tracking-tighter">Likes</span>
+                                                        <span className="font-mono text-default-600">{comment.posVotes}</span>
+                                                    </div>
+                                                    <div className="flex flex-col items-end">
+                                                        <span className="font-bold uppercase tracking-tighter">Replies</span>
+                                                        <span className="font-mono text-default-600">{comment.replyCount}</span>
+                                                    </div>
+                                                </div>
                                             </CardFooter>
                                         </Card>
                                     </li>
-                                ))
-                                :
-                                <Spinner></Spinner>
-                        }
-                    </ul>
+                                ))}
+                            </ul>
+                        ) : (
+                            <div className="flex flex-col items-center justify-center h-[50vh] gap-4">
+                                <Spinner size="lg" />
+                                <p className="text-default-400 animate-pulse">Loading thread...</p>
+                            </div>
+                        )}
+                    </main>
                 </div>
                 <Footer />
             </div>
