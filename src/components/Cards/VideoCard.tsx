@@ -53,7 +53,7 @@ function VideoCard({ video }: { video: Video }) {
           {/* ROW 1 */}
           <div className="flex flex-col py-2">
             <p className="text-[10px] uppercase text-default-400 font-bold leading-tight mb-1">Posted</p>
-            <p className="text-tiny font-semibold">{format(parseISO(video.createdAt), "yy/MM/dd")}</p>
+            <p className="text-tiny font-semibold">{format(parseISO(video.createdAt), "yyyy/MM/dd HH:mm")}</p>
           </div>
 
           {/* Vertical borders on middle column */}

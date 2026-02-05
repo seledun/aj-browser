@@ -308,7 +308,7 @@ export default function Home() {
                         <div className="flex flex-col items-center justify-center">
                           <p className="text-[10px] uppercase text-default-400 font-bold leading-none mb-1">Posted</p>
                           <p className="text-tiny font-semibold text-default-600">
-                            {format(parseISO(comment.createdAt), "yy/MM/dd")}
+                            {format(parseISO(comment.createdAt), "yyyy/MM/dd HH:mm")}
                           </p>
                         </div>
 
