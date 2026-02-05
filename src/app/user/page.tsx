@@ -203,16 +203,21 @@ export default function Comments() {
                                             <Divider className="my-2" />
 
                                             <CardFooter className="px-6 pb-5">
-                                                <div className="flex justify-between w-full text-tiny text-default-400">
+                                                <div className="flex justify-between w-full text-tiny text-default-400 items-center">
+                                                    {/* Column 1: Posted */}
                                                     <div className="flex flex-col">
                                                         <span className="font-bold uppercase tracking-tighter text-[10px]">Posted</span>
                                                         <span className="font-medium text-default-500">{format(parseISO(comment.createdAt), "yy/MM/dd HH:mm")}</span>
                                                     </div>
+
+                                                    {/* Column 2: Likes */}
                                                     <div className="flex flex-col items-center">
                                                         <span className="font-bold uppercase tracking-tighter text-[10px]">Likes</span>
                                                         <span className="font-mono text-success-600 font-semibold">{comment.posVotes}</span>
                                                     </div>
-                                                    <div className="flex flex-col items-end">
+
+                                                    {/* Column 3: Replies */}
+                                                    <div className="flex flex-col items-center">
                                                         <span className="font-bold uppercase tracking-tighter text-[10px]">Replies</span>
                                                         <button
                                                             className={`text-sm font-mono ${comment.replyCount > 0 ? "text-primary hover:underline cursor-pointer" : "text-default-400 cursor-default"}`}
@@ -225,6 +230,28 @@ export default function Comments() {
                                                         >
                                                             {comment.replyCount}
                                                         </button>
+                                                    </div>
+
+                                                    {/* Column 4: Share (New) */}
+                                                    <div className="flex flex-col items-end">
+                                                        <span className="font-bold uppercase tracking-tighter text-[10px]">Share</span>
+                                                        <Tooltip content="Open Single View" delay={500}>
+                                                            <Link
+                                                                href={`/comments/single-comment?commentId=${comment.id}`}
+                                                                className="text-default-400 hover:text-primary transition-colors pt-1"
+                                                            >
+                                                                <svg
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    fill="none"
+                                                                    viewBox="0 0 24 24"
+                                                                    strokeWidth={2.5}
+                                                                    stroke="currentColor"
+                                                                    className="w-3.5 h-3.5"
+                                                                >
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                                                                </svg>
+                                                            </Link>
+                                                        </Tooltip>
                                                     </div>
                                                 </div>
                                             </CardFooter>

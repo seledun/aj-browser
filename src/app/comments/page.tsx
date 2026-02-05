@@ -302,8 +302,7 @@ export default function Home() {
                     <Divider />
 
                     <CardFooter className="bg-default-50/30">
-                      {/* Added items-center to the grid */}
-                      <div className="grid grid-cols-3 gap-2 text-center w-full items-center">
+                      <div className="grid grid-cols-4 gap-2 text-center w-full items-center">
 
                         {/* Column 1: Posted */}
                         <div className="flex flex-col items-center justify-center">
@@ -320,12 +319,12 @@ export default function Home() {
                         </div>
 
                         {/* Column 3: Replies */}
-                        <div className="flex flex-col items-center justify-center">
+                        <div className="flex flex-col items-center justify-center border-r border-default-200/50">
                           <p className="text-[10px] uppercase text-default-400 font-bold leading-none mb-1">Replies</p>
                           <button
                             className={`text-sm font-mono leading-none ${comment.replyCount > 0
-                                ? "text-primary hover:underline cursor-pointer"
-                                : "text-default-400 cursor-default"
+                              ? "text-primary hover:underline cursor-pointer"
+                              : "text-default-400 cursor-default"
                               }`}
                             onClick={() => {
                               if (comment.replyCount > 0) {
@@ -336,6 +335,28 @@ export default function Home() {
                           >
                             {comment.replyCount}
                           </button>
+                        </div>
+
+                        {/* Column 4: Share */}
+                        <div className="flex flex-col items-center justify-center">
+                          <p className="text-[10px] uppercase text-default-400 font-bold leading-none mb-1">Share</p>
+                          <Tooltip content="Open Single View" delay={500}>
+                            <Link
+                              href={`/comments/single-comment?commentId=${comment.id}`}
+                              className="text-default-400 hover:text-primary transition-colors"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={2.5}
+                                stroke="currentColor"
+                                className="w-3.5 h-3.5"
+                              >
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                              </svg>
+                            </Link>
+                          </Tooltip>
                         </div>
 
                       </div>
