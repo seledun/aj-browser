@@ -261,7 +261,7 @@ export default function Home() {
                   href="/comments"
                   className="text-default-500 hover:text-primary transition-colors"
                 >
-                  Search inside comments
+                  Browse all comments
                 </Link>
               </div>
             </div>

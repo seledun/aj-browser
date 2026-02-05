@@ -245,7 +245,7 @@ export default function Home() {
               <Divider />
               <div className="flex justify-center">
                 <Link href="/" size="sm" showAnchorIcon className="text-default-500 font-medium">
-                  Switch to Video Search
+                  Browse all videos
                 </Link>
               </div>
             </div>

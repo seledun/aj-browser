@@ -282,10 +282,10 @@ export default function Comments() {
                                                 <CardHeader className="flex gap-3 px-6 pt-5">
                                                     <div className="flex flex-col">
                                                         <Link
-                                                            className="text-md font-bold text-primary"
+                                                            className="text-md font-bold text-primary no-underline!"
                                                             href={"/user?userId=" + comment.userId}
                                                         >
-                                                            @{comment.username}
+                                                            {comment.username}
                                                         </Link>
                                                     </div>
                                                 </CardHeader>
