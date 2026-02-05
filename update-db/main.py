@@ -30,8 +30,8 @@ logger = logging.getLogger(__name__)
 """Sets up the database connection and cursor"""
 # Copy the database to not update it in place
 logger = logging.getLogger(__name__)
-# shutil.copyfile(conf.MAIN_DB_PATH, conf.TEMP_DB_PATH)
-# logger.info("Copied database: store.db → temp.db")
+shutil.copyfile(conf.MAIN_DB_PATH, conf.TEMP_DB_PATH)
+logger.info("Copied database: store.db → temp.db")
 
 # Create database connection and cursor
 logger.info("Connecting to database and initializing tables")
