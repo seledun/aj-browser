@@ -6,50 +6,50 @@ datasource db {
   provider = "sqlite"
 }
 
-model Video {
-  id           String     @unique
-  title        String
-  summary      String
-  playCount    Int
-  likeCount    Int
-  angerCount   Int
-  duration     Float?
-  createdAt    String
-  commentCount Int?
-  comments     Comment[]
-}
-
-model Comment {
-  id             String    @unique
-  videoId        String
-  content        String
-  userId         String
-  username       String
-  userType       String
-  posVotes       Int
+model comment {
+  id             String  @id
+  videoId        String?
+  content        String?
+  userId         String?
+  username       String?
+  userType       String?
+  posVotes       Int?
   linkedUserName String?
   linkedUserId   String?
-  createdAt      String
-  replyCount     Int
-  video          Video    @relation(fields: [videoId], references: [id])
-  replies        Reply[]
+  createdAt      String?
+  replyCount     Int?
+  video          video?  @relation(fields: [videoId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  reply          reply[]
 }
 
-model Reply {
-  id             String   @unique
-  content        String
-  liked          String
-  userId         String
-  userName       String
-  voteCount      Int
-  linkedUserName String?
-  linkedUserId   String?
-  createdAt      String
-  replyTo        String
-  comment        Comment @relation(fields: [replyTo], references: [id])
-}
-
-model Modified {
+model modified {
   id      Int     @id @default(autoincrement())
   updated String?
+}
+
+model reply {
+  id             String   @id
+  content        String?
+  liked          String?
+  userId         String?
+  userName       String?
+  voteCount      Int?
+  linkedUserName String?
+  linkedUserId   String?
+  createdAt      String?
+  replyTo        String?
+  comment        comment? @relation(fields: [replyTo], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model video {
+  id           String    @id
+  title        String?
+  summary      String?
+  playCount    Int?
+  likeCount    Int?
+  angerCount   Int?
+  duration     Float?
+  createdAt    String?
+  commentCount Int?      @default(0)
+  comment      comment[]
 }

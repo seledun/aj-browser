@@ -14,29 +14,29 @@ def initialize_tables(cur):
     cur.execute("PRAGMA foreign_keys = ON")
 
     cur.execute("""
-    CREATE TABLE IF NOT EXISTS Video (
-        id TEXT PRIMARY KEY, title TEXT, summary TEXT, playCount INTEGER,
+    CREATE TABLE IF NOT EXISTS video (
+        id TEXT PRIMARY KEY NOT NULL, title TEXT, summary TEXT, playCount INTEGER,
         likeCount INTEGER, angerCount INTEGER, duration REAL, createdAt TEXT,
         commentCount INTEGER DEFAULT 0
     )
     """)
     cur.execute("""
-    CREATE TABLE IF NOT EXISTS Comment (
-        id TEXT PRIMARY KEY, videoId TEXT, content TEXT, userId TEXT,
+    CREATE TABLE IF NOT EXISTS comment (
+        id TEXT PRIMARY KEY NOT NULL, videoId TEXT, content TEXT, userId TEXT,
         username TEXT, userType TEXT, posVotes INTEGER, linkedUserName TEXT,
         linkedUserId TEXT, createdAt TEXT, replyCount INTEGER,
-        FOREIGN KEY (videoId) REFERENCES Video(id) ON DELETE CASCADE
+        FOREIGN KEY (videoId) REFERENCES video(id) ON DELETE CASCADE
     )
     """)
     cur.execute("""
-    CREATE TABLE IF NOT EXISTS Reply (
-        id TEXT PRIMARY KEY, content TEXT, liked TEXT, userId TEXT,
+    CREATE TABLE IF NOT EXISTS reply (
+        id TEXT PRIMARY KEY NOT NULL, content TEXT, liked TEXT, userId TEXT,
         userName TEXT, voteCount INTEGER, linkedUserName TEXT, linkedUserId TEXT, createdAt TEXT,
-        replyTo TEXT, FOREIGN KEY (replyTo) REFERENCES Comment(id) ON DELETE CASCADE
+        replyTo TEXT, FOREIGN KEY (replyTo) REFERENCES comment(id) ON DELETE CASCADE
     )
     """)
     cur.execute(
-        "CREATE TABLE IF NOT EXISTS Modified (id INTEGER PRIMARY KEY AUTOINCREMENT, updated TEXT)")
+        "CREATE TABLE IF NOT EXISTS modified (id INTEGER PRIMARY KEY AUTOINCREMENT, updated TEXT)")
 
 
 def setup_indexes(cur):
@@ -45,9 +45,9 @@ def setup_indexes(cur):
     :param cur: SQLite cursor obj
     """
     cur.execute(
-        "CREATE INDEX IF NOT EXISTS idx_comments_videoId ON Comment (videoId)")
+        "CREATE INDEX IF NOT EXISTS idx_comments_videoId ON comment (videoId)")
     cur.execute(
-        "CREATE INDEX IF NOT EXISTS idx_replies_replyTo ON Reply (replyTo)")
+        "CREATE INDEX IF NOT EXISTS idx_replies_replyTo ON reply (replyTo)")
 
 
 def add_video(cur, _id, title, summary, play_count, like_count,
@@ -67,14 +67,14 @@ def add_video(cur, _id, title, summary, play_count, like_count,
     """
     try:
         cur.execute("""
-            INSERT INTO Video (id, title, summary, playCount, likeCount, angerCount,
+            INSERT INTO video (id, title, summary, playCount, likeCount, angerCount,
             duration, createdAt, commentCount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (_id, title, summary, play_count, like_count,
               anger_count, duration, created_at, comment_count))
         return 1
     except sqlite3.IntegrityError:
         cur.execute("""
-            UPDATE Video
+            UPDATE video
             SET playCount = ?, likeCount = ?, angerCount = ?
             WHERE id = ?
         """, (play_count, like_count, anger_count, _id))
@@ -101,14 +101,14 @@ def add_comment(cur: sqlite3.Cursor, video_id, _id, content, user_id, username,
     """
     try:
         cur.execute("""
-            INSERT INTO Comment (id, videoId, content, userId, username, userType,
+            INSERT INTO comment (id, videoId, content, userId, username, userType,
             posVotes, linkedUserName, linkedUserId, createdAt, replyCount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (_id, video_id, content, user_id, username, user_type,
               pos_votes, linked_user_name, linked_user_id, created_at, reply_count))
         return 1
     except sqlite3.IntegrityError:
         cur.execute("""
-            UPDATE Comment
+            UPDATE comment
             SET posVotes = ?, replyCount = ?
             WHERE id = ?
         """, (pos_votes, reply_count, _id))
@@ -134,14 +134,14 @@ def add_reply(cur, _id, content, liked, user_id, user_name,
     """
     try:
         cur.execute("""
-            INSERT INTO Reply (id, content, liked, userId, userName,
+            INSERT INTO reply (id, content, liked, userId, userName,
             voteCount, linkedUserName, linkedUserId, createdAt, replyTo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (_id, content, liked, user_id, user_name, vote_count,
               linked_user_name, linked_user_id, created_at, reply_to))
         return 1
     except sqlite3.IntegrityError:
         cur.execute("""
-            UPDATE Reply
+            UPDATE reply
             SET voteCount = ?
             WHERE id = ?
         """, (vote_count, _id))
@@ -158,7 +158,7 @@ def add_comment_count(cur, count, video_id):
     """
     if count > 0:  # Default value = 0 in database
         cur.execute(
-            "UPDATE Video SET commentCount = ? WHERE id = ?", (count, video_id))
+            "UPDATE video SET commentCount = ? WHERE id = ?", (count, video_id))
         return f"Updated video {video_id} with comment count {count}"
 
 
@@ -171,7 +171,7 @@ def add_timestamp(cur):
     :param cur: SQLite cursor obj    
     """
     timestamp = datetime.now(timezone.utc).isoformat(timespec='milliseconds')
-    cur.execute("INSERT INTO Modified (updated) VALUES (?)", (timestamp,))
+    cur.execute("INSERT INTO modified (updated) VALUES (?)", (timestamp,))
     return f"Dump finished at {timestamp}"
 
 
@@ -185,7 +185,7 @@ def get_pending_comments(cur):
             c.id, 
             c.videoId, 
             c.replyCount
-        FROM Comment c
+        FROM comment c
         LEFT JOIN (
             SELECT replyTo, COUNT(*) as actual_count 
             FROM Reply 
@@ -201,7 +201,7 @@ def get_all_video_ids(cur):
     """
     Fetches all video IDs from the Video table.
     """
-    query = "SELECT id FROM Video"
+    query = "SELECT id FROM video"
     cur.execute(query)
     return [row[0] for row in cur.fetchall()]
 
@@ -209,6 +209,6 @@ def get_comment_reply_count(cur, comment_id):
     """
     Fetches the current number of replies stored in the database for a given comment ID.
     """
-    query = "SELECT COUNT(*) FROM Reply WHERE replyTo = ?"
+    query = "SELECT COUNT(*) FROM reply WHERE replyTo = ?"
     cur.execute(query, (comment_id,))
     return cur.fetchone()[0]
