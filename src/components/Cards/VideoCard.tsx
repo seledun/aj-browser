@@ -3,7 +3,7 @@ import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card"
 import { Tooltip } from "@heroui/tooltip"
 import { Divider } from "@heroui/divider"
 import { format, parseISO } from "date-fns"
-import Link from "next/link"
+import { Link } from "@heroui/react"
 
 function VideoCard({ video }: { video: Video }) {
   return (
@@ -15,15 +15,15 @@ function VideoCard({ video }: { video: Video }) {
       key={video.id}
     >
       <CardHeader className="flex-col items-start px-4 pt-4">
-        <Tooltip 
-          content={video.title} 
-          delay={500} 
+        <Tooltip
+          content={video.title}
+          delay={500}
           closeDelay={0}
           className="max-w-xs"
         >
-          <h1 className="text-md font-bold leading-tight line-clamp-3 cursor-help">
-            <Link href={`/video?videoId=${video.id}`} className="hover:underline no-underline!">
-            {video.title}
+          <h1 className="text-md font-bold leading-tight cursor-help">
+            <Link href={`/video?videoId=${video.id}`} className="line-clamp-3 hover:underline no-underline!">
+              {video.title}
             </Link>
           </h1>
         </Tooltip>
@@ -37,47 +37,61 @@ function VideoCard({ video }: { video: Video }) {
 
       <Divider />
 
-      <CardFooter>
-        <div className="grid grid-cols-3 gap-y-4 gap-x-2 text-center text-tiny w-full">
-          <div>
-            <p className="text-default-400">Posted</p>
-            <p className="font-semibold">{format(parseISO(video.createdAt), "yy/MM/dd")}</p>
-          </div>
-          <div>
-            <p className="text-default-400">Likes</p>
-            <p className="font-semibold text-success">{video.likeCount}</p>
-          </div>
-          <div>
-            <p className="text-default-400">Anger</p>
-            <p className="font-semibold text-danger">{video.angerCount}</p>
-          </div>
-          <div>
-            <p className="text-default-400">Runtime</p>
-            <p className="font-semibold">{video.duration ? Math.round(video.duration / 60) + 'm' : 'n/a'}</p>
-          </div>
-          <div>
-            <p className="text-default-400">Comments</p>
-            <p className="font-semibold text-primary">
-              {video.commentCount ? (
-                <Link href={"/video?videoId=" + video.id}>{video.commentCount}</Link>
-              ) : "0"}
-            </p>
-          </div>
-          <div>
-            <p className="text-default-400">Views</p>
-            <p className="font-semibold">{video.playCount}</p>
+      <CardFooter className="bg-default-50/50 border-t border-default-100 flex-col gap-3">
+        {/* Stats Grid */}
+        <div className="grid grid-cols-3 w-full text-center">
+
+          {/* ROW 1 */}
+          <div className="flex flex-col py-2">
+            <p className="text-[10px] uppercase text-default-400 font-bold leading-tight mb-1">Posted</p>
+            <p className="text-tiny font-semibold">{format(parseISO(video.createdAt), "yy/MM/dd")}</p>
           </div>
 
-          <div className="col-span-3 pt-2 border-t border-default-100">
-            <a 
-              href={"https://banned.video/watch?id=" + video.id} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-primary hover:underline text-xs"
-            >
-              Watch on banned.video
-            </a>
+          {/* Vertical borders on middle column */}
+          <div className="flex flex-col py-2 border-x border-default-200/50">
+            <p className="text-[10px] uppercase text-default-400 font-bold leading-tight mb-1">Likes</p>
+            <p className="text-tiny font-semibold text-success">{video.likeCount}</p>
           </div>
+
+          <div className="flex flex-col py-2">
+            <p className="text-[10px] uppercase text-default-400 font-bold leading-tight mb-1">Anger</p>
+            <p className="text-tiny font-semibold text-danger">{video.angerCount}</p>
+          </div>
+
+          {/* ROW 2 - Added border-t to separate from Row 1 */}
+          <div className="flex flex-col py-2 border-t border-default-200/50">
+            <p className="text-[10px] uppercase text-default-400 font-bold leading-tight mb-1">Runtime</p>
+            <p className="text-tiny font-semibold">{video.duration ? Math.round(video.duration / 60) + 'm' : 'n/a'}</p>
+          </div>
+
+          {/* Middle column with both vertical and horizontal borders */}
+          <div className="flex flex-col py-2 border-t border-x border-default-200/50">
+            <p className="text-[10px] uppercase text-default-400 font-bold leading-tight mb-1">Comments</p>
+            <div className="text-tiny font-semibold text-primary">
+              {video.commentCount ? (
+                <Link href={"/video?videoId=" + video.id} size="sm" className="text-tiny font-semibold p-0 h-auto underline-none!">
+                  {video.commentCount}
+                </Link>
+              ) : "0"}
+            </div>
+          </div>
+
+          <div className="flex flex-col py-2 border-t border-default-200/50">
+            <p className="text-[10px] uppercase text-default-400 font-bold leading-tight mb-1">Views</p>
+            <p className="text-tiny font-semibold">{video.playCount}</p>
+          </div>
+        </div>
+
+        {/* External Link Section */}
+        <div className="w-full pt-2 border-t border-default-200/50 text-center">
+          <a
+            href={"https://banned.video/watch?id=" + video.id}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:underline text-xs font-medium"
+          >
+            Watch on banned.video
+          </a>
         </div>
       </CardFooter>
     </Card>

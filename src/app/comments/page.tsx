@@ -302,21 +302,31 @@ export default function Home() {
                     <Divider />
 
                     <CardFooter className="bg-default-50/30">
-                      <div className="grid grid-cols-3 gap-2 text-center w-full">
-                        <div>
-                          <p className="text-[10px] uppercase text-default-400 font-bold">Posted</p>
+                      {/* Added items-center to the grid */}
+                      <div className="grid grid-cols-3 gap-2 text-center w-full items-center">
+
+                        {/* Column 1: Posted */}
+                        <div className="flex flex-col items-center justify-center">
+                          <p className="text-[10px] uppercase text-default-400 font-bold leading-none mb-1">Posted</p>
                           <p className="text-tiny font-semibold text-default-600">
                             {format(parseISO(comment.createdAt), "yy/MM/dd")}
                           </p>
                         </div>
-                        <div>
-                          <p className="text-[10px] uppercase text-default-400 font-bold">Likes</p>
-                          <p className="text-tiny font-mono font-bold- text-success-700">{comment.posVotes}</p>
+
+                        {/* Column 2: Likes */}
+                        <div className="flex flex-col items-center justify-center border-x border-default-200/50">
+                          <p className="text-[10px] uppercase text-default-400 font-bold leading-none mb-1">Likes</p>
+                          <p className="text-tiny font-mono font-bold text-success-700">{comment.posVotes}</p>
                         </div>
-                        <div>
-                          <p className="text-[10px] uppercase text-default-400 font-bold">Replies</p>
+
+                        {/* Column 3: Replies */}
+                        <div className="flex flex-col items-center justify-center">
+                          <p className="text-[10px] uppercase text-default-400 font-bold leading-none mb-1">Replies</p>
                           <button
-                            className={`text-sm font-mono ${comment.replyCount > 0 ? "text-primary hover:underline cursor-pointer" : "text-default-400 cursor-default"}`}
+                            className={`text-sm font-mono leading-none ${comment.replyCount > 0
+                                ? "text-primary hover:underline cursor-pointer"
+                                : "text-default-400 cursor-default"
+                              }`}
                             onClick={() => {
                               if (comment.replyCount > 0) {
                                 setSelectedComment(comment);
@@ -327,6 +337,7 @@ export default function Home() {
                             {comment.replyCount}
                           </button>
                         </div>
+
                       </div>
                     </CardFooter>
                   </Card>
