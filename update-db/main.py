@@ -442,5 +442,5 @@ summary = f"""**Archive Summary**
 - Comments DLQ size: {len(os.listdir(conf.COMMENT_ERROR_PATH))}
 - Reply DLQ size: {len(os.listdir(conf.REPLY_ERROR_PATH))}
 """
-logger.info(summary)
+print(summary)
 shutil.copy(f"{conf.LOG_DIR}/current.txt", conf.LOG_FILE)
