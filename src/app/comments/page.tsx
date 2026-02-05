@@ -10,12 +10,12 @@ import { Input } from "@heroui/input";
 import { Checkbox } from "@heroui/checkbox";
 import { Divider } from "@heroui/divider"
 import { SearchProps } from "../../utils/video-utils";
-import Footer from "@/components/footer";
+import Footer from "@/components/Footer";
 import { Accordion, AccordionItem } from "@heroui/accordion";
 
 import { Comment, searchAllComments, searchAllCommentsTerms } from "../../utils/comment-utils";
-import Link from "next/link";
-import { HeroUIProvider, SharedSelection } from "@heroui/react";
+import { Link } from "@heroui/react";
+import { SharedSelection } from "@heroui/react";
 
 const sortBy = [
   'Date',
@@ -172,90 +172,88 @@ export default function Home() {
   }
 
   return (
-    <HeroUIProvider>
-      <div className="h-screen">
-        <div className="flex flex-col gap-3 items-center min-w-67.75">
-          <Accordion className=" sticky mt-2 top-0 z-40 max-w-md bg-black opacity-80" isCompact variant="bordered" defaultExpandedKeys={["1"]}>
-            <AccordionItem key="1" title="Search options" className="">
-              <div className="grid grid-cols-3 gap-2 bg-black rounded-b-2xl p-6 sticky top-0 z-40">
-                <h2 className="col-span-3 text-lg text-center"><b>{strictMode ? "(strict) " : ""}Query: &quot;{searchTerm ? searchTerm : "all comments"}&quot; ({comments.length})</b></h2>
-                <Button className="" size="sm" isDisabled={page === 0} onPress={() => prevPage()}>Back</Button>
-                <span className="inline-block text-sm content-center text-center">Page {page + 1}</span>
-                <Button className="" size="sm" onPress={() => nextPage()}>Next</Button>
-                <Input isClearable onClear={() => clearSearch()} onChange={searchVideos} size="sm" className=" col-span-3 h-10" label="Search"></Input>
-                <Dropdown>
-                  <DropdownTrigger>
-                    <Button
-                      variant="flat"
-                      size="sm"
-                      className="capitalize  col-span-2"
-                    >
-                      {selectedValue}
-                    </Button>
-                  </DropdownTrigger>
-                  <DropdownMenu
-                    className=" bg-background border-none"
-                    disallowEmptySelection
-                    selectionMode="single"
-                    selectedKeys={sortBySelection}
-                    onSelectionChange={updateSortBySelection}
+    <div className="h-screen">
+      <div className="flex flex-col gap-3 items-center min-w-67.75">
+        <Accordion className=" sticky mt-2 top-0 z-40 max-w-md bg-black opacity-80" isCompact variant="bordered" defaultExpandedKeys={["1"]}>
+          <AccordionItem key="1" title="Search options" className="">
+            <div className="grid grid-cols-3 gap-2 bg-black rounded-b-2xl p-6 sticky top-0 z-40">
+              <h2 className="col-span-3 text-lg text-center"><b>{strictMode ? "(strict) " : ""}Query: &quot;{searchTerm ? searchTerm : "all comments"}&quot; ({comments.length})</b></h2>
+              <Button className="" size="sm" isDisabled={page === 0} onPress={() => prevPage()}>Back</Button>
+              <span className="inline-block text-sm content-center text-center">Page {page + 1}</span>
+              <Button className="" size="sm" onPress={() => nextPage()}>Next</Button>
+              <Input isClearable onClear={() => clearSearch()} onChange={searchVideos} size="sm" className=" col-span-3 h-10" label="Search"></Input>
+              <Dropdown>
+                <DropdownTrigger>
+                  <Button
+                    variant="flat"
+                    size="sm"
+                    className="capitalize  col-span-2"
                   >
-                    {sortBy.map((val) => (
-                      <DropdownItem className="" key={val}>{val}</DropdownItem>
-                    ))}
-                  </DropdownMenu>
-                </Dropdown>
-                <Checkbox onValueChange={toggleSortingOrder} defaultSelected size="sm">Desc.</Checkbox>
-                <Checkbox onValueChange={setStrictMode} size="sm" className="justify-self-center">Strict</Checkbox>
-                <Link href="/" className="col-span-3 text-center align-middle text-sm no-underline">Search videos</Link>
-              </div>
-            </AccordionItem>
-          </Accordion>
-          {
-            loading ?
-              <div style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                height: "100vh",
-                width: "100vw"
-              }}>
-                <Spinner />
-              </div>
-              :
-              <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                {comments.map((comment, index) => (
-                  <Card
-                    radius="sm"
-                    key={comment.id}
-                  >
-                    <CardHeader>
-                      <Link className="no-underline font-bold" href={"/video?videoId=" + comment.videoId}><span className="text-medium">{comment.video?.title}</span></Link>
-                    </CardHeader>
-                    <Divider className="my-2" />
-                    <CardBody>
-                      <span className="px-2 pb-1 text-medium">
-                        <Link className="no-underline font-bold" href={"/user?userId=" + comment.userId}>{comment.username}</Link>
-                      </span>
-                      <p className="px-4">
-                        {comment.content}
-                      </p>
-                    </CardBody>
-                    <hr></hr>
-                    <CardFooter>
-                      <div className="grid grid-cols-3 xl:grid-cols-3 gap-2 text-center text-sm w-full">
-                        <p>Posted<br></br><b>{format(parseISO(comment.createdAt), "yy/MM/dd HH:mm")}</b></p>
-                        <p>Likes<br></br><b>{comment.posVotes}</b></p>
-                        <p>Replies<br></br><b>{comment.replyCount}</b></p>
-                      </div>
-                    </CardFooter>
-                  </Card>
-                ))}
-              </ul>
-          }
-        </div>
-        <Footer />
+                    {selectedValue}
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu
+                  className=" bg-background border-none"
+                  disallowEmptySelection
+                  selectionMode="single"
+                  selectedKeys={sortBySelection}
+                  onSelectionChange={updateSortBySelection}
+                >
+                  {sortBy.map((val) => (
+                    <DropdownItem className="" key={val}>{val}</DropdownItem>
+                  ))}
+                </DropdownMenu>
+              </Dropdown>
+              <Checkbox onValueChange={toggleSortingOrder} defaultSelected size="sm">Desc.</Checkbox>
+              <Checkbox onValueChange={setStrictMode} size="sm" className="justify-self-center">Strict</Checkbox>
+              <Link href="/" className="col-span-3 text-center align-middle text-sm no-underline">Search videos</Link>
+            </div>
+          </AccordionItem>
+        </Accordion>
+        {
+          loading ?
+            <div style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100vh",
+              width: "100vw"
+            }}>
+              <Spinner />
+            </div>
+            :
+            <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              {comments.map((comment, index) => (
+                <Card
+                  radius="sm"
+                  key={comment.id}
+                >
+                  <CardHeader>
+                    <Link className="no-underline font-bold" href={"/video?videoId=" + comment.videoId}><span className="text-medium">{comment.video?.title}</span></Link>
+                  </CardHeader>
+                  <Divider className="my-2" />
+                  <CardBody>
+                    <span className="px-2 pb-1 text-medium">
+                      <Link className="no-underline font-bold" href={"/user?userId=" + comment.userId}>{comment.username}</Link>
+                    </span>
+                    <p className="px-4">
+                      {comment.content}
+                    </p>
+                  </CardBody>
+                  <hr></hr>
+                  <CardFooter>
+                    <div className="grid grid-cols-3 xl:grid-cols-3 gap-2 text-center text-sm w-full">
+                      <p>Posted<br></br><b>{format(parseISO(comment.createdAt), "yy/MM/dd HH:mm")}</b></p>
+                      <p>Likes<br></br><b>{comment.posVotes}</b></p>
+                      <p>Replies<br></br><b>{comment.replyCount}</b></p>
+                    </div>
+                  </CardFooter>
+                </Card>
+              ))}
+            </ul>
+        }
       </div>
-    </HeroUIProvider>
+      <Footer />
+    </div>
   );
 }

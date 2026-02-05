@@ -45,7 +45,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (params.search !== undefined) {
         if (params.orderBy !== undefined) {
-            const resp = await prisma.videos.findMany({
+            const resp = await prisma.video.findMany({
                 where: {
                     title: {
                         contains: params.search,
@@ -64,7 +64,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try {
         if (params.orderBy !== undefined) {
-        const videos = await prisma.videos.findMany({
+        const videos = await prisma.video.findMany({
             take: params.limit,
             skip: params.start,
             orderBy: {

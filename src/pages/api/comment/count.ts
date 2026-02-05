@@ -20,6 +20,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         where = { userId: params.userId };
     }
 
-    const resp = await prisma.comments.count({where: where});
+    const resp = await prisma.comment.count({where: where});
     return res.status(200).json(resp);
 }

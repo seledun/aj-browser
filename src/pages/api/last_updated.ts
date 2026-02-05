@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
-        const latestRecord = await prisma.updated.findFirst({
+        const latestRecord = await prisma.modified.findFirst({
             orderBy: {
                 id: 'desc',
             },

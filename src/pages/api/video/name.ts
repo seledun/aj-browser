@@ -4,7 +4,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (typeof req.query.videoId === 'string') {
         const videoId = req.query.videoId;
-        const resp = await prisma.videos.findFirst({
+        const resp = await prisma.video.findFirst({
             where: {
                 id: videoId, 
             },

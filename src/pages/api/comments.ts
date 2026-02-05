@@ -22,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   };
 
   try {
-    const comments = await prisma.comments.findMany({
+    const comments = await prisma.comment.findMany({
       take: params.limit,
       skip: params.start,
       where: where, // if set

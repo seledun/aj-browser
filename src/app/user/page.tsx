@@ -2,7 +2,7 @@
 
 import { format, parseISO } from "date-fns";
 import { fetchComments, fetchUserCommentCount, fetchUserComments, fetchUserName } from "@/utils/comment-utils";
-import Footer from "@/components/footer";
+import Footer from "@/components/Footer";
 import { useState, useEffect } from "react";
 import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
 import { Spinner } from "@heroui/spinner";
