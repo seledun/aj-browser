@@ -8,7 +8,7 @@ import Link from "next/link"
 function VideoCard({ video }: { video: Video }) {
   return (
     <Card
-      className="w-full my-3"
+      className="w-full h-full my-3"
       radius="lg"
       shadow="sm"
       isHoverable
@@ -43,11 +43,11 @@ function VideoCard({ video }: { video: Video }) {
           </div>
           <div>
             <p className="text-default-400">Likes</p>
-            <p className="font-semibold">{video.likeCount}</p>
+            <p className="font-semibold text-success">{video.likeCount}</p>
           </div>
           <div>
             <p className="text-default-400">Anger</p>
-            <p className="font-semibold">{video.angerCount}</p>
+            <p className="font-semibold text-danger">{video.angerCount}</p>
           </div>
           <div>
             <p className="text-default-400">Runtime</p>

@@ -193,7 +193,7 @@ export default function Comments() {
 
     return (
         <HeroUIProvider>
-            <div className="min-h-screen flex flex-col bg-background">
+            <div className="min-h-screen flex flex-col">
                 <div className="flex flex-col gap-6 items-center w-full px-4 py-4">
 
                     {/* Search & Header Section */}
@@ -261,9 +261,9 @@ export default function Comments() {
                     </Accordion>
 
                     {/* Comments Feed Section */}
-                    <main className="w-full max-w-3xl mx-auto pb-10">
+                    <main className="w-full max-w-3xl mx-auto">
                         {!loading ? (
-                            <ul className="flex flex-col gap-4 list-none p-0">
+                            <ul className="flex flex-col gap-4 list-none">
                                 {comments.map((comment) => (
                                     <li key={comment.id}>
                                         <Card className="border-none bg-content1 shadow-sm" radius="lg" isHoverable>
@@ -292,7 +292,7 @@ export default function Comments() {
                                                     </div>
                                                     <div className="flex flex-col items-center">
                                                         <span className="font-bold uppercase tracking-tighter">Likes</span>
-                                                        <span className="font-mono text-default-600">{comment.posVotes}</span>
+                                                        <span className="font-mono text-success-600">{comment.posVotes}</span>
                                                     </div>
                                                     <div className="flex flex-col items-end">
                                                         <span className="font-bold uppercase tracking-tighter">Replies</span>

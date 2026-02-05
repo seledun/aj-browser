@@ -172,8 +172,8 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <div className="flex flex-col gap-6 items-center w-full px-4 py-4">
+    <div className="min-h-screen flex flex-col">
+      <div className="flex flex-col gap-8 items-center w-full px-4 py-4">
 
         {/* Refactored Accordion: Unified with Video Search Page */}
         <Accordion
@@ -232,7 +232,7 @@ export default function Home() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1">
                     <Button isIconOnly size="sm" variant="flat" isDisabled={page === 0} onPress={() => prevPage()}>‹</Button>
-                    <span className="text-tiny font-semibold px-2 min-w-[60px] text-center">Page {page + 1}</span>
+                    <span className="text-tiny font-semibold px-2 min-w-15 text-center">Page {page + 1}</span>
                     <Button isIconOnly size="sm" variant="flat" onPress={() => nextPage()}>›</Button>
                   </div>
                   <Checkbox onValueChange={setStrictMode} size="sm" isSelected={strictMode}>Strict</Checkbox>
@@ -250,13 +250,13 @@ export default function Home() {
         </Accordion>
 
         {/* Responsive Comments Grid */}
-        <main className="w-full max-w-7xl mx-auto px-2">
+        <main className="w-full max-w-7xl mx-auto">
           {loading ? (
             <div className="flex justify-center items-center h-[50vh]">
               <Spinner size="lg" color="primary" label="Searching comments..." />
             </div>
           ) : (
-            <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 list-none p-0">
+            <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 list-none">
               {comments.map((comment, index) => (
                 <li key={comment.id || index}>
                   <Card shadow="sm" radius="lg" isHoverable className="h-full border-none">
@@ -268,7 +268,7 @@ export default function Home() {
                       >
                         <div className="w-full pointer-events-auto">
                           <Link
-                            className="text-xs font-bold text-primary line-clamp-1 hover:underline"
+                            className="text-s font-bold text-primary line-clamp-3 hover:underline"
                             href={`/video?videoId=${comment.videoId}`}
                           >
                             {comment.video?.title}
@@ -286,7 +286,7 @@ export default function Home() {
                           @{comment.username}
                         </Link>
                       </div>
-                      <p className="text-default-600 text-sm line-clamp-4">
+                      <p className="text-default-600 text-sm">
                         {comment.content}
                       </p>
                     </CardBody>
@@ -303,7 +303,7 @@ export default function Home() {
                         </div>
                         <div>
                           <p className="text-[10px] uppercase text-default-400 font-bold">Likes</p>
-                          <p className="text-tiny font-mono font-bold text-default-700">{comment.posVotes}</p>
+                          <p className="text-tiny font-mono font-bold- text-success-700">{comment.posVotes}</p>
                         </div>
                         <div>
                           <p className="text-[10px] uppercase text-default-400 font-bold">Replies</p>

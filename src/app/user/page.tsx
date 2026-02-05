@@ -102,7 +102,7 @@ export default function Comments() {
     }
 
     return (
-        <div className="min-h-screen flex flex-col bg-background">
+        <div className="min-h-screen flex flex-col">
             {/* Header Section */}
             <div className="flex flex-col gap-6 items-center w-full px-4 py-4">
                 <Accordion
@@ -198,7 +198,7 @@ export default function Comments() {
                                                 </div>
                                                 <div className="flex flex-col items-center">
                                                     <span className="font-bold uppercase tracking-tighter text-[10px]">Likes</span>
-                                                    <span className="font-mono text-default-600 font-semibold">{comment.posVotes}</span>
+                                                    <span className="font-mono text-success-600 font-semibold">{comment.posVotes}</span>
                                                 </div>
                                                 <div className="flex flex-col items-end">
                                                     <span className="font-bold uppercase tracking-tighter text-[10px]">Replies</span>
