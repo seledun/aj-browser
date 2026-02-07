@@ -5,7 +5,7 @@ services:
     ports:
       - "3100:3000"
     volumes:
-      - ./prisma/store.db:/app/prisma/store.db
+      - ./prisma/:/app/prisma/
     command: npm run start
     networks:
       - npm
