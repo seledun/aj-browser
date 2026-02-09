@@ -1,6 +1,6 @@
 export const fetchLastUpdated = async() => {
     try {
-        const response = await fetch(`/api/last_updated/`);
+        const response = await fetch(`/api/archive/last-updated/`);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }

@@ -14,7 +14,7 @@ export interface Reply {
 
 export const fetchReplyCount = async() => {
     try {
-        const response = await fetch(`/api/reply/count`);
+        const response = await fetch(`/api/replies/count`);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -30,7 +30,7 @@ export const fetchReplyCount = async() => {
 
 export const fetchCommentReplies = async(commentId: string) => {
     try {
-        const response = await fetch(`/api/reply/replies?commentId=` + commentId);
+        const response = await fetch(`/api/replies/?commentId=` + commentId);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -46,7 +46,7 @@ export const fetchCommentReplies = async(commentId: string) => {
 
 export const getReplyById = async(replyId: string) => {
     try {
-        const response = await fetch(`/api/reply/by-id?replyId=` + replyId);
+        const response = await fetch(`/api/replies/${replyId}/`);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }

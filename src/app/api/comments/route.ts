@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import type { NextApiRequest, NextApiResponse } from 'next';
-import Error from "next/error";
+import { NextRequest, NextResponse } from "next/server";
 
 interface Params {
   videoId?: string,
@@ -25,16 +24,15 @@ const getTableName = function (str: string): string {
   }
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  
+export async function GET(req: NextRequest) {
   const params: Params = {
-    videoId: (typeof req.query.videoId === 'string') ? req.query.videoId : undefined,
-    userId: (typeof req.query.userId === 'string') ? req.query.userId : undefined,
-    search: (typeof req.query.search === 'string') ? req.query.search : undefined,
-    start: (typeof req.query.start === 'string') ? parseInt(req.query.start) : undefined,
-    orderBy: (typeof req.query.orderBy === 'string') ? req.query.orderBy : undefined,
-    desc: (typeof req.query.desc === 'string') ? req.query.desc : undefined,
-    limit: (typeof req.query.limit === 'string') ? parseInt(req.query.limit) : undefined
+    videoId: req.nextUrl.searchParams.get("videoId") ?? undefined,
+    userId: req.nextUrl.searchParams.get("userId") ?? undefined,
+    search: req.nextUrl.searchParams.get("search") ?? undefined,
+    start: req.nextUrl.searchParams.get("start") ? parseInt(req.nextUrl.searchParams.get("start")!) : undefined,
+    orderBy: req.nextUrl.searchParams.get("orderBy") ?? undefined,
+    desc: req.nextUrl.searchParams.get("desc") ?? undefined,
+    limit: req.nextUrl.searchParams.get("limit") ? parseInt(req.nextUrl.searchParams.get("limit")!) : undefined
   }
 
   let where = {};
@@ -70,9 +68,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     if (comments.length > 0) {
-      res.status(200).json(comments);
+      return NextResponse.json(comments, { status: 200 });
     } else {
-      res.status(404).json("no comments found");
+      return NextResponse.json("no comments found", { status: 404 });
     }
   }
 
@@ -80,5 +78,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (error instanceof Error) {
       console.log(error);
     }
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

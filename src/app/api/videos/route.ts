@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import type { NextApiRequest, NextApiResponse } from 'next';
-import Error from "next/error";
+import { NextRequest, NextResponse } from "next/server";
 
 interface Params {
     videoId?: string,
@@ -23,24 +22,24 @@ const getTableName = function (str: string): string {
             return 'commentCount';
         case 'Runtime':
             return 'duration';
+        case 'Views':
+            return 'playCount';
         default:
             return 'createdAt';
     }
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-
+export async function GET(req: NextRequest, res: NextResponse) {
     const params: Params = {
-        videoId: (typeof req.query.videoId === 'string') ? req.query.videoId : undefined,
-        start: (typeof req.query.start === 'string') ? parseInt(req.query.start) : undefined,
-        limit: (typeof req.query.limit === 'string') ? parseInt(req.query.limit) : undefined,
-        search: (typeof req.query.search === 'string') ? req.query.search : undefined,
-        orderBy: (typeof req.query.orderBy === 'string') ? req.query.orderBy : undefined,
-        desc: (typeof req.query.desc === 'string') ? req.query.desc : undefined
+        videoId: req.nextUrl.searchParams.get("videoId") ?? undefined,
+        start: req.nextUrl.searchParams.get("start") ? parseInt(req.nextUrl.searchParams.get("start")!) : undefined,
+        limit: req.nextUrl.searchParams.get("limit") ? parseInt(req.nextUrl.searchParams.get("limit")!) : undefined,
+        search: req.nextUrl.searchParams.get("search") ?? undefined,
+        orderBy: req.nextUrl.searchParams.get("orderBy") ?? undefined,
+        desc: req.nextUrl.searchParams.get("desc") ?? undefined
     }
 
     const sortingOrder = params.desc === 'false' ? 'asc' : 'desc';
-
     const orderByName = typeof params.orderBy === 'string' ? getTableName(params.orderBy) : 'createdAt';
 
     if (params.search !== undefined) {
@@ -57,29 +56,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     [orderByName]: sortingOrder,
                 }
             })
-            res.status(200).json(resp);
-            return;
+            return NextResponse.json(resp, { status: 200 });
         }
     }
 
     try {
         if (params.orderBy !== undefined) {
-        const videos = await prisma.video.findMany({
-            take: params.limit,
-            skip: params.start,
-            orderBy: {
-                [orderByName]: sortingOrder,
-            }
-        });
+            const videos = await prisma.video.findMany({
+                take: params.limit,
+                skip: params.start,
+                orderBy: {
+                    [orderByName]: sortingOrder,
+                }
+            });
 
-        if (videos.length > 0) {
-            res.status(200).json(videos);
-            return;
-        } else {
-            res.status(404).json("no videos found");
-            return;
+            if (videos.length > 0) {
+                return NextResponse.json(videos, { status: 200 });
+            } else {
+                return NextResponse.json("no videos found", { status: 404 });
+            }
         }
-    }
     }
 
     catch (error) {
