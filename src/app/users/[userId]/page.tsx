@@ -12,6 +12,7 @@ import { Video } from "@/utils/video-utils";
 import { Accordion, AccordionItem } from "@heroui/accordion";
 import { Divider, Tooltip } from "@heroui/react";
 import CommentReplyDrawer from "@/components/CommentReplyDrawer";
+import { useParams } from "next/navigation";
 
 interface Comment {
     id: string,
@@ -36,10 +37,11 @@ export default function Comments() {
 
     const [replyDrawerOpen, setReplyDrawerOpen] = useState<boolean>(false);
     const [selectedComment, setSelectedComment] = useState<Comment | null>(null);
+    const params = useParams();
 
     useEffect(() => {
-        const ret = new URLSearchParams(window.location.search).get('userId');
-        if (ret !== null && ret !== "") {
+        const ret = params.userId as string;
+        if (ret !== undefined && ret !== "") {
             setUserId(ret);
         }
     }, []);

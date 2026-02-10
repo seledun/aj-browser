@@ -279,7 +279,7 @@ export default function Home() {
                         <div className="w-full pointer-events-auto">
                           <Link
                             className="text-s font-bold text-primary line-clamp-3 hover:underline no-underline!"
-                            href={`/video?videoId=${comment.videoId}`}
+                            href={`/videos/${comment.videoId}`}
                           >
                             {comment.video?.title}
                           </Link>

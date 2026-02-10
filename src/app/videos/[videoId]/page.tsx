@@ -283,7 +283,7 @@ export default function Comments() {
                                                 <div className="flex flex-col">
                                                     <Link
                                                         className="text-md font-bold text-primary no-underline!"
-                                                        href={"/user?userId=" + comment.userId}
+                                                        href={`/users/${comment.userId}`}
                                                     >
                                                         {comment.username}
                                                     </Link>
