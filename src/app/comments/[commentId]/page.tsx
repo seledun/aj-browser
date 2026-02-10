@@ -9,7 +9,7 @@ import { Link } from "@heroui/link";
 import { Tooltip } from "@heroui/tooltip";
 import { Spinner } from "@heroui/spinner";
 import { format, parseISO } from "date-fns";
-import Footer from "@/components/Footer";
+import { useParams, useRouter } from "next/navigation";
 import CommentReplyDrawer from "@/components/CommentReplyDrawer";
 
 export default function SingleCommentPage() {
@@ -17,10 +17,11 @@ export default function SingleCommentPage() {
     const [videoData, setVideoData] = useState<Video | null>(null);
     const [loading, setLoading] = useState(true);
     const [replyDrawerOpen, setReplyDrawerOpen] = useState(false);
+    const params = useParams();
 
     useEffect(() => {
         const fetchAllData = async () => {
-            const id = new URLSearchParams(window.location.search).get('commentId');
+            const id = params.commentId as string | undefined;
             if (!id) {
                 setLoading(false);
                 return;

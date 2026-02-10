@@ -322,7 +322,7 @@ export default function Comments() {
                                                     <div className="flex flex-col items-end justify-center">
                                                         <Tooltip content="Open Single View" delay={500}>
                                                             <Link
-                                                                href={`/comments/single-comment?commentId=${comment.id}`}
+                                                                href={`/comments/${comment.id}/`}
                                                                 className="text-default-400 hover:text-primary transition-colors"
                                                             >
                                                                 <svg

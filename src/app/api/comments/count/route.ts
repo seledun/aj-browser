@@ -6,7 +6,7 @@ export interface CommentCountParams {
     userId?: string
 }
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET(req: NextRequest) {
     const params: CommentCountParams = {
         videoId: req.nextUrl.searchParams.get("videoId") ?? undefined,
         userId: req.nextUrl.searchParams.get("userId") ?? undefined
@@ -21,5 +21,5 @@ export async function GET(req: NextRequest, res: NextResponse) {
     }
 
     const resp = await prisma.comment.count({where: where});
-    return NextResponse.json(resp);
+    return NextResponse.json(resp, { status: 200 });
 }

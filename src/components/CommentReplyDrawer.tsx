@@ -62,7 +62,7 @@ export default function CommentReplyDrawer(props: CommentReplyDrawerProps) {
                                     <span className="font-bold uppercase tracking-tighter text-[10px] text-default-400">Share</span>
                                     <Tooltip content="Link to this reply" delay={500}>
                                         <Link
-                                            href={`/replies/single-reply?replyId=${reply.id}`}
+                                            href={`/replies/${reply.id}/`}
                                             className="text-default-400 hover:text-primary transition-colors pt-1"
                                         >
                                             <svg

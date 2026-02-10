@@ -29,7 +29,7 @@ const getTableName = function (str: string): string {
     }
 }
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET(req: NextRequest) {
     const params: Params = {
         videoId: req.nextUrl.searchParams.get("videoId") ?? undefined,
         start: req.nextUrl.searchParams.get("start") ? parseInt(req.nextUrl.searchParams.get("start")!) : undefined,

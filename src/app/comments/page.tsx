@@ -342,7 +342,7 @@ export default function Home() {
                           <p className="text-[10px] uppercase text-default-400 font-bold leading-none mb-1">Share</p>
                           <Tooltip content="Open Single View" delay={500}>
                             <Link
-                              href={`/comments/single-comment?commentId=${comment.id}`}
+                              href={`/comments/${comment.id}/`}
                               className="text-default-400 hover:text-primary transition-colors"
                             >
                               <svg
