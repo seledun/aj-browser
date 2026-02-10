@@ -147,7 +147,7 @@ export default function Home() {
       }
     }
     searchVideos();
-  }, [searchTerm, strictMode, currentPage, page, searchProps])
+  }, [searchTerm, strictMode])
 
   const searchVideos = async (ev: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(ev.target.value);
