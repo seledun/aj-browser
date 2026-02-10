@@ -24,7 +24,7 @@ function VideoCard({ video }: { video: Video }) {
     <h1 className="text-md font-bold leading-tight cursor-help">
       {video.commentCount > 0 ? (
         <Link 
-          href={`/video?videoId=${video.id}`} 
+          href={`/videos/${video.id}/`} 
           className="line-clamp-3 hover:underline no-underline!"
         >
           {video.title}
