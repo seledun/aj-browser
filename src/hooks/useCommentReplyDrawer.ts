@@ -1,5 +1,4 @@
 import { CommentReplyDrawerProps } from "@/components/CommentReplyDrawer";
-import { Comment } from "@/utils/comment-utils";
 import { fetchCommentReplies, Reply } from "@/utils/reply-utils";
 import { useEffect, useState } from "react";
 

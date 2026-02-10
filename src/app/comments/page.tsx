@@ -10,7 +10,6 @@ import { Input } from "@heroui/input";
 import { Checkbox } from "@heroui/checkbox";
 import { Divider } from "@heroui/divider"
 import { SearchProps } from "../../utils/video-utils";
-import Footer from "@/components/Footer";
 import { Accordion, AccordionItem } from "@heroui/accordion";
 
 import { Comment, searchAllComments, searchAllCommentsTerms } from "../../utils/comment-utils";

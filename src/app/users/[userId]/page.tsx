@@ -1,8 +1,7 @@
 'use client'
 
 import { format, parseISO } from "date-fns";
-import { fetchComments, fetchUserCommentCount, fetchUserComments, fetchUserName } from "@/utils/comment-utils";
-import Footer from "@/components/Footer";
+import { fetchUserCommentCount, fetchUserComments, fetchUserName } from "@/utils/comment-utils";
 import { useState, useEffect } from "react";
 import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
 import { Spinner } from "@heroui/spinner";
@@ -46,14 +45,6 @@ export default function Comments() {
         }
     }, []);
 
-    useEffect(() => {
-        if (userId !== "") {
-            loadComments(userId);
-            fetchUsername(userId);
-            fetchCommentCount(userId);
-        }
-    }, [userId]);
-
     const limit = 25;
 
     const fetchUsername = async (id: string) => {
@@ -65,7 +56,7 @@ export default function Comments() {
 
     const fetchCommentCount = async (id: string) => {
         const count = await fetchUserCommentCount(id);
-        if (typeof count !== undefined) {
+        if (count != null) {
             setCommentCount(count);
         }
     }
@@ -80,6 +71,14 @@ export default function Comments() {
         }
         setLoading(false);
     }
+
+    useEffect(() => {
+        if (userId !== "") {
+            loadComments(userId);
+            fetchUsername(userId);
+            fetchCommentCount(userId);
+        }
+    }, [userId, loadComments]);
 
     const nextPage = async () => {
         setLoading(true);

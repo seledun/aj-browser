@@ -7,7 +7,6 @@ import { Spinner } from "@heroui/spinner";
 import { Checkbox } from "@heroui/checkbox";
 import { Input } from "@heroui/input";
 import { SearchProps } from "../utils/video-utils";
-import Footer from "@/components/Footer";
 
 import { Video, fetchVideos, fetchVideoSearch } from "../utils/video-utils";
 import { Link } from "@heroui/react";
@@ -44,40 +43,6 @@ export default function Home() {
   );
 
   const limit = 21; // cards per page
-
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-
-    const searchVideos = async () => {
-      if (searchTerm.length > 1) {
-        setSearchMode(true);
-        setPage(0);
-        setLoading(true);
-
-        const search = strictMode ? ' ' + searchTerm + ' ' : searchTerm;
-        const videos = await fetchVideoSearch(search, page, limit, searchProps);
-
-        if (videos !== undefined && videos.length > 0) {
-          setVideos(videos);
-        }
-
-        else if (strictMode) {
-          setVideos([]);
-          setPage(0);
-          setLoading(false);
-        }
-
-        setLoading(false);
-      } else {
-        setSearchMode(false);
-        currentPage();
-      }
-    }
-    searchVideos();
-  }, [searchTerm, strictMode])
 
   const toggleSortingOrder = async () => {
     setSearchProps({
@@ -149,6 +114,40 @@ export default function Home() {
     }
     setLoading(false);
   }
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    const searchVideos = async () => {
+      if (searchTerm.length > 1) {
+        setSearchMode(true);
+        setPage(0);
+        setLoading(true);
+
+        const search = strictMode ? ' ' + searchTerm + ' ' : searchTerm;
+        const videos = await fetchVideoSearch(search, page, limit, searchProps);
+
+        if (videos !== undefined && videos.length > 0) {
+          setVideos(videos);
+        }
+
+        else if (strictMode) {
+          setVideos([]);
+          setPage(0);
+          setLoading(false);
+        }
+
+        setLoading(false);
+      } else {
+        setSearchMode(false);
+        currentPage();
+      }
+    }
+    searchVideos();
+  }, [searchTerm, strictMode, currentPage, page, searchProps])
 
   const searchVideos = async (ev: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(ev.target.value);

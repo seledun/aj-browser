@@ -1,7 +1,6 @@
 'use client'
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, NavbarMenu, NavbarMenuToggle, NavbarMenuItem, Divider } from "@heroui/react";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, NavbarMenu, NavbarMenuToggle, NavbarMenuItem } from "@heroui/react";
 import { useState } from "react";
-import Image from "next/image";
 
 export const AcmeLogo = () => {
     return (
@@ -17,7 +16,7 @@ export const AcmeLogo = () => {
 };
 
 export default function MainNavBar() {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isMenuOpen] = useState(false);
 
     return (
         <Navbar>

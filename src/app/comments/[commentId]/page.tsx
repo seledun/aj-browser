@@ -9,7 +9,7 @@ import { Link } from "@heroui/link";
 import { Tooltip } from "@heroui/tooltip";
 import { Spinner } from "@heroui/spinner";
 import { format, parseISO } from "date-fns";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import CommentReplyDrawer from "@/components/CommentReplyDrawer";
 
 export default function SingleCommentPage() {
@@ -44,7 +44,7 @@ export default function SingleCommentPage() {
         };
 
         fetchAllData();
-    }, []);
+    }, [params.commentId]);
 
     return (
         <div className="min-h-screen flex flex-col">

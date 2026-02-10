@@ -51,7 +51,7 @@ export default function SingleCommentPage() {
         };
 
         fetchAllData();
-    }, []);
+    }, [params.replyId]);
 
     return (
         <div className="min-h-screen flex flex-col">
