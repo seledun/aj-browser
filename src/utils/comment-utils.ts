@@ -19,7 +19,7 @@ export interface SearchProps {
 
 export const fetchCommentCount = async() => {
     try {
-        const response = await fetch(`/api/comment/count`);
+        const response = await fetch(`/api/comments/count`);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -35,7 +35,7 @@ export const fetchCommentCount = async() => {
 
 export const fetchUserCommentCount = async(userId: string) => {
     try {
-        const response = await fetch(`/api/comment/count?userId=` + userId);
+        const response = await fetch(`/api/comments/count?userId=` + userId);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -51,7 +51,7 @@ export const fetchUserCommentCount = async(userId: string) => {
 
 export const fetchVideoCommentCount = async(videoId: string) => {
     try {
-        const response = await fetch(`/api/comment/count?videoId=` + videoId);
+        const response = await fetch(`/api/comments/count?videoId=` + videoId);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -67,7 +67,7 @@ export const fetchVideoCommentCount = async(videoId: string) => {
 
 export const fetchUserName = async(id: string) => {
     try {
-        const response = await fetch(`/api/comment/username/?userId=` + id);
+        const response = await fetch(`/api/users/` + id + `/username`);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -83,7 +83,7 @@ export const fetchUserName = async(id: string) => {
 
 export const fetchComments = async (video: string, start: number, limit: number): Promise<Comment[] | undefined> => {
     try {
-        const response = await fetch(`/api/comment/comments?videoId=${video}&start=${start}&limit=${limit}`);
+        const response = await fetch(`/api/videos/${video}/comments?start=${start}&limit=${limit}`);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -97,7 +97,7 @@ export const fetchComments = async (video: string, start: number, limit: number)
 
 export const searchAllComments = async (start: number, limit: number, props: SearchProps): Promise<Comment[] | undefined> => {
     try {
-        const response = await fetch(`/api/comment/comments?start=${start}&limit=${limit}&orderBy=${props.orderBy}&desc=${props.desc}`);
+        const response = await fetch(`/api/comments?start=${start}&limit=${limit}&orderBy=${props.orderBy}&desc=${props.desc}`);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -111,7 +111,7 @@ export const searchAllComments = async (start: number, limit: number, props: Sea
 
 export const searchAllCommentsTerms = async (str: string, start: number, limit: number, props: SearchProps): Promise<Comment[] | undefined> => {
     try {
-        const response = await fetch(`/api/comment/comments?search=${str}&start=${start}&limit=${limit}&orderBy=${props.orderBy}&desc=${props.desc}`);
+        const response = await fetch(`/api/comments?search=${str}&start=${start}&limit=${limit}&orderBy=${props.orderBy}&desc=${props.desc}`);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -125,7 +125,7 @@ export const searchAllCommentsTerms = async (str: string, start: number, limit: 
 
 export const searchComments = async (video: string, search: string, start: number, limit: number): Promise<Comment[] | undefined> => {
     try {
-        const response = await fetch(`/api/comment/comments?videoId=${video}&start=${start}&limit=${limit}&search=${search}`);
+        const response = await fetch(`/api/videos/${video}/comments/&start=${start}&limit=${limit}&search=${search}`);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -139,7 +139,7 @@ export const searchComments = async (video: string, search: string, start: numbe
 
 export const fetchUserComments = async (user: string, start: number, limit: number): Promise<Comment[] | undefined> => {
     try {
-        const response = await fetch(`/api/comment/comments?userId=${user}&start=${start}&limit=${limit}`);
+        const response = await fetch(`/api/comments?userId=${user}&start=${start}&limit=${limit}`);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -153,7 +153,7 @@ export const fetchUserComments = async (user: string, start: number, limit: numb
 
 export const getCommentById = async (id: string): Promise<Comment | undefined> => {
     try {
-        const response = await fetch(`/api/comment/by-id?commentId=${id}`);
+        const response = await fetch(`/api/comments/${id}`);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }

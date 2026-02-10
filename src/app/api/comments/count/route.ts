@@ -1,15 +1,15 @@
 import { prisma } from "@/lib/prisma";
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from "next/server";
 
 export interface CommentCountParams {
     videoId?: string,
     userId?: string
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export async function GET(req: NextRequest) {
     const params: CommentCountParams = {
-        videoId: (typeof req.query.videoId === 'string') ? req.query.videoId : undefined,
-        userId: (typeof req.query.userId === 'string') ? req.query.userId : undefined
+        videoId: req.nextUrl.searchParams.get("videoId") ?? undefined,
+        userId: req.nextUrl.searchParams.get("userId") ?? undefined
     }
 
     let where = {};
@@ -21,5 +21,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const resp = await prisma.comment.count({where: where});
-    return res.status(200).json(resp);
+    return NextResponse.json(resp, { status: 200 });
 }

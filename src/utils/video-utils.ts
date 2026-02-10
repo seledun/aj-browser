@@ -17,7 +17,7 @@ export interface SearchProps {
 
 export const fetchVideoCount = async() => {
     try {
-        const response = await fetch(`/api/video/count`);
+        const response = await fetch(`/api/videos/count`);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -33,7 +33,7 @@ export const fetchVideoCount = async() => {
 
 export const fetchVideoName = async(id: string) => {
     try {
-        const response = await fetch(`/api/video/name?videoId=` + id);
+        const response = await fetch(`/api/videos/name?videoId=` + id);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -49,7 +49,7 @@ export const fetchVideoName = async(id: string) => {
 
 export const fetchVideos = async (start: number, limit: number, props: SearchProps): Promise<Video[] | undefined> => {
     try {
-        const response = await fetch(`/api/video/videos?start=${start}&limit=${limit}&orderBy=${props.orderBy}&desc=${props.desc}`);
+        const response = await fetch(`/api/videos/?start=${start}&limit=${limit}&orderBy=${props.orderBy}&desc=${props.desc}`);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -63,7 +63,7 @@ export const fetchVideos = async (start: number, limit: number, props: SearchPro
 
 export const fetchVideoSearch = async (str: string, start: number, limit: number, props: SearchProps): Promise<Video[] | undefined> => {
     try {
-        const response = await fetch(`/api/video/videos?search=${str}&start=${start}&limit=${limit}&orderBy=${props.orderBy}&desc=${props.desc}`);
+        const response = await fetch(`/api/videos?search=${str}&start=${start}&limit=${limit}&orderBy=${props.orderBy}&desc=${props.desc}`);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -77,7 +77,7 @@ export const fetchVideoSearch = async (str: string, start: number, limit: number
 
 export const getVideoById = async (id: string): Promise<Video | undefined> => {
     try {
-        const response = await fetch(`/api/video/by-id?videoId=${id}`);
+        const response = await fetch(`/api/videos/${id}`);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
