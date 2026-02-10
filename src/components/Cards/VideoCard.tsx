@@ -78,7 +78,7 @@ function VideoCard({ video }: { video: Video }) {
             <p className="text-[10px] uppercase text-default-400 font-bold leading-tight mb-1">Comments</p>
             <div className="text-tiny font-semibold text-primary">
               {video.commentCount ? (
-                <Link href={"/video?videoId=" + video.id} size="sm" className="text-tiny font-semibold p-0 h-auto underline-none!">
+                <Link href={"/videos/" + video.id} size="sm" className="text-tiny font-semibold p-0 h-auto underline-none!">
                   {video.commentCount}
                 </Link>
               ) : "0"}

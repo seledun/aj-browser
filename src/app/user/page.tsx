@@ -187,7 +187,7 @@ export default function Comments() {
                                                 >
                                                     <div className="w-full pointer-events-auto">
                                                         <Link
-                                                            href={"/video?videoId=" + comment.videoId}
+                                                            href={"/videos/" + comment.videoId}
                                                             className="text-xs font-semibold text-primary line-clamp-1"
                                                         >
                                                             {comment.video?.title}

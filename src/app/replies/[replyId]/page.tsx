@@ -80,7 +80,7 @@ export default function SingleCommentPage() {
                                     <div className="w-full">
                                         <Link
                                             className="text-lg font-bold text-primary hover:underline no-underline!"
-                                            href={`/video?videoId=${commentData.videoId}`}
+                                            href={`/videos/${commentData.videoId}`}
                                         >
                                             {videoData.title}
                                         </Link>
