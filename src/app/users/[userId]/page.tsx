@@ -238,7 +238,7 @@ export default function Comments() {
                                                         <span className="font-bold uppercase tracking-tighter text-[10px]">Share</span>
                                                         <Tooltip content="Open Single View" delay={500}>
                                                             <Link
-                                                                href={`/comments/single-comment?commentId=${comment.id}`}
+                                                                href={`/comments/${comment.id}`}
                                                                 className="text-default-400 hover:text-primary transition-colors pt-1"
                                                             >
                                                                 <svg

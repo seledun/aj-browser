@@ -85,7 +85,7 @@ export default function SingleCommentPage() {
                                 <div className="text-default-600 text-base leading-relaxed">
                                     <Link
                                         className="font-semibold text-default-700 hover:text-primary pr-2"
-                                        href={`/user?userId=${commentData.userId}`}
+                                        href={`/users/${commentData.userId}`}
                                         underline="none"
                                     >
                                         {commentData.username}:

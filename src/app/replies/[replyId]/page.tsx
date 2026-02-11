@@ -92,7 +92,7 @@ export default function SingleCommentPage() {
                                 <div className="text-default-600 text-base leading-relaxed">
                                     <Link
                                         className="font-semibold text-default-700 hover:text-primary pr-2"
-                                        href={`/user?userId=${commentData.userId}`}
+                                        href={`/users/${commentData.userId}`}
                                         underline="none"
                                     >
                                         {commentData.username}:
@@ -138,7 +138,7 @@ export default function SingleCommentPage() {
                                 <span className="text-sm text-slate-500 pb-2">reply to comment</span>
                                 <Link
                                     className="font-semibold text-default-700 hover:text-primary pr-2"
-                                    href={`/user?userId=${replyData.userId}`}
+                                    href={`/users/${replyData.userId}`}
                                     underline="none"
                                 >
                                     {replyData.userName}
@@ -149,7 +149,7 @@ export default function SingleCommentPage() {
                                 <div className="text-default-600 text-base leading-relaxed">
                                     <Link
                                         className="font-semibold text-default-700 hover:text-primary pr-2"
-                                        href={`/user?userId=${commentData.userId}`}
+                                        href={`/users/${commentData.userId}`}
                                         underline="none"
                                     >
                                         @{commentData.username}
