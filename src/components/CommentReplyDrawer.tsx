@@ -37,7 +37,7 @@ export default function CommentReplyDrawer(props: CommentReplyDrawerProps) {
                     {replyList.map((reply) => (
                         <Card className="mt-4 p-4 shrink-0" key={reply.id}>
                             <CardHeader>
-                                <Link href={`/user?userId=${reply.userId}`}>{reply.userName}</Link>
+                                <Link href={`/users/${reply.userId}`}>{reply.userName}</Link>
                             </CardHeader>
                             <CardBody>
                                 <p>
