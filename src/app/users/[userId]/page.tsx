@@ -78,7 +78,7 @@ export default function Comments() {
             fetchUsername(userId);
             fetchCommentCount(userId);
         }
-    }, [userId, loadComments]);
+    }, [userId]);
 
     const nextPage = async () => {
         setLoading(true);

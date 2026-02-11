@@ -43,7 +43,7 @@ export default function CommentReplyDrawer(props: CommentReplyDrawerProps) {
                                 <p>
                                     {reply.linkedUserName && (
                                         <Link
-                                            href={`/user?userId=${reply.linkedUserId}`}
+                                            href={`/users/${reply.linkedUserId}`}
                                             className="text-primary font-semibold mr-1 no-underline!"
                                         >
                                             @{reply.linkedUserName}
