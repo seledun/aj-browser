@@ -24,7 +24,7 @@ export default function CommentReplyDrawer(props: CommentReplyDrawerProps) {
                 <DrawerBody>
                     <Card className="p-4 shrink-0 bg-zinc-800">
                         <CardHeader>
-                            <Link href={`/user?userId=${parent?.userId}`}>{parent?.username}</Link>
+                            <Link href={`/users/${parent?.userId}`}>{parent?.username}</Link>
                         </CardHeader>
                         <CardBody>{parent?.content}</CardBody>
                         <CardFooter>
