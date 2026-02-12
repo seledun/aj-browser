@@ -48,6 +48,11 @@ export default function MainNavBar() {
                 </NavbarItem>
             </NavbarContent>
             <NavbarContent className="grow" justify="end">
+                <NavbarBrand className="pr-4 sm:hidden">
+                    <Link href="/" className="flex items-center gap-2 text-foreground! no-underline!">
+                        <p className="font-bold text-lg text-inherit mx-2">bland.video</p>
+                    </Link>
+                </NavbarBrand>
                 <NavbarMenuToggle
                     aria-label={isMenuOpen ? "Close menu" : "Open menu"}
                     className="sm:hidden"
