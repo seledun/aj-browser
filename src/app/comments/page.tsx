@@ -290,7 +290,7 @@ export default function Home() {
                       <p className="text-default-600 text-sm">
                         <Link
                           className="text-sm font-semibold text-default-700 hover:text-primary pr-1 no-underline!"
-                          href={`/user?userId=${comment.userId}`}
+                          href={`/users/${comment.userId}`}
                         >
                           {comment.username}:
                         </Link>
