@@ -5,7 +5,8 @@ services:
     ports:
       - "3100:3000"
     volumes:
-      - ./prisma/:/app/prisma/
+      - ./prisma/:/app/prisma/:ro
+      - /home/basse/backups/ajbrowser/:/app/public/archives:ro
     command: npm run start
     networks:
       - npm

@@ -10,4 +10,5 @@
 
 # lfs files
 /prisma/store.db
+/public/archives/*
 /update-db

@@ -1,16 +1,36 @@
+export const dynamic = 'force-dynamic';
+
+import fs from 'fs';
+import path from 'path';
+import ArchiveTable from './_components/ArchiveTable';
 
 export default function ArchivePage() {
+  const dirPath = '/app/public/archives';
+  let files: any[] = [];
+
+  try {
+    if (fs.existsSync(dirPath)) {
+      const filenames = fs.readdirSync(dirPath);
+      files = filenames.map((file) => {
+        const filePath = path.join(dirPath, file);
+        const stats = fs.statSync(filePath);
+        return {
+          name: file,
+          size: (stats.size / (1024 * 1024)).toFixed(2),
+          createdAt: stats.birthtime.toLocaleDateString(), // Serialize date for Client Component
+          href: `/archives/${file}`,
+        };
+      });
+      files.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    }
+  } catch (e) {
+    console.error(e);
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-6 py-8">
       <h1 className="text-3xl font-bold mb-4">Archive</h1>
-      <div className="text-lg text-default-600 mb-6">
-        <p className="text-lg text-default-500">Work in progress.</p> 
-        <p>Database dumps will be available for download here once it&apos;s ready.</p>
-      </div>
-      {/* Placeholder for archive content */}
-      <div className="border border-divider rounded-lg p-6 text-center text-default-500">
-        Archive content will be displayed here.
-      </div>
+      <ArchiveTable files={files} />
     </div>
   );
 }
