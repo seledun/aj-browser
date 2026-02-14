@@ -21,8 +21,6 @@
     "@heroui/spinner": "^2.2.27",
     "@heroui/system": "^2.4.26",
     "@heroui/theme": "^2.4.26",
-    "@prisma/adapter-better-sqlite3": "^7.3.0",
-    "@prisma/client": "^7.3.0",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.31.2",
     "next": "^16.1.6",
@@ -30,6 +28,8 @@
     "react-dom": "^19.2.4"
   },
   "devDependencies": {
+    "@prisma/adapter-better-sqlite3": "^7.4.0",
+    "@prisma/client": "^7.4.0",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "^20.17.24",
     "@types/react": "^18.3.18",
@@ -37,7 +37,7 @@
     "eslint": "^8.57.1",
     "eslint-config-next": "15.0.2",
     "postcss": "^8",
-    "prisma": "^7.3.0",
+    "prisma": "^7.4.0",
     "tailwindcss": "^4.1.18",
     "typescript": "^5"
   }
